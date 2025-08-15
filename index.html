@@ -520,6 +520,36 @@ if('serviceWorker' in navigator){
   })();
 })();
 </script>
-<!-- /Correctif installation --><!-- /fin bloc unique -->
+<!-- Recallia • Bloc dynamique Benchmarks + Status -->
+<script>
+(async ()=>{
+  const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
+
+  // BENCHMARKS
+  try{
+    const b = await fetch(BASE+'json/benchmarks.json',{cache:'no-store'}).then(r=>r.json());
+    const ttv = (b.ttv_median_seconds ?? 60);
+    const vsr = (b.vsr_percent ?? 90);
+    const cov = (b.proof_coverage_percent ?? 100);
+
+    // Dans la section #bench, on suppose l’ordre: [TTV médian, VSR, Couverture]
+    const tiles = document.querySelectorAll('#bench .tile p');
+    if (tiles[0]) tiles[0].textContent = '< ' + ttv + ' s';
+    if (tiles[1]) tiles[1].textContent = '≥ ' + vsr + ' %';
+    if (tiles[2]) tiles[2].textContent = cov + ' %';
+  }catch(e){ /* silencieux */ }
+
+  // STATUS
+  try{
+    const s = await fetch(BASE+'json/status.json',{cache:'no-store'}).then(r=>r.json());
+    const box = document.querySelector('#status .card');
+    if (box) {
+      box.innerHTML = `<p>${s.message||'Tous les systèmes fonctionnent normalement.'}</p>
+                       <p class="mini">Dernière mise à jour : ${new Date(s.updated_at||Date.now()).toLocaleString()}</p>`;
+    }
+  }catch(e){ /* silencieux */ }
+})();
+</script>
+<!-- /Bloc dynamique --><!-- /Correctif installation --><!-- /fin bloc unique -->
 </body>
 </html>
