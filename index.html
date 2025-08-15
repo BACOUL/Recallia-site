@@ -1774,6 +1774,245 @@ couleur.accent: #00C2A8"></textarea>
   };
 })();
 </script>
-<!-- /Créateur v31 --><!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+<<!-- ===== Recallia · Créateur v32 — no-touch (drop-in) ===== -->
+<style id="rc32-style">
+:root{--accent:#00C2A8}
+.rc32-fab{position:fixed;right:14px;bottom:14px;z-index:9999;background:var(--accent);color:#0E1116;
+  border:0;border-radius:14px;padding:10px 14px;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.rc32-panel{position:fixed;right:12px;bottom:12px;z-index:99999;width:min(92vw,520px);max-height:80vh;overflow:auto;
+  background:#0B1220;color:#E5E7EB;border:1px solid #1F2937;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.5);padding:14px}
+.rc32-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rc32-btn{background:var(--accent);color:#0E1116;border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+.rc32-ghost{background:#0B1220;color:#E5E7EB;border:1px solid #334155}
+.rc32-card{border:1px solid #1F2937;border-radius:12px;background:#0b1322;padding:12px}
+.rc32-badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid #334155}
+.rc32-ok{background:#113426;border-color:#047857;color:#bbf7d0}
+.rc32-warn{background:#3a2f14;border-color:#a16207;color:#fde68a}
+.rc32-crit{background:#3f1e1e;border-color:#7f1d1d;color:#fecaca}
+@media(max-width:480px){
+  header nav, nav[role="navigation"], #topnav, .topbar nav{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+  header nav a, nav a{text-align:center}
+}
+</style>
+<script>
+(function(){
+  // --- Activer le mode créateur seulement pour toi ---
+  const Q = new URLSearchParams(location.search);
+  if (Q.get('creator')==='on') localStorage.setItem('recCreator','1');
+  if (localStorage.getItem('recCreator')!=='1') return;
+  const PIN = '2468'; // change-le plus tard
+  if (localStorage.getItem('recPin')!==PIN){
+    const p = prompt('PIN créateur :'); if (p!==PIN){ alert('Accès refusé'); return; }
+    localStorage.setItem('recPin', PIN);
+  }
+
+  // --- Helpers DOM ---
+  const $ = s=>document.querySelector(s);
+  const addStyle = (css,id='rc32-dyn')=>{
+    let el = document.getElementById(id); if(!el){ el=document.createElement('style'); el.id=id; document.head.appendChild(el); }
+    el.textContent += '\n'+css;
+  };
+  const ensure = (tag, attrs={})=>{
+    const sel = tag + Object.entries(attrs).map(([k,v])=>`[${k}="${v}"]`).join('');
+    const ex = document.head.querySelector(sel); if (ex) return ex;
+    const el = document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v)); document.head.appendChild(el); return el;
+  };
+
+  // --- Auto-balise HÉROS (sans modifier ton HTML à la main) ---
+  function firstVisible(sel){
+    const list = [...document.querySelectorAll(sel)];
+    return list.find(el=>{const r=el.getBoundingClientRect(); const cs=getComputedStyle(el); return r.width>0 && r.height>0 && cs.visibility!=='hidden' && cs.display!=='none';}) || null;
+  }
+  function tagHeroIfMissing(){
+    let h1 = document.querySelector('[data-hero="title"]') || firstVisible('main h1, header h1, h1');
+    if (h1 && !h1.dataset.hero) h1.setAttribute('data-hero','title');
+    let sub = document.querySelector('[data-hero="subtitle"]') || (h1 ? (h1.nextElementSibling && h1.nextElementSibling.tagName==='P' ? h1.nextElementSibling : firstVisible('h1 + p, main p, header p')) : null);
+    if (sub && !sub.dataset.hero) sub.setAttribute('data-hero','subtitle');
+    let cta = document.querySelector('[data-hero="cta"]') || firstVisible('a.cta, .cta a, a.btn, .btn a, a[href^="#"], button');
+    if (cta && !cta.dataset.hero) cta.setAttribute('data-hero','cta');
+    // Si rien n’existe, on crée un mini héros discret (au tout début du body)
+    if (!h1){
+      const sec = document.createElement('section'); sec.id='hero'; sec.style.cssText='padding:40px 16px';
+      sec.innerHTML = `
+        <h1 data-hero="title" style="font-size:clamp(28px,6vw,46px);line-height:1.1;margin:0 0 10px">
+          Votre mémoire IA qui rappelle, exécute et prouve.
+        </h1>
+        <p data-hero="subtitle" style="opacity:.85;margin:0 0 16px">
+          Vous validez, on le fait. Chaque succès a un reçu horodaté (hash + journal).
+        </p>
+        <a data-hero="cta" href="#app" style="display:inline-block;background:var(--accent,#00C2A8);color:#0E1116;padding:10px 16px;border-radius:12px;font-weight:800;text-decoration:none">
+          Essayer maintenant
+        </a>`;
+      document.body.insertAdjacentElement('afterbegin', sec);
+    }
+  }
+  tagHeroIfMissing();
+
+  // --- Pointeurs "tolérants" vers les éléments clés ---
+  const els = {
+    title: ()=> document.querySelector('[data-hero="title"]'),
+    sub:   ()=> document.querySelector('[data-hero="subtitle"]'),
+    cta:   ()=> document.querySelector('[data-hero="cta"]'),
+    nav:   ()=> document.querySelector('header nav, nav[role="navigation"], #topnav, .topbar nav, nav')
+  };
+
+  // --- Config persistée (localStorage) ---
+  const CFG_KEY='recSiteCfg';
+  const defCfg = {
+    title: els.title()?.textContent?.trim() || 'Votre mémoire IA',
+    subtitle: els.sub()?.textContent?.trim() || '',
+    ctaText: els.cta()?.textContent?.trim() || 'Essayer maintenant',
+    ctaHref: els.cta()?.getAttribute('href') || '#app',
+    accent: getComputedStyle(document.documentElement).getPropertyValue('--accent')?.trim() || '#00C2A8',
+    menuCenter: false
+  };
+  function applyCfg(c){
+    const cfg = Object.assign({}, defCfg, c||{});
+    if (els.title()) els.title().textContent = cfg.title;
+    if (els.sub())   els.sub().textContent   = cfg.subtitle;
+    if (els.cta()){ els.cta().textContent = cfg.ctaText; els.cta().setAttribute('href', cfg.ctaHref); }
+    document.documentElement.style.setProperty('--accent', cfg.accent);
+    const nv = els.nav(); if (nv){ nv.style.display='flex'; nv.style.flexWrap='wrap'; nv.style.gap='12px'; nv.style.justifyContent = cfg.menuCenter ? 'center':'flex-start'; }
+    localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+  }
+  try{ const saved = JSON.parse(localStorage.getItem(CFG_KEY)||'null'); if(saved) applyCfg(saved); }catch(e){}
+
+  // --- Scans & Alertes ---
+  async function scanAlerts(){
+    const list=[];
+    const hasManifest = !!document.querySelector('link[rel="manifest"]');
+    if(!hasManifest) list.push({sev:'crit', msg:'Manifest PWA manquant', fix:()=>ensure('link',{rel:'manifest',href:'manifest.webmanifest'})});
+    const hasIcon = !!document.querySelector('link[rel*="icon"], link[rel="apple-touch-icon"]');
+    if(!hasIcon) list.push({sev:'warn', msg:'Icônes (192/512) manquantes', fix:()=>{
+      ensure('link',{rel:'icon',href:'icons/icon-192.png',sizes:'192x192',type:'image/png'});
+      ensure('link',{rel:'apple-touch-icon',href:'icons/icon-192.png'});
+    }});
+    if(!$('meta[name="description"]')) list.push({sev:'warn', msg:'Meta description absente (SEO)', fix:()=>ensure('meta',{name:'description',content:'Recallia — votre mémoire IA : rappelle, exécute et prouve.'})});
+    if(!document.documentElement.lang) list.push({sev:'warn', msg:'Attribut lang manquant (fr)', fix:()=>document.documentElement.lang='fr'});
+    if(!document.querySelector('h1')) list.push({sev:'warn', msg:'Aucun <h1> détecté', fix:()=>{ /* le héros auto en ajoute un */ }});
+    // Perf images >300KB (si API dispo)
+    let big=0; try{
+      performance.getEntriesByType('resource').filter(r=>/(\.png|\.jpe?g|\.webp)$/i.test(r.name) && r.transferSize>300*1024).forEach(()=>big++);
+    }catch(e){}; if(big>0) list.push({sev:'warn', msg:`${big} image(s) > 300 Ko (compresser en WebP)`});
+    return list;
+  }
+
+  // --- Panneau UI ---
+  const fab = document.createElement('button'); fab.className='rc32-fab'; fab.textContent='Créateur'; document.body.appendChild(fab);
+  let panel=null;
+  fab.onclick = async () => {
+    if(panel){ panel.remove(); panel=null; return; }
+    panel = document.createElement('div'); panel.className='rc32-panel';
+    panel.innerHTML = `
+      <div class="rc32-row" style="justify-content:space-between;margin-bottom:6px">
+        <strong>Créateur Recallia — v32</strong>
+        <div class="rc32-row">
+          <button id="rc32-scan" class="rc32-btn rc32-ghost">Analyser</button>
+          <button id="rc32-save" class="rc32-btn">Sauver</button>
+          <button id="rc32-close" class="rc32-btn rc32-ghost">Fermer</button>
+        </div>
+      </div>
+      <div id="rc32-alerts" class="rc32-card"><em>Cliquer “Analyser”</em></div>
+      <div class="rc32-card" style="margin-top:10px">
+        <div style="font-weight:700;margin-bottom:6px">Ta demande</div>
+        <div class="rc32-row">
+          <input id="rc32-ask" placeholder='ex: "centre le menu sur mobile", "accent bleu", "CTA = Démarrer"' style="flex:1;background:#0b1322;border:1px solid #334155;border-radius:10px;color:#E5E7EB;padding:10px">
+          <button id="rc32-propose" class="rc32-btn">Proposer</button>
+        </div>
+        <div id="rc32-options" style="margin-top:8px;display:grid;gap:8px"></div>
+      </div>
+      <div class="rc32-card" style="margin-top:10px">
+        <div style="font-weight:700;margin-bottom:6px">Raccourcis</div>
+        <div class="rc32-row">
+          <button data-quick="hero1" class="rc32-btn rc32-ghost">Héros simplifié</button>
+          <button data-quick="blue"  class="rc32-btn rc32-ghost">Accent bleu</button>
+          <button data-quick="green" class="rc32-btn rc32-ghost">Accent vert</button>
+          <button data-quick="center" class="rc32-btn rc32-ghost">Menu centré</button>
+        </div>
+      </div>`;
+    document.body.appendChild(panel);
+
+    // actions panneau
+    const elAlerts = panel.querySelector('#rc32-alerts');
+    panel.querySelector('#rc32-close').onclick = ()=>{ panel.remove(); panel=null; };
+    panel.querySelector('#rc32-save').onclick  = ()=>{ alert('Enregistré localement pour ce navigateur.'); };
+    panel.querySelector('#rc32-scan').onclick  = async ()=>{
+      const items = await scanAlerts();
+      if(items.length===0){ elAlerts.innerHTML = `<span class="rc32-badge rc32-ok">OK</span> Aucun problème critique.`; return; }
+      elAlerts.innerHTML = items.map((it,i)=>`
+        <div class="rc32-row" style="justify-content:space-between">
+          <div>
+            <span class="rc32-badge ${it.sev==='crit'?'rc32-crit':(it.sev==='warn'?'rc32-warn':'rc32-ok')}">${it.sev.toUpperCase()}</span>
+            <span>${it.msg}</span>
+          </div>
+          ${it.fix?`<button class="rc32-btn rc32-ghost" data-fix="${i}">Corriger</button>`:''}
+        </div>`).join('');
+      elAlerts.querySelectorAll('[data-fix]').forEach(btn=>{
+        btn.onclick=()=>{
+          const it = items[+btn.dataset.fix]; if(it.fix) it.fix();
+          btn.disabled=true; btn.textContent='Corrigé';
+        };
+      });
+    };
+
+    // Raccourcis
+    panel.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>{
+      const cfg = JSON.parse(localStorage.getItem(CFG_KEY)||'null') || defCfg;
+      if (b.dataset.quick==='hero1'){ cfg.title='Votre mémoire IA — encore plus simple.'; cfg.subtitle='Vous validez, on le fait. Preuve horodatée à chaque succès.'; cfg.ctaText='Démarrer'; }
+      if (b.dataset.quick==='blue'){ cfg.accent='#60A5FA'; }
+      if (b.dataset.quick==='green'){ cfg.accent='#10B981'; }
+      if (b.dataset.quick==='center'){ cfg.menuCenter=true; }
+      applyCfg(cfg);
+    });
+
+    // Propositions intelligentes
+    function proposeFrom(text){
+      const t = (text||'').toLowerCase();
+      const opts = [];
+      // menu centré mobile
+      if ( /(menu|nav|sommaire)/.test(t) && /(centr[ée]|center)/.test(t) && /(mobile|téléphone)/.test(t) ){
+        opts.push({label:'Centrer le menu sur mobile', apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; cfg.menuCenter=true; applyCfg(cfg);} });
+      }
+      // couleur d’accent
+      const map={bleu:'#60A5FA', cyan:'#06B6D4', vert:'#10B981', violet:'#7C3AED', orange:'#F59E0B', rouge:'#EF4444', rose:'#EC4899'};
+      const want = Object.keys(map).find(k=> t.includes(k) );
+      if (/(accent|couleur)/.test(t) && want){
+        opts.push({label:`Mettre l’accent ${want} (${map[want]})`, apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; cfg.accent=map[want]; applyCfg(cfg);} });
+      }
+      // CTA
+      const mCta = t.match(/cta\s*=\s*["“']?([^"”']+)["”']?/i);
+      if (mCta){ opts.push({label:`Renommer le CTA en “${mCta[1]}”`, apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; cfg.ctaText=mCta[1]; applyCfg(cfg);} }); }
+      // Titre / Sous-titre
+      const mTitle = t.match(/titre\s*=\s*["“'](.+?)["”']/i);
+      const mSub   = t.match(/sous[-\s]?titre\s*=\s*["“'](.+?)["”']/i);
+      if (mTitle || mSub){
+        opts.push({label:'Mettre à jour Titre/Sous-titre', apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; if(mTitle) cfg.title=mTitle[1]; if(mSub) cfg.subtitle=mSub[1]; applyCfg(cfg);} });
+      }
+      // PWA installable
+      if (/(pwa|installable|manifest|service worker|sw|installe)/.test(t)){
+        opts.push({label:'Configurer PWA (manifest + icônes + SW)', apply:()=>{ ensure('link',{rel:'manifest',href:'manifest.webmanifest'}); ensure('link',{rel:'icon',href:'icons/icon-192.png',sizes:'192x192',type:'image/png'}); ensure('link',{rel:'apple-touch-icon',href:'icons/icon-192.png'}); if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{});} }});
+      }
+      // SEO meta description
+      if (/(meta|description)/.test(t)){
+        opts.push({label:'Ajouter/mettre à jour la meta description', apply:()=>ensure('meta',{name:'description',content:'Recallia — votre mémoire IA : rappelle, exécute et prouve.'})});
+      }
+      if (opts.length===0) opts.push({label:'Aucune intention précise détectée — essaie : “centre le menu sur mobile”, “accent bleu”, “CTA = Démarrer”', apply:()=>{}});
+      return opts;
+    }
+    const out = panel.querySelector('#rc32-options');
+    panel.querySelector('#rc32-propose').onclick = ()=>{
+      out.innerHTML=''; const q = panel.querySelector('#rc32-ask').value||'';
+      const opts = proposeFrom(q).slice(0,6);
+      opts.forEach(op=>{
+        const div=document.createElement('div'); div.className='rc32-card';
+        div.innerHTML=`<div style="margin-bottom:6px">${op.label}</div><button class="rc32-btn rc32-ghost">Appliquer</button>`;
+        div.querySelector('button').onclick = op.apply;
+        out.appendChild(div);
+      });
+    };
+  };
+})();
+</script>
+<!-- ===== /Créateur v32 ===== -->!-- /Créateur v31 --><!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
