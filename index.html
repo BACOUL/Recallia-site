@@ -341,5 +341,118 @@
     document.getElementById('pwaInstall').style.display = 'none';
   }
 </script>
+  <script>
+/* ---------- Créateur : proposer 3 options & appliquer ---------- */
+(function () {
+  // éléments “cibles” à mettre à jour (robuste même sans id)
+  const elTitle = document.querySelector('h1') || document.querySelector('[data-hero-title]');
+  const elSub   = (elTitle && elTitle.nextElementSibling && elTitle.nextElementSibling.tagName==='P')
+                  ? elTitle.nextElementSibling : document.querySelector('p');
+  const elCTA   = document.querySelector('a.btn, .cta a, a[href^="#app"]') || document.querySelector('a');
+
+  // panneau créateur (si présent)
+  const creator = document.querySelector('#creator');
+  if (!creator || !elTitle) return;
+
+  const input = creator.querySelector('input, textarea');
+  const proposeBtn = creator.querySelector('button[data-action="propose"]');
+  const saveBtn    = creator.querySelector('button[data-action="apply"]');
+
+  // génère des idées à partir d’un mini prompt
+  function makeIdeas(prompt) {
+    const base = [
+      {
+        title: 'Votre mémoire IA — encore plus simple.',
+        sub:   'Vous validez, on le fait. Chaque action réussie a un reçu horodaté.',
+        cta:   'Essayer maintenant',
+        accent:'#00C2A8'
+      },
+      {
+        title: 'Rappelle, exécute, prouve.',
+        sub:   'Des actions faites avec preuve (hash + journal).',
+        cta:   'Voir une preuve',
+        accent:'#00C2A8'
+      },
+      {
+        title: 'Moins d’efforts, plus de faits.',
+        sub:   'Priorités du jour → action → reçu.',
+        cta:   'Démarrer',
+        accent:'#00C2A8'
+      }
+    ];
+    // si l’utilisateur tape un mot-clé, adapte un peu
+    if (prompt && prompt.toLowerCase().includes('pro')) {
+      base[0].title = 'Recallia Pro — votre copilote opérationnel';
+      base[0].cta   = 'Essayer la version Pro';
+    }
+    return base;
+  }
+
+  function renderIdeas(list){
+    const slots = creator.querySelectorAll('[data-idea]');
+    slots.forEach((card, i) => {
+      const it = list[i];
+      if (!it) return;
+      card.querySelector('[data-idea-title]').textContent = it.title;
+      card.querySelector('[data-idea-sub]').textContent   = it.sub;
+      card.querySelector('[data-idea-cta]').textContent   = it.cta;
+      card.querySelector('[data-idea-accent]').textContent= it.accent;
+      card.dataset.json = JSON.stringify(it);
+    });
+  }
+
+  proposeBtn?.addEventListener('click', () => {
+    renderIdeas(makeIdeas(input?.value?.trim() || ''));
+    creator.classList.add('has-ideas');
+  });
+
+  // Appliquer = met à jour le H1, le sous-titre, la couleur et le CTA
+  creator.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-apply-index]');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.applyIndex, 10);
+    const ideas = creator.querySelectorAll('[data-idea]');
+    const card = ideas[idx];
+    if (!card || !card.dataset.json) return;
+    const data = JSON.parse(card.dataset.json);
+
+    if (elTitle) elTitle.textContent = data.title;
+    if (elSub)   elSub.textContent   = data.sub;
+    if (elCTA)   elCTA.textContent   = data.cta;
+
+    // applique la couleur d’accent comme CSS variable
+    document.documentElement.style.setProperty('--accent', data.accent);
+    // Feedback visuel
+    btn.textContent = 'Appliqué ✔';
+    setTimeout(()=>{ btn.textContent='Appliquer'; }, 1200);
+  });
+})();
+
+/* ---------- PWA : bouton “Installer l’app” ---------- */
+(function(){
+  let deferredPrompt;
+  const banner = document.getElementById('pwaInstall');
+  const installBtn = banner ? banner.querySelector('button') : null;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (banner) banner.style.display = 'flex';
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    if (banner) banner.style.display = 'none';
+  });
+
+  // enregistre le service worker si présent
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
+})();
+      </script>
 </body>
   </html>
