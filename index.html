@@ -6,54 +6,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Recallia : votre mémoire IA qui rappelle, exécute et fournit une preuve vérifiable pour chaque action." />
   <meta name="theme-color" content="#00C2A8" />
+  <link rel="canonical" href="https://bacoul.github.io/Recallia-site/">
+  <!-- Manifest (PWA) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <!-- Polices -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sora:wght@700&display=swap" rel="stylesheet">
+  <!-- OG -->
+  <meta property="og:title" content="Recallia — Votre mémoire IA">
+  <meta property="og:description" content="Vous validez, on exécute, on prouve. Reçus vérifiables (hash + audit)." />
   <style>
     :root{
-      --bg:#0E1116;--text:#F8FAFC;--muted:#9CA3AF;
-      --card:#111827;--line:#1f2937;
-      --accent:#00C2A8;--accent2:#14B8A6;
-      --radius:16px;--pad:22px;--w:1120px
+      --bg:#0E1116; --card:#0c1421; --line:#1b2432; --text:#F8FAFC; --muted:#A3AEC0;
+      --accent:#00C2A8; --accent2:#14B8A6; --ink:#0E1116;
+      --radius:18px; --pad:22px; --w:980px;
     }
-    *{box-sizing:border-box}html,body{height:100%}
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0;color:var(--text);background:
-        radial-gradient(900px 600px at 90% -10%, rgba(0,194,168,.12), transparent 60%),
-        radial-gradient(700px 500px at -10% 120%, rgba(20,184,166,.10), transparent 60%),
+      margin:0;color:var(--text);
+      background:
+        radial-gradient(900px 600px at 90% -10%, rgba(0,194,168,.10), transparent 60%),
+        radial-gradient(700px 500px at -10% 120%, rgba(20,184,166,.08), transparent 60%),
         var(--bg);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial
     }
     a{color:inherit;text-decoration:none}
     .wrap{max-width:var(--w);margin:0 auto;padding:26px 18px}
-    .nav{display:flex;align-items:center;justify-content:space-between}
-    .brand{display:flex;align-items:center;gap:12px}
-    .badge{font-size:12px;color:#cbd5e1;border:1px solid #2b3645;padding:4px 10px;border-radius:999px}
+    /* NAV */
+    .nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand strong{font-family:Sora,Inter,Arial}
+    .badge{font-size:12px;color:#cbd5e1;border:1px solid var(--line);padding:4px 10px;border-radius:999px}
     .links a{color:#cbd5e1;margin-left:16px}
     .links a:hover{color:#fff}
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center;margin:18px 0 30px}
-    @media (max-width:920px){.hero{grid-template-columns:1fr}}
-    h1{font-size:40px;line-height:1.12;margin:0 0 12px}
+    /* HERO minimal */
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;margin:12px 0 32px}
+    @media (max-width:900px){.hero{grid-template-columns:1fr}}
+    h1{font:800 40px/1.12 Sora,Inter,Arial;margin:0 0 12px}
     p.lead{color:var(--muted);font-size:18px;margin:0}
     .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:14px;border:1px solid #2b3645;font-weight:600}
-    .primary{background:linear-gradient(180deg,var(--accent),var(--accent2));color:#052e2b;border:none}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:14px;border:1px solid var(--line);font-weight:600}
+    .primary{background:linear-gradient(180deg,var(--accent),var(--accent2));color:var(--ink);border:none}
     .ghost{background:transparent;color:#fff}
-    .card{background:linear-gradient(180deg,#0f1623,#0b1220);border:1px solid #1b2432;border-radius:var(--radius);padding:var(--pad)}
+    .card{background:linear-gradient(180deg,#0f1623,#0b1220);border:1px solid var(--line);border-radius:var(--radius);padding:var(--pad)}
     .mini{font-size:13px;color:var(--muted)}
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
-    .kpi{background:#0c1421;border:1px solid #1b2432;border-radius:12px;padding:14px}
+    /* Sections */
+    .sec{margin:56px 0 0}
+    h2{font-size:26px;margin:0 0 10px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width:900px){.steps{grid-template-columns:1fr}}
+    .tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+    .tile h3{margin:0 0 6px;font-size:18px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px}
+    .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
     .kpi h3{margin:0 0 6px;color:#9aa4b2;font-size:13px}
     .kpi strong{font-size:22px}
-    .sec{margin:56px 0 0}
-    h2{font-size:26px;margin:0 0 12px}
-    ul.clean{margin:0 0 10px 18px;color:#e5edf5}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    @media(max-width:920px){.grid{grid-template-columns:1fr}}
-    .tile{background:#0c1421;border:1px solid #1b2432;border-radius:14px;padding:16px}
-    .tile h3{margin:0 0 8px;font-size:18px}
-    .faq table{width:100%;border-collapse:collapse}
-    .faq td,.faq th{border-bottom:1px solid #1b2432;padding:12px;text-align:left}
-    .footer{margin:56px 0 18px;color:#94a3b8;border-top:1px solid #1b2432;padding-top:18px;font-size:14px}
-    pre{background:#0c1421;border:1px solid #1b2432;border-radius:12px;padding:12px;overflow:auto}
-    .notice{background:#0c1421;border:1px dashed #2b3645;border-radius:12px;padding:12px;color:#cbd5e1}
+    /* Footer */
+    .footer{margin:56px 0 18px;color:#94a3b8;border-top:1px solid var(--line);padding-top:18px;font-size:14px}
+    /* Assistant (démo légère) */
+    .rec-fab{position:fixed;right:18px;bottom:18px;border:0;border-radius:999px;
+      padding:14px 16px;background:linear-gradient(180deg,var(--accent),var(--accent2));color:var(--ink);
+      font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:9999}
+    .rec-panel{position:fixed;right:18px;bottom:82px;width:min(92vw,380px);
+      background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+      box-shadow:0 14px 40px rgba(0,0,0,.45);display:none;z-index:9999}
+    .rec-head{display:flex;align-items:center;justify-content:space-between;
+      padding:10px 12px;background:#0a101b;border-bottom:1px solid var(--line)}
+    .rec-body{max-height:54vh;overflow:auto;padding:10px}
+    .rec-msg{background:#0f1623;border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+    .rec-me{background:#102033;border-color:#24405a}
+    .rec-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#0a101b}
+    .rec-input input{flex:1;border:1px solid var(--line);background:#0c1421;color:#e5edf5;border-radius:10px;padding:10px}
+    .rec-input button{border:1px solid #2b3645;background:#111c2b;color:#fff;border-radius:10px;padding:10px 12px}
+    .rec-chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 10px;margin:6px 6px 0 0;
+      font-size:12px;color:#cbd5e1;cursor:pointer}
+    /* CTA install discret */
+    .install{margin-top:10px}
+    .install small{color:var(--muted)}
   </style>
 </head>
 <body>
@@ -61,36 +93,31 @@
     <!-- NAV -->
     <div class="nav">
       <a class="brand" href="#top" aria-label="Accueil Recallia">
-        <!-- Logo simplifié -->
         <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
           <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0%" stop-color="#00C2A8"/><stop offset="100%" stop-color="#14B8A6"/></linearGradient></defs>
-        <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#g)"/>
-        <path d="M16 33V15h10.2c4.9 0 7.8 2.5 7.8 6.3c0 3-1.8 5.3-4.8 6.1L34 33h-5.3l-4.7-4.9H20v4.9h-4zm4-8.5h6c2.2 0 3.7-1.2 3.7-3.1S28.2 18 26 18h-6v6.5z" fill="#0E1116"/></svg>
-        <strong style="margin-left:8px">Recallia</strong><span class="badge" style="margin-left:10px">v1</span>
+          <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#g)"/>
+          <path d="M16 33V15h10.2c4.9 0 7.8 2.5 7.8 6.3c0 3-1.8 5.3-4.8 6.1L34 33h-5.3l-4.7-4.9H20v4.9h-4zm4-8.5h6c2.2 0 3.7-1.2 3.7-3.1S28.2 18 26 18h-6v6.5z" fill="#0E1116"/></svg>
+        <strong>Recallia</strong>
+        <span class="badge">v25</span>
       </a>
       <div class="links">
         <a href="#app">App</a>
+        <a href="#how">Comment ça marche</a>
         <a href="#bench">Benchmarks</a>
-        <a href="#status">Status</a>
         <a href="#help">Aide</a>
-        <a href="#privacy">Sécurité</a>
       </div>
     </div>
 
     <!-- HERO -->
     <section class="hero" id="top">
       <div>
-        <h1>Votre mémoire IA<br/>qui rappelle, exécute et prouve.</h1>
-        <p class="lead">Vous validez, on le fait. Chaque action réussie a un <strong>reçu vérifiable</strong> (hash + journal d’audit).</p>
+        <h1>Votre mémoire IA — simple, calme, efficace.</h1>
+        <p class="lead">Vous validez, on le fait. Chaque action réussie a un <strong>reçu vérifiable</strong> (hash + audit).</p>
         <div class="cta">
           <a class="btn primary" href="#app">Essayer maintenant</a>
           <a class="btn ghost" href="#proof">Voir une preuve</a>
         </div>
-        <div class="kpis">
-          <div class="kpi"><h3>TTV médian</h3><strong>&lt; 60 s</strong></div>
-          <div class="kpi"><h3>VSR</h3><strong>≥ 90%</strong></div>
-          <div class="kpi"><h3>Preuves/jour</h3><strong>—</strong></div>
-        </div>
+        <div class="install"><small>Pour l’app : menu du navigateur → “Installer l’application”.</small></div>
       </div>
       <div class="card" id="proof" aria-label="Exemple de preuve">
         <h2>Exemple de preuve</h2>
@@ -106,144 +133,115 @@
       </div>
     </section>
 
-    <!-- FEATURES -->
-    <section class="sec" id="app">
-      <h2>App Recallia (PWA)</h2>
-      <div class="grid">
-        <div class="tile"><h3>Rappels intelligents</h3><p>Anniv, médecin, factures, dossiers… on vous prévient au bon moment.</p></div>
-        <div class="tile"><h3>Exécution assistée</h3><p>Vous validez → on envoie, on planifie, on classe, on rapporte.</p></div>
-        <div class="tile"><h3>Preuve-ou-rien</h3><p>Chaque action réussie génère un reçu (JSON/PDF/ICS) avec hash.</p></div>
+    <!-- HOW -->
+    <section class="sec" id="how">
+      <h2>Comment ça marche</h2>
+      <div class="steps">
+        <div class="tile"><h3>1) Dites ce qu’il faut faire</h3><p>“Rappel médecin demain 10h”, “Payer facture EDF”, “Anniversaire de Mamie”…</p></div>
+        <div class="tile"><h3>2) Validez</h3><p>Rien ne part sans votre OK. Caps et garde-fous activés.</p></div>
+        <div class="tile"><h3>3) Recevez la preuve</h3><p>Reçus JSON/PDF/ICS, horodatés et hachés.</p></div>
       </div>
-      <div class="notice" style="margin-top:14px">
-        Installez l’app : ouvrez ce site sur mobile → “Ajouter à l’écran d’accueil”.
+    </section>
+
+    <!-- APP -->
+    <section class="sec" id="app">
+      <h2>L’app Recallia (PWA)</h2>
+      <div class="grid">
+        <div class="tile"><h3>Rappels intelligents</h3><p>Anniv, médecin, factures, dossiers… au bon moment.</p></div>
+        <div class="tile"><h3>Exécution assistée</h3><p>Vous validez → on envoie, on planifie, on classe, on rapporte.</p></div>
+        <div class="tile"><h3>Preuve-ou-rien</h3><p>Chaque action réussie génère un reçu vérifiable.</p></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><h3>TTV médian</h3><strong id="kpi-ttv">&lt; 60 s</strong></div>
+        <div class="kpi"><h3>VSR</h3><strong id="kpi-vsr">≥ 90%</strong></div>
+        <div class="kpi"><h3>Preuves/jour</h3><strong id="kpi-proof">—</strong></div>
       </div>
     </section>
 
     <!-- BENCH -->
     <section class="sec" id="bench">
-      <h2>Benchmarks (publication automatique)</h2>
-      <p class="mini">Chiffres issus de preuves réelles. Checkpoint hebdo publié ici.</p>
+      <h2>Benchmarks (transparence)</h2>
       <div class="grid">
         <div class="tile"><h3>TTV médian</h3><p>&lt; 60 s</p></div>
         <div class="tile"><h3>VSR</h3><p>≥ 90 % (2 recettes phares)</p></div>
         <div class="tile"><h3>Couverture de preuve</h3><p>100 %</p></div>
       </div>
-    </section>
-
-    <!-- STATUS -->
-    <section class="sec" id="status">
-      <h2>Status</h2>
-      <div class="card"><p>Tous les systèmes fonctionnent normalement.</p><p class="mini">En cas d’incident, un compte-rendu apparaîtra ici.</p></div>
+      <p class="mini">Chiffres publiés automatiquement depuis des preuves réelles.</p>
     </section>
 
     <!-- HELP -->
     <section class="sec" id="help">
       <h2>Aide & Contact</h2>
-      <div class="faq">
-        <table>
-          <tr><th>Question</th><th>Réponse</th></tr>
-          <tr><td>Installer l’app</td><td>Ouvrez ce site sur mobile → “Ajouter à l’écran d’accueil”.</td></tr>
-          <tr><td>Voir mes preuves</td><td>Onglet <em>Preuves</em> dans l’app (à venir).</td></tr>
-          <tr><td>Support</td><td>Écrivez-nous : <a href="mailto:support@votredomaine">support@votredomaine</a></td></tr>
-        </table>
+      <div class="tile">
+        <p>Installer l’app : menu du navigateur → “Installer l’application” / “Ajouter à l’écran d’accueil”.</p>
+        <p>Support : <a href="mailto:support@recallia.app">support@recallia.app</a></p>
+        <p>Confidentialité : <a href="privacy.html">lire</a> · Mentions : <a href="mentions.html">lire</a></p>
       </div>
-    </section>
-
-    <!-- PRIVACY -->
-    <section class="sec" id="privacy">
-      <h2>Sécurité & Vie privée</h2>
-      <ul class="clean">
-        <li>Local-first & minimisation des données</li>
-        <li>Preuve-ou-rien : reçus hachés + audit chaîné</li>
-        <li>Passkeys/2FA, TLS, CSP/HSTS</li>
-        <li>Export / purge en 1 clic (bientôt dans l’app)</li>
-      </ul>
     </section>
 
     <!-- FOOT -->
     <footer class="footer">
-      © 2025 Recallia — “Preuve-ou-rien”. · <a href="#privacy">Sécurité</a> · <a href="#help">Contact</a>
+      © 2025 Recallia — “Preuve-ou-rien”. · <a href="privacy.html">Confidentialité</a> · <a href="mentions.html">Mentions</a>
     </footer>
   </div>
 
+  <!-- Défilement doux -->
   <script>
-    // Défilement doux
     document.addEventListener('click',e=>{
       const a=e.target.closest('a[href^="#"]'); if(!a) return;
       e.preventDefault();
       document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
     });
   </script>
-  <!-- === Assistant Recallia (démo locale) =================================== -->
-<style>
-  .rec-fab{position:fixed;right:18px;bottom:18px;border:0;border-radius:999px;
-    padding:14px 16px;background:linear-gradient(180deg,#00C2A8,#14B8A6);color:#052e2b;
-    font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:9999}
-  .rec-panel{position:fixed;right:18px;bottom:82px;width:min(92vw,380px);
-    background:#0c1421;border:1px solid #1b2432;border-radius:16px;overflow:hidden;
-    box-shadow:0 14px 40px rgba(0,0,0,.45);display:none;z-index:9999}
-  .rec-head{display:flex;align-items:center;justify-content:space-between;
-    padding:10px 12px;background:#0a101b;border-bottom:1px solid #1b2432}
-  .rec-head strong{font-family:Sora,Inter,sans-serif}
-  .rec-body{max-height:54vh;overflow:auto;padding:10px}
-  .rec-msg{background:#0f1623;border:1px solid #1b2432;border-radius:12px;padding:10px;margin:8px 0}
-  .rec-me{background:#102033;border-color:#24405a}
-  .rec-input{display:flex;gap:8px;padding:10px;border-top:1px solid #1b2432;background:#0a101b}
-  .rec-input input{flex:1;border:1px solid #1b2432;background:#0c1421;color:#e5edf5;border-radius:10px;padding:10px}
-  .rec-input button{border:1px solid #2b3645;background:#111c2b;color:#fff;border-radius:10px;padding:10px 12px}
-  .rec-chip{display:inline-block;border:1px solid #2b3645;border-radius:999px;padding:6px 10px;margin:6px 6px 0 0;
-    font-size:12px;color:#cbd5e1;cursor:pointer}
-</style>
 
-<button class="rec-fab" id="recFab">Assistant</button>
-<div class="rec-panel" id="recPanel" role="dialog" aria-label="Assistant Recallia">
-  <div class="rec-head">
-    <strong>Assistant Recallia</strong>
-    <button id="recClose" title="Fermer" style="background:none;border:0;color:#9aa4b2;font-size:18px">✕</button>
-  </div>
-  <div class="rec-body" id="recBody">
-    <div class="rec-msg">
-      Bonjour 👋 Je peux déjà : <span class="rec-chip">rappel médecin demain 10h</span>
-      <span class="rec-chip">anniversaire Marie 20/08</span>
-      <span class="rec-chip">payer facture 123 (brouillon)</span>
-      <span class="rec-chip">liste courses: lait, riz</span>
+  <!-- Assistant (démo locale, discret mais présent) -->
+  <button class="rec-fab" id="recFab">Assistant</button>
+  <div class="rec-panel" id="recPanel" role="dialog" aria-label="Assistant Recallia">
+    <div class="rec-head">
+      <strong>Assistant Recallia</strong>
+      <button id="recClose" title="Fermer" style="background:none;border:0;color:#9aa4b2;font-size:18px">✕</button>
+    </div>
+    <div class="rec-body" id="recBody">
+      <div class="rec-msg">
+        Bonjour 👋 Essayez : <span class="rec-chip">rappel médecin demain 10h</span>
+        <span class="rec-chip">anniversaire Marie 20/08</span>
+        <span class="rec-chip">payer facture 123</span>
+        <span class="rec-chip">liste courses: lait, riz</span>
+      </div>
+    </div>
+    <div class="rec-input">
+      <input id="recInput" placeholder="Demande-moi une action… (ex: rappel médecin mardi 9h)"/>
+      <button id="recSend">Envoyer</button>
     </div>
   </div>
-  <div class="rec-input">
-    <input id="recInput" placeholder="Demande-moi une action… (ex: rappel médecin mardi 9h)"/>
-    <button id="recSend">Envoyer</button>
-  </div>
-</div>
+  <script>
+  (function(){
+    const $ = s => document.querySelector(s);
+    const fab = $('#recFab'), panel = $('#recPanel'), body = $('#recBody'),
+          input = $('#recInput'), send = $('#recSend'), closeBtn = $('#recClose');
 
-<script>
-(async function(){
-  const $ = s => document.querySelector(s);
-  const fab = $('#recFab'), panel = $('#recPanel'), body = $('#recBody'),
-        input = $('#recInput'), send = $('#recSend'), closeBtn = $('#recClose');
+    const toHex = buf => [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+    async function sha256(txt){ return toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt))); }
+    function addMsg(html, me=false){
+      const m = document.createElement('div'); m.className='rec-msg'+(me?' rec-me':''); m.innerHTML = html;
+      body.appendChild(m); body.scrollTop = body.scrollHeight;
+    }
+    function storeProof(p){
+      const k='recallia_proofs'; const arr = JSON.parse(localStorage.getItem(k)||'[]'); arr.unshift(p);
+      localStorage.setItem(k, JSON.stringify(arr.slice(0,50)));
+    }
+    function dtstamp(d){ return d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z' }
 
-  const toHex = buf => [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-  async function sha256(txt){ return toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt))); }
-  function addMsg(html, me=false){
-    const m = document.createElement('div'); m.className='rec-msg'+(me?' rec-me':''); m.innerHTML = html;
-    body.appendChild(m); body.scrollTop = body.scrollHeight;
-  }
-  function storeProof(p){
-    const k='recallia_proofs'; const arr = JSON.parse(localStorage.getItem(k)||'[]'); arr.unshift(p);
-    localStorage.setItem(k, JSON.stringify(arr.slice(0,50)));
-  }
-  function dtstamp(d){ return d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z' }
-
-  async function proof(kind, title, result){
-    const p = { id:'p_'+Date.now(), action_id:kind, title, kind,
-      timestamp:new Date().toISOString(), level:'N1', costs:{eur:0,sec:5}, result };
-    p.sha256 = await sha256(JSON.stringify(p));
-    storeProof(p);
-    addMsg(`<b>Preuve générée</b><br><pre>${JSON.stringify(p,null,2)}</pre>`);
-  }
-
-  function icsRdv(summary, start){
-    const end = new Date(start.getTime()+45*60000);
-    const ICS = `BEGIN:VCALENDAR
+    async function proof(kind, title, result){
+      const p = { id:'p_'+Date.now(), action_id:kind, title, kind,
+        timestamp:new Date().toISOString(), level:'N1', costs:{eur:0,sec:5}, result };
+      p.sha256 = await sha256(JSON.stringify(p));
+      storeProof(p);
+      addMsg(`<b>Preuve générée</b><br><pre>${JSON.stringify(p,null,2)}</pre>`);
+    }
+    function icsRdv(summary, start){
+      const end = new Date(start.getTime()+45*60000);
+      const ICS = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Recallia//FR
 BEGIN:VEVENT
@@ -254,302 +252,75 @@ DTEND:${dtstamp(end)}
 SUMMARY:${summary}
 END:VEVENT
 END:VCALENDAR`;
-    const url = URL.createObjectURL(new Blob([ICS],{type:'text/calendar'}));
-    return {ICS,url};
-  }
-
-  async function handle(cmd){
-    const t = cmd.toLowerCase();
-
-    // Rappel médecin
-    if(t.includes('rappel') && (t.includes('medecin') || t.includes('médecin'))){
-      const hMatch = /(\d{1,2})h/.exec(t); const h = hMatch ? parseInt(hMatch[1],10) : 10;
-      const when = new Date(Date.now()+24*3600*1000); when.setHours(h,0,0,0);
-      const {url} = icsRdv('Rendez-vous médecin', when);
-      addMsg(`✅ Rappel créé. <a href="${url}" download="rappel-medecin.ics">Télécharger l’événement (.ics)</a>`);
-      await proof('rdv.medecin','Rappel médecin', {status:'success', notes:`ICS ${when.toLocaleString()}`});
-      return;
+      const url = URL.createObjectURL(new Blob([ICS],{type:'text/calendar'}));
+      return {url};
     }
+    async function handle(cmd){
+      const t = cmd.toLowerCase();
 
-    // Anniversaire
-    if(t.includes('anniversaire')){
-      await proof('anniv.msg','Préparer message anniversaire', {status:'success', notes:'Brouillon prêt (SMS/Email)'});
-      addMsg('🎉 Brouillon de message d’anniversaire préparé (démo).');
-      return;
+      if(t.includes('rappel') && (t.includes('medecin') || t.includes('médecin'))){
+        const hMatch = /(\d{1,2})h/.exec(t); const h = hMatch ? parseInt(hMatch[1],10) : 10;
+        const when = new Date(Date.now()+24*3600*1000); when.setHours(h,0,0,0);
+        const {url} = icsRdv('Rendez-vous médecin', when);
+        addMsg(`✅ Rappel créé. <a href="${url}" download="rappel-medecin.ics">Télécharger l’événement (.ics)</a>`);
+        await proof('rdv.medecin','Rappel médecin', {status:'success', notes:`ICS ${when.toLocaleString()}`});
+        return;
+      }
+      if(t.includes('anniversaire')){
+        await proof('anniv.msg','Préparer message anniversaire', {status:'success', notes:'Brouillon prêt (SMS/Email)'});
+        addMsg('🎉 Brouillon de message d’anniversaire préparé (démo).');
+        return;
+      }
+      if(t.includes('payer') || t.includes('facture')){
+        await proof('bill.pay.draft','Paiement facture (brouillon)', {status:'success', notes:'Préparation SEPA/QR (non exécuté)'});
+        addMsg('💳 Brouillon de paiement créé (pas d’envoi réel en démo).');
+        return;
+      }
+      if(t.includes('courses') || t.includes('course')){
+        const items = (t.split(':')[1]||'').trim() || 'lait, riz';
+        await proof('groceries.list','Liste de courses', {status:'success', items:items.split(',').map(s=>s.trim())});
+        addMsg('🧺 Liste notée : '+items);
+        return;
+      }
+      addMsg(`Je peux (démo) :<br>• <em>rappel médecin demain 10h</em><br>• <em>anniversaire Marie 20/08</em><br>• <em>payer facture 123</em> (brouillon)<br>• <em>liste courses: lait, riz</em>`);
     }
-
-    // Payer facture (brouillon)
-    if(t.includes('payer') || t.includes('facture')){
-      await proof('bill.pay.draft','Paiement facture (brouillon)', {status:'success', notes:'Préparation SEPA/QR (non exécuté)'});
-      addMsg('💳 Brouillon de paiement créé (pas d’envoi réel en démo).');
-      return;
-    }
-
-    // Liste de courses
-    if(t.includes('courses') || t.includes('course')){
-      const items = (t.split(':')[1]||'').trim() || 'lait, riz';
-      await proof('groceries.list','Liste de courses', {status:'success', items:items.split(',').map(s=>s.trim())});
-      addMsg('🧺 Liste notée : '+items);
-      return;
-    }
-
-    // Aide par défaut
-    addMsg(`Je peux (démo) :<br>• <em>rappel médecin demain 10h</em><br>• <em>anniversaire Marie 20/08</em><br>• <em>payer facture 123</em> (brouillon)<br>• <em>liste courses: lait, riz</em>`);
-  }
-
-  // UI
-  fab.onclick = ()=>{ panel.style.display = 'block'; input.focus(); };
-  closeBtn.onclick = ()=> panel.style.display = 'none';
-  send.onclick = async ()=>{ const v=input.value.trim(); if(!v) return; addMsg(v, true); input.value=''; await handle(v); };
-  input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); send.click(); } });
-
-  // Chips rapides
-  panel.addEventListener('click', e=>{
-    const chip = e.target.closest('.rec-chip'); if(!chip) return;
-    input.value = chip.textContent; send.click();
-  });
-})();
-</script>
-<!-- === /Assistant Recallia (démo locale) ================================== -->
-<!-- Badge de diagnostic PWA -->
-<div id="pwa-badge" style="position:fixed;left:12px;bottom:12px;background:#0c1421;border:1px solid #1b2432;color:#cbd5e1;padding:8px 10px;border-radius:10px;font:12px/1.3 Inter,system-ui;z-index:9999"></div>
-<script>
-(async ()=>{
-  const bad = document.getElementById('pwa-badge');
-  const hasManifest = !!document.querySelector('link[rel="manifest"]');
-  const swCap = 'serviceWorker' in navigator;
-  let swReg = false;
-  if (swCap) { const regs = await navigator.serviceWorker.getRegistrations(); swReg = regs.length>0; }
-  bad.textContent = `Manifest: ${hasManifest?'OK':'KO'} · SW: ${swCap?(swReg?'OK':'non enregistré'):'non supporté'}`;
-})();
-</script>
-  <script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(console.error);
-}
+    fab.onclick = ()=>{ panel.style.display = 'block'; input.focus(); };
+    closeBtn.onclick = ()=> panel.style.display = 'none';
+    send.onclick = async ()=>{ const v=input.value.trim(); if(!v) return; addMsg(v, true); input.value=''; await handle(v); };
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); send.click(); } });
+    document.getElementById('recPanel').addEventListener('click', e=>{
+      const chip = e.target.closest('.rec-chip'); if(!chip) return;
+      input.value = chip.textContent; send.click();
+    });
+  })();
   </script>
-  <!-- Correctif PWA Recallia (1 bloc) -->
-<script>
-(function(){
-  // 1) Injecte automatiquement le manifest dans <head> s'il manque
-  (function ensureManifest(){
-    var href='manifest.webmanifest';
-    if (!document.querySelector('link[rel="manifest"]')) {
-      var l=document.createElement('link');
-      l.rel='manifest'; l.href=href;
-      document.head.appendChild(l);
-    }
+
+  <!-- PWA : enregistrement SW + bouton install (discret) -->
+  <script>
+  (function(){
+    const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
+    // Enregistre le Service Worker (si présent)
+    if('serviceWorker' in navigator){ navigator.serviceWorker.register(BASE+'sw.js').catch(()=>{}); }
+
+    // Bouton d'installation si le navigateur le propose (Android/Chrome)
+    let deferred; const btn=document.getElementById('install-btn');
+    window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferred=e; if(btn) btn.style.display='inline-flex'; });
+    btn?.addEventListener('click', async ()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; btn.style.display='none'; });
   })();
+  </script>
 
-  // 2) Enregistre le Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  <!-- Données structurées -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"Recallia",
+    "description":"Votre mémoire IA : rappelle, exécute et prouve.",
+    "applicationCategory":"ProductivityApplication",
+    "operatingSystem":"Web,PWA",
+    "url":"https://bacoul.github.io/Recallia-site/",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}
   }
-
-  // 3) Petit badge de diagnostic (tu peux supprimer après vérif)
-  var el=document.createElement('div');
-  el.style.cssText='position:fixed;left:12px;bottom:12px;background:#0c1421;border:1px solid #1b2432;color:#cbd5e1;padding:8px 10px;border-radius:10px;font:12px/1.3 Inter,system-ui;z-index:9999';
-  document.body.appendChild(el);
-  (async ()=>{
-    var hasManifest = !!document.querySelector('link[rel="manifest"]');
-    var sw=false; if('serviceWorker' in navigator){ const regs=await navigator.serviceWorker.getRegistrations(); sw = regs.length>0; }
-    el.textContent = 'Manifest: ' + (hasManifest?'OK':'KO') + ' · SW: ' + (sw?'OK':'non enregistré');
-  })();
-})();
-</script>
-  <!-- PWA Recallia : bloc unique (manifest + SW + bouton installer + badge) -->
-<div id="install-cta" style="display:none;margin:16px 0">
-  <a id="install-btn" class="recallia-btn">Installer Recallia</a>
-</div>
-<style>
-  .recallia-btn{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:12px 16px;border-radius:12px;background:#00C2A8;color:#0E1116;
-    font:600 16px/1.1 Inter,system-ui;text-decoration:none;
-    box-shadow:0 6px 24px rgba(0,0,0,.15)
-  }
-  #recallia-badge{
-    position:fixed;left:12px;bottom:12px;background:#0c1421;border:1px solid #1b2432;color:#cbd5e1;
-    padding:8px 10px;border-radius:10px;font:12px/1.3 Inter,system-ui;z-index:9999
-  }
-</style>
-<script>
-(function(){
-  // Base (utile pour GitHub Pages)
-  const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
-
-  // 1) Injecte le manifest s'il manque
-  (function ensureManifest(){
-    if(!document.querySelector('link[rel="manifest"]')){
-      const l=document.createElement('link'); l.rel='manifest'; l.href=BASE+'manifest.webmanifest';
-      document.head.appendChild(l);
-    }
-  })();
-
-  // 2) Enregistre le Service Worker
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register(BASE+'sw.js').catch(console.error);
-  }
-
-  // 3) Bouton "Installer"
-  let deferredPrompt;
-  const cta=document.getElementById('install-cta');
-  const btn=document.getElementById('install-btn');
-  window.addEventListener('beforeinstallprompt', (e)=>{
-    e.preventDefault(); deferredPrompt=e; cta.style.display='block';
-  });
-  btn?.addEventListener('click', async ()=>{
-    if(!deferredPrompt) return;
-    deferredPrompt.prompt(); await deferredPrompt.userChoice;
-    deferredPrompt=null; cta.style.display='none';
-  });
-
-  // 4) Badge diagnostic (Manifest/SW)
-  const b=document.createElement('div'); b.id='recallia-badge'; document.body.appendChild(b);
-  (async ()=>{
-    const hasManifest=!!document.querySelector('link[rel="manifest"]');
-    let sw=false; if('serviceWorker' in navigator){ sw=(await navigator.serviceWorker.getRegistrations()).length>0; }
-    b.textContent='Manifest: '+(hasManifest?'OK':'KO')+' · SW: '+(sw?'OK':'KO');
-  })();
-})();
-</script>
-<!-- Recallia • Correctif installation (Android/Samsung/Chrome) -->
-<style>
-  .rec-install{position:fixed;left:12px;bottom:12px;z-index:9999;max-width:380px;
-    background:#0c1421;border:1px solid #1b2432;color:#e5edf5;border-radius:14px;
-    padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35);font:14px Inter,system-ui;display:none}
-  .rec-install .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .rec-install .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:0;
-    background:#00C2A8;color:#0E1116;font-weight:700;text-decoration:none}
-  .rec-install .ghost{background:#111c2b;color:#cbd5e1;border:1px solid #2b3645}
-  .rec-install .mini{color:#9aa4b2;font-size:12px;margin-top:6px}
-  .rec-install .err{color:#ef4444}
-  .rec-install .ok{color:#22c55e}
-</style>
-<div id="rec-install" class="rec-install" role="dialog" aria-label="Installer Recallia">
-  <div id="rec-text">Installez Recallia pour un accès rapide (hors navigateur).</div>
-  <div class="row">
-    <button id="rec-install-btn" class="btn" style="display:none">Installer Recallia</button>
-    <button id="rec-howto" class="ghost">Comment installer</button>
-  </div>
-  <div id="rec-diag" class="mini"></div>
-</div>
-<script>
-(function(){
-  const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
-
-  // 1) S'assurer (sans écraser) que manifest + SW sont pris en compte
-  if(!document.querySelector('link[rel="manifest"]')){
-    const l=document.createElement('link'); l.rel='manifest'; l.href=BASE+'manifest.webmanifest';
-    document.head.appendChild(l);
-  }
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register(BASE+'sw.js').catch(()=>{});
-  }
-
-  const box = document.getElementById('rec-install');
-  const btn = document.getElementById('rec-install-btn');
-  const txt = document.getElementById('rec-text');
-  const diag = document.getElementById('rec-diag');
-
-  // Masquer si déjà installé (standalone)
-  const installed = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-  if (installed) return;
-
-  // Plateforme
-  const ua = navigator.userAgent.toLowerCase();
-  const isAndroid = /android/.test(ua);
-  const isSamsung = /samsungbrowser/.test(ua);
-  const isChrome = /chrome/.test(ua) && !isSamsung;
-
-  // 2) Diagnostic rapide (manifest, icônes, SW)
-  (async ()=>{
-    let hasManifest = !!document.querySelector('link[rel="manifest"]');
-    let iconsOK = false;
-    try{
-      const r = await fetch(BASE+'manifest.webmanifest', {cache:'no-store'});
-      if(r.ok){ const m = await r.json(); const icons = (m.icons||[]).map(i=>i.sizes);
-        iconsOK = icons.includes('192x192') && icons.includes('512x512');
-      }
-    }catch(_){}
-    let sw = false; if('serviceWorker' in navigator){
-      try{ sw = (await navigator.serviceWorker.getRegistrations()).length>0; }catch(_){}
-    }
-    diag.innerHTML = 
-      `Manifest: <b class="${hasManifest?'ok':'err'}">${hasManifest?'OK':'KO'}</b> · `+
-      `Icônes: <b class="${iconsOK?'ok':'err'}">${iconsOK?'OK':'KO (192 & 512)'}</b> · `+
-      `SW: <b class="${sw?'ok':'err'}">${sw?'OK':'KO'}</b>`;
-
-    // 3) Affichage du panneau + stratégies par navigateur
-    box.style.display = 'block';
-
-    // Chrome/Android → bouton via beforeinstallprompt
-    let deferred;
-    window.addEventListener('beforeinstallprompt', (e)=>{
-      e.preventDefault(); deferred = e;
-      if(isAndroid) btn.style.display='inline-flex';
-    });
-
-    // Fallback si l'événement n'arrive pas (Samsung Internet, refus récent, etc.)
-    setTimeout(()=>{
-      if(!deferred){
-        if(isSamsung){
-          txt.innerHTML = "Sur Samsung Internet : menu <b>≡</b> → <b>Ajouter page à</b> → <b>Écran d’accueil</b>.";
-        } else if(isChrome && isAndroid){
-          txt.innerHTML = "Sur Chrome Android : menu <b>⋮</b> → <b>Installer l’application</b>.";
-        } else {
-          txt.innerHTML = "Ouvrez le menu du navigateur → <b>Installer l’application</b> / <b>Ajouter à l’écran d’accueil</b>.";
-        }
-      }
-    }, 1500);
-
-    // Clic bouton (quand dispo)
-    btn?.addEventListener('click', async ()=>{
-      if(!deferred) return;
-      deferred.prompt(); await deferred.userChoice; deferred = null; box.style.display='none';
-    });
-
-    // Bouton "Comment installer" (guide léger)
-    document.getElementById('rec-howto').addEventListener('click', ()=>{
-      alert(
-        isSamsung ? "Samsung Internet : ≡ → Ajouter page à → Écran d’accueil"
-        : isChrome && isAndroid ? "Chrome Android : ⋮ → Installer l’application"
-        : "Menu navigateur → Installer l’application / Ajouter à l’écran d’accueil"
-      );
-    });
-  })();
-})();
-</script>
-<!-- Recallia • Bloc dynamique Benchmarks + Status -->
-<script>
-(async ()=>{
-  const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
-
-  // BENCHMARKS
-  try{
-    const b = await fetch(BASE+'json/benchmarks.json',{cache:'no-store'}).then(r=>r.json());
-    const ttv = (b.ttv_median_seconds ?? 60);
-    const vsr = (b.vsr_percent ?? 90);
-    const cov = (b.proof_coverage_percent ?? 100);
-
-    // Dans la section #bench, on suppose l’ordre: [TTV médian, VSR, Couverture]
-    const tiles = document.querySelectorAll('#bench .tile p');
-    if (tiles[0]) tiles[0].textContent = '< ' + ttv + ' s';
-    if (tiles[1]) tiles[1].textContent = '≥ ' + vsr + ' %';
-    if (tiles[2]) tiles[2].textContent = cov + ' %';
-  }catch(e){ /* silencieux */ }
-
-  // STATUS
-  try{
-    const s = await fetch(BASE+'json/status.json',{cache:'no-store'}).then(r=>r.json());
-    const box = document.querySelector('#status .card');
-    if (box) {
-      box.innerHTML = `<p>${s.message||'Tous les systèmes fonctionnent normalement.'}</p>
-                       <p class="mini">Dernière mise à jour : ${new Date(s.updated_at||Date.now()).toLocaleString()}</p>`;
-    }
-  }catch(e){ /* silencieux */ }
-})();
-</script>
-<!-- /Bloc dynamique --><!-- /Correctif installation --><!-- /fin bloc unique -->
+  </script>
 </body>
 </html>
