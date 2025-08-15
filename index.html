@@ -495,5 +495,196 @@
     background:#00C2A8; color:#00141B; border:0; padding:10px 14px; border-radius:10px;
     font-weight:700; cursor:pointer;">Installer</button>
 </div>
+  <!-- ===== Recallia – Correctif global PWA + Créateur (v1) ===== -->
+<script>
+(function () {
+  /* ========== 0) Aides ========== */
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const log = (...a)=>console.log('[Recallia]', ...a);
+
+  // Applique la couleur d’accent (et le theme-color)
+  function setAccent(hex) {
+    if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test((hex||'').trim())) return;
+    document.documentElement.style.setProperty('--accent', hex.trim());
+    const m = $('meta[name="theme-color"]') || (()=>{const x=document.createElement('meta');x.name='theme-color';document.head.appendChild(x);return x;})();
+    m.content = hex.trim();
+  }
+
+  // Sauvegarde locale du hero (titre/sous-titre/cta/couleur)
+  function saveSiteState() {
+    const state = {
+      title: ($('#heroTitle')||$('h1'))?.textContent || '',
+      sub:   ($('#heroSub')||$('h1+p'))?.textContent || '',
+      cta:   ($('#heroCta')||$('a.btn,.cta a'))?.textContent || '',
+      accent: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || ''
+    };
+    localStorage.setItem('recallia.site', JSON.stringify(state));
+    return state;
+  }
+  // Recharge l’état au chargement
+  function loadSiteState() {
+    try {
+      const s = JSON.parse(localStorage.getItem('recallia.site')||'{}');
+      const h1 = $('#heroTitle')||$('h1');
+      const p  = $('#heroSub')||$('h1+p');
+      const a  = $('#heroCta')||$('a.btn,.cta a');
+      if (s.title && h1) h1.textContent = s.title;
+      if (s.sub && p && p.tagName==='P') p.textContent = s.sub;
+      if (s.cta && a) a.textContent = s.cta;
+      if (s.accent) setAccent(s.accent);
+    } catch(_) {}
+  }
+
+  /* ========== 1) PWA : manifest + SW + bannière Install ========== */
+  // S’assure qu’on a un <link rel="manifest"> (chemin relatif GitHub Pages)
+  if (!$('link[rel="manifest"]')) {
+    const l = document.createElement('link');
+    l.rel = 'manifest';
+    // essaie d’abord "manifeste.webmanifest", sinon "manifest.webmanifest"
+    l.href = (window.MANIFEST_HREF || 'manifeste.webmanifest');
+    document.head.appendChild(l);
+  }
+  // Enregistre le Service Worker (chemin relatif projet)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+
+  // Crée la bannière install s’il n’y en a pas
+  function ensureInstallBanner() {
+    let bar = $('#pwaInstall');
+    if (bar) return bar;
+    bar = document.createElement('div');
+    bar.id = 'pwaInstall';
+    bar.style.cssText = 'display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;background:#0E1116;border:1px solid #233246;border-radius:14px;padding:10px 12px;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 10px 24px rgba(0,0,0,.35)';
+    bar.innerHTML = '<span style="color:#cfd8dc">Installez l’app Recallia</span><button id="pwaBtn" style="background:#00C2A8;color:#00141B;border:0;padding:10px 14px;border-radius:10px;font-weight:700">Installer</button>';
+    document.body.appendChild(bar);
+    return bar;
+  }
+
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const bar = ensureInstallBanner();
+    bar.style.display = 'flex';
+    $('#pwaBtn')?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await (deferredPrompt.userChoice||Promise.resolve());
+      deferredPrompt = null;
+      bar.style.display = 'none';
+    }, { once:true });
+  });
+  window.addEventListener('appinstalled', () => { const b=$('#pwaInstall'); if(b) b.remove(); });
+  if (window.matchMedia('(display-mode: standalone)').matches) { const b=$('#pwaInstall'); if(b) b.style.display='none'; }
+
+  /* ========== 2) Ancre #app (le bouton "Essayer maintenant") ========== */
+  window.addEventListener('DOMContentLoaded', () => {
+    // Donne un id="app" à la section PWA s’il manque
+    const appSection = $('#app') || $$('h2').find(h => /app|pwa/i.test(h.textContent||''))?.parentElement;
+    if (appSection && !appSection.id) appSection.id = 'app';
+    loadSiteState();
+  });
+
+  /* ========== 3) Créateur : Proposer / Appliquer / Sauvegarder ========== */
+  // Cibles du hero (robuste)
+  const heroTitle = $('#heroTitle') || $('h1');
+  const heroSub   = $('#heroSub')   || (heroTitle ? heroTitle.nextElementSibling : null);
+  const heroCTA   = $('#heroCta')   || $('a.btn,.cta a,nav a.btn');
+
+  // Détecte le panneau Créateur s’il existe
+  const creator = $('#creator');
+  if (creator) {
+    function readForm() {
+      // Essaye de déduire les champs par id/label/ordre
+      const inputs = $$('input,textarea', creator);
+      let title='', sub='', cta='', accent='';
+      inputs.forEach(inp => {
+        const v = (inp.value||'').trim();
+        const id = (inp.id||'').toLowerCase();
+        const label = (inp.previousElementSibling && inp.previousElementSibling.textContent||'').toLowerCase();
+        if (!v) return;
+        if (id.includes('title') || label.includes('titre')) title = v;
+        else if (id.includes('sub') || id.includes('subtitle') || label.includes('sous')) sub = v;
+        else if (id.includes('cta') || label.includes('cta')) cta = v;
+        else if (id.includes('accent') || label.includes('couleur')) accent = v;
+      });
+      // fallback par ordre (1er=title, 2e=sub, 3e=cta, 4e=accent)
+      if (!title || !sub || !cta || !accent) {
+        const t = inputs.map(i=>i.value.trim()).filter(Boolean);
+        title  = title  || t[0] || '';
+        sub    = sub    || t[1] || '';
+        cta    = cta    || t[2] || '';
+        accent = accent || t[3] || '';
+      }
+      return { title, sub, cta, accent };
+    }
+
+    function proposeOptions(prompt) {
+      const ideas = [
+        { title:'Votre mémoire IA — encore plus simple.',
+          sub:'Vous validez, on exécute. Chaque action a un reçu horodaté (hash + audit).',
+          cta:'Essayer maintenant', accent:'#00C2A8' },
+        { title:'Rappelle, exécute, prouve.',
+          sub:'Anniversaires, rendez-vous, factures… preuve par défaut.',
+          cta:'Voir une preuve', accent:'#60A5FA' },
+        { title:'Ne rien oublier. Jamais.',
+          sub:'Priorités du jour → action → reçu vérifiable.',
+          cta:'Démarrer', accent:'#22D3EE' }
+      ];
+      if ((prompt||'').toLowerCase().includes('pro')) {
+        ideas[0].title = 'Recallia Pro — votre copilote opérationnel';
+        ideas[0].cta = 'Essayer Recallia Pro';
+      }
+      // Remplit les 1ers inputs trouvés si présents
+      const inputs = $$('input,textarea', creator);
+      if (inputs[0]) inputs[0].value = ideas[0].title;
+      if (inputs[1]) inputs[1].value = ideas[0].sub;
+      if (inputs[2]) inputs[2].value = ideas[0].cta;
+      if (inputs[3]) inputs[3].value = ideas[0].accent;
+      // feedback visuel si un élément d’état existe
+      const stateEl = $('#creatorState', creator);
+      if (stateEl) { stateEl.textContent = 'proposition prête'; stateEl.className = 'ok'; }
+    }
+
+    // Délégation : reconnaît les boutons par id/dataset/texte
+    creator.addEventListener('click', (e) => {
+      const b = e.target.closest('button, a');
+      if (!b) return;
+      const txt = (b.textContent||'').toLowerCase();
+      const action = b.dataset.action || b.id || (txt.includes('appliquer') ? 'apply' : txt.includes('proposer') ? 'propose' : txt.includes('sauveg') ? 'save' : '');
+
+      if (action === 'propose') {
+        e.preventDefault();
+        const prompt = ($('input,textarea', creator)?.value||'').trim();
+        proposeOptions(prompt);
+      }
+
+      if (action === 'apply') {
+        e.preventDefault();
+        const { title, sub, cta, accent } = readForm();
+        if (title && heroTitle) heroTitle.textContent = title;
+        if (sub && heroSub && heroSub.tagName === 'P') heroSub.textContent = sub;
+        if (cta && heroCTA) heroCTA.textContent = cta;
+        if (accent) setAccent(accent);
+        const stateEl = $('#creatorState', creator);
+        if (stateEl) { stateEl.textContent = 'appliqué (non sauvegardé)'; stateEl.className='warn'; }
+      }
+
+      if (action === 'save') {
+        e.preventDefault();
+        saveSiteState();
+        const stateEl = $('#creatorState', creator);
+        if (stateEl) { stateEl.textContent = 'sauvegardé'; stateEl.className='ok'; }
+      }
+    });
+  }
+
+  // Sauvegarde automatique avant de quitter la page
+  window.addEventListener('beforeunload', saveSiteState);
+})();
+</script>
+<!-- ===== /Correctif global ===== -->
 </body>
   </html>
