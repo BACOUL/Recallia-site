@@ -550,6 +550,122 @@ couleur.accent: #00C2A8"></textarea>
   });
 })();
 </script>
-<!-- /Assistant Créateur -->
+<!-- === Patch sécurité · Assistant Créateur v2 (fail-safe) === -->
+<style id="creatorCSS">
+.creator-fab{position:fixed;left:18px;bottom:18px;z-index:9999;border:0;border-radius:999px;
+  padding:12px 14px;background:#111c2b;color:#e5edf5;border:1px solid #2b3645;font:600 14px/1 Inter}
+.creator-panel{position:fixed;left:18px;bottom:74px;width:min(92vw,420px);max-height:70vh;overflow:auto;
+  background:#0c1421;border:1px solid #1b2432;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.45);
+  padding:12px;display:none;z-index:9999;color:#e5edf5;font:14px Inter,system-ui}
+.creator-panel h4{margin:2px 0 8px;font:700 14px Inter;color:#cbd5e1}
+.creator-mini{color:#9aa4b2;font-size:12px}
+.creator-close{background:none;border:0;color:#9aa4b2;font-size:18px;cursor:pointer}
+.creator-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.creator-btn{background:#111c2b;border:1px solid #2b3645;color:#e5edf5;border-radius:10px;padding:8px 10px}
+</style>
+<div id="creatorMount"></div>
+<script>
+(function(){
+  // 1) S'assurer qu'on a le bouton et le panneau (sinon on les crée)
+  function ensureFab(){
+    let b = document.getElementById('creatorFab');
+    if(!b){
+      b = document.createElement('button');
+      b.id = 'creatorFab'; b.className='creator-fab'; b.textContent='Créateur';
+      document.body.appendChild(b);
+    }
+    return b;
+  }
+  function ensurePanel(){
+    let p = document.getElementById('creatorPanel');
+    if(!p){
+      p = document.createElement('div');
+      p.id='creatorPanel'; p.className='creator-panel';
+      p.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h4>Assistant Créateur</h4>
+          <button id="creatorClose" class="creator-close" title="Fermer">✕</button>
+        </div>
+        <div id="creatorNote" class="creator-mini">Prêt.</div>
+        <div class="creator-row">
+          <button id="creatorEdit" class="creator-btn">Activer édition</button>
+          <button id="creatorSave" class="creator-btn">Sauver</button>
+        </div>`;
+      document.body.appendChild(p);
+    }
+    return p;
+  }
+
+  const fab   = ensureFab();
+  const panel = ensurePanel();
+  const closeBtn = document.getElementById('creatorClose');
+
+  // 2) Ouvrir/fermer
+  function open(){ panel.style.display='block'; fab.setAttribute('aria-expanded','true'); }
+  function close(){ panel.style.display='none'; fab.setAttribute('aria-expanded','false'); }
+  fab.addEventListener('click', ()=> panel.style.display==='block' ? close() : open());
+  closeBtn && closeBtn.addEventListener('click', close);
+
+  // 3) Édition minimale (contentEditable) si les boutons existent
+  const editBtn = document.getElementById('creatorEdit');
+  const saveBtn = document.getElementById('creatorSave');
+  const note = document.getElementById('creatorNote');
+  let editing = false, nodes = [];
+  const SELS = [
+    'section.hero h1','section.hero p.lead','.cta .btn.primary','.cta .btn.ghost',
+    '#how .steps .tile:nth-child(1) h3','#how .steps .tile:nth-child(1) p',
+    '#how .steps .tile:nth-child(2) h3','#how .steps .tile:nth-child(2) p',
+    '#how .steps .tile:nth-child(3) h3','#how .steps .tile:nth-child(3) p',
+    '#app .grid .tile:nth-child(1) h3','#app .grid .tile:nth-child(1) p',
+    '#app .grid .tile:nth-child(2) h3','#app .grid .tile:nth-child(2) p',
+    '#app .grid .tile:nth-child(3) h3','#app .grid .tile:nth-child(3) p'
+  ];
+  function $(s){ return document.querySelector(s); }
+
+  editBtn && editBtn.addEventListener('click', ()=>{
+    editing = !editing;
+    nodes = SELS.map($).filter(Boolean);
+    nodes.forEach(n=>{ n.contentEditable = editing ? 'plaintext-only' : 'false'; n.style.outline = editing?'2px dashed #00C2A8':''; n.style.outlineOffset='2px'; });
+    editBtn.textContent = editing ? 'Désactiver édition' : 'Activer édition';
+    if(note) note.textContent = editing ? 'Édition activée : modifie un texte, puis clique “Sauver”.' : 'Édition désactivée.';
+  });
+
+  saveBtn && saveBtn.addEventListener('click', ()=>{
+    const cms = {};
+    function grab(sel, key){ const n=$(sel); if(n){ cms[key]=n.textContent.trim(); } }
+    grab('section.hero h1','heroTitle'); grab('section.hero p.lead','heroLead');
+    grab('.cta .btn.primary','cta1'); grab('.cta .btn.ghost','cta2');
+    grab('#how .steps .tile:nth-child(1) h3','how1t'); grab('#how .steps .tile:nth-child(1) p','how1p');
+    grab('#how .steps .tile:nth-child(2) h3','how2t'); grab('#how .steps .tile:nth-child(2) p','how2p');
+    grab('#how .steps .tile:nth-child(3) h3','how3t'); grab('#how .steps .tile:nth-child(3) p','how3p');
+    grab('#app .grid .tile:nth-child(1) h3','app1t'); grab('#app .grid .tile:nth-child(1) p','app1p');
+    grab('#app .grid .tile:nth-child(2) h3','app2t'); grab('#app .grid .tile:nth-child(2) p','app2p');
+    grab('#app .grid .tile:nth-child(3) h3','app3t'); grab('#app .grid .tile:nth-child(3) p','app3p');
+    localStorage.setItem('rec_cms', JSON.stringify(cms));
+    if(note) note.textContent = 'Sauvegardé (local). Recharge pour vérifier la persistance.';
+  });
+
+  // 4) Au chargement, ré-appliquer les sauvegardes locales (si présentes)
+  try{
+    const saved = JSON.parse(localStorage.getItem('rec_cms')||'{}');
+    Object.entries(saved).forEach(([k,v])=>{
+      const map = {
+        heroTitle:'section.hero h1', heroLead:'section.hero p.lead',
+        cta1:'.cta .btn.primary', cta2:'.cta .btn.ghost',
+        how1t:'#how .steps .tile:nth-child(1) h3', how1p:'#how .steps .tile:nth-child(1) p',
+        how2t:'#how .steps .tile:nth-child(2) h3', how2p:'#how .steps .tile:nth-child(2) p',
+        how3t:'#how .steps .tile:nth-child(3) h3', how3p:'#how .steps .tile:nth-child(3) p',
+        app1t:'#app .grid .tile:nth-child(1) h3', app1p:'#app .grid .tile:nth-child(1) p',
+        app2t:'#app .grid .tile:nth-child(2) h3', app2p:'#app .grid .tile:nth-child(2) p',
+        app3t:'#app .grid .tile:nth-child(3) h3', app3p:'#app .grid .tile:nth-child(3) p'
+      };
+      const sel = map[k]; if(sel){ const n=$(sel); if(n) n.textContent = v; }
+    });
+  }catch(_){}
+  // Petit message pour confirmer l'init
+  if(note) note.textContent = 'Créateur initialisé ✔';
+})();
+</script>
+<!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
