@@ -1167,6 +1167,210 @@
   }
 })();
 </script>
-<!-- ===== /PATCH COMPLET v2 ===== --><!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
+<!-- ===== Recallia – SITE BOOST PACK v3 (sections complètes) ===== -->
+<style>
+  :root{ --bg:#0E1116; --card:#0B1116; --text:#EAF2F8; --muted:#b9c1c7; --line:#263238; --accent: var(--accent,#00C2A8);}
+  .vx-wrap{max-width:1120px;margin:0 auto;padding:28px 16px;}
+  .vx-section{margin:42px 0; padding:0}
+  .vx-title{font-size:28px; line-height:1.2; margin:0 0 10px; color:var(--text)}
+  .vx-sub{color:var(--muted); margin:0 0 18px}
+  .vx-grid{display:grid; gap:14px}
+  @media(min-width:680px){ .vx-grid.cols-3{grid-template-columns:repeat(3,1fr)} .vx-grid.cols-2{grid-template-columns:repeat(2,1fr)} }
+  .vx-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px}
+  .vx-badge{display:inline-block; padding:4px 10px; border-radius:999px; background:#0c1a1f; border:1px solid #1f2d36; color:var(--muted); font-size:12px}
+  .vx-kpi{display:flex; gap:14px; flex-wrap:wrap}
+  .vx-kpi .k{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; min-width:120px}
+  .vx-kpi .k b{font-size:18px; color:var(--text)}
+  .vx-list{display:grid; gap:8px; margin:10px 0}
+  .vx-list li{list-style:none; padding-left:8px; border-left:2px solid #1f2d36; color:var(--muted)}
+  .vx-cta{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; border:0; cursor:pointer; background:var(--accent); color:#001015; font-weight:800}
+  .vx-ghost{background:#1B2631;color:var(--text);border:1px solid #2C3E50}
+  .vx-code{background:#0b121a; border:1px solid #1f2a3a; border-radius:12px; padding:12px; font-size:12px; overflow:auto}
+  .vx-row{display:flex; gap:10px; flex-wrap:wrap}
+  .vx-note{font-size:12px; color:var(--muted)}
+  .vx-pill{font-size:12px; color:#001015; background:var(--accent); border-radius:999px; padding:3px 8px; font-weight:800}
+</style>
+<div id="vx-sections-v3"></div>
+<script>
+(function(){
+  const $=s=>document.querySelector(s);
+  const root = $('#vx-sections-v3'); if(!root) return;
+  const insertBeforeFooter = (el)=>{
+    const before = document.getElementById('ctaBar-v2') || document.getElementById('legal-v2') || document.body.lastElementChild;
+    document.body.insertBefore(el, before);
+  };
+
+  // 1) Features
+  if(!document.getElementById('features-v3')){
+    const sec = document.createElement('section'); sec.id='features-v3'; sec.className='vx-section';
+    sec.innerHTML = `
+      <div class="vx-wrap">
+        <span class="vx-badge">Pourquoi Recallia</span>
+        <h2 class="vx-title">Plus qu’un agenda&nbsp;: <em>mémoire + action + preuve</em>.</h2>
+        <p class="vx-sub">Vous validez, Recallia exécute et livre un reçu horodaté (hash + journal). Local-first, discret, fiable.</p>
+        <div class="vx-grid cols-3">
+          <div class="vx-card"><h3>🧠 Rappelle</h3><p class="vx-sub">Anniversaires, RDV, paiements, papiers — jamais oubliés.</p></div>
+          <div class="vx-card"><h3>⚙️ Exécute</h3><p class="vx-sub">Envoi d’email, prise de RDV, renvoi d’attestation… sous vos caps N0→N3.</p></div>
+          <div class="vx-card"><h3>✅ Prouve</h3><p class="vx-sub">Chaque action réussie génère un reçu (JSON/PDF/EML/ICS) + hash SHA-256.</p></div>
+          <div class="vx-card"><h3>🔒 Sous contrôle</h3><p class="vx-sub">Fenêtres horaires, listes blanches, double confirmation, pause globale.</p></div>
+          <div class="vx-card"><h3>⚡ Rapide</h3><p class="vx-sub">TTV médian visé &lt; 60&nbsp;s. Actions classées par impact/prix/temps.</p></div>
+          <div class="vx-card"><h3>🧩 Évolutif</h3><p class="vx-sub">Domain Kits : nouvelles capacités en &lt; 48h (tests + conformité).</p></div>
+        </div>
+        <div class="vx-kpi" style="margin-top:12px">
+          <div class="k"><b>&lt; 60 s</b><div class="vx-note">Temps médian clic → preuve</div></div>
+          <div class="k"><b>90%+</b><div class="vx-note">Taux de succès (recettes phares)</div></div>
+          <div class="k"><b>100%</b><div class="vx-note">Couverture de preuve</div></div>
+        </div>
+      </div>`;
+    insertBeforeFooter(sec);
+  }
+
+  // 2) Comment ça marche
+  if(!document.getElementById('how-v3')){
+    const sec = document.createElement('section'); sec.id='how-v3'; sec.className='vx-section';
+    sec.innerHTML = `
+      <div class="vx-wrap">
+        <span class="vx-badge">En 3 étapes</span>
+        <h2 class="vx-title">Dites l’intention → validez → recevez la preuve.</h2>
+        <div class="vx-grid cols-3">
+          <div class="vx-card"><h3>1) Propose</h3><ul class="vx-list">
+            <li>Priorités du jour (impact × p(succès) ÷ temps × coût)</li>
+            <li>Explications claires + estimation</li></ul></div>
+          <div class="vx-card"><h3>2) Exécute</h3><ul class="vx-list">
+            <li>Action assistée/auto selon N0→N3</li>
+            <li>Respect des caps, fenêtres et listes blanches</li></ul></div>
+          <div class="vx-card"><h3>3) Prouve</h3><ul class="vx-list">
+            <li>Reçu horodaté (JSON/PDF/EML/ICS) + hash</li>
+            <li>Journal d’audit consultable</li></ul></div>
+        </div>
+      </div>`;
+    insertBeforeFooter(sec);
+  }
+
+  // 3) Cas d’usage
+  if(!document.getElementById('usecases-v3')){
+    const sec = document.createElement('section'); sec.id='usecases-v3'; sec.className='vx-section';
+    sec.innerHTML = `
+      <div class="vx-wrap">
+        <span class="vx-badge">Cas d’usage</span>
+        <h2 class="vx-title">Quelques exemples concrets</h2>
+        <div class="vx-grid cols-3">
+          <div class="vx-card"><h3>🎂 Anniversaires</h3><p class="vx-sub">Rappel + message prêt à envoyer (ou envoi auto si validé).</p></div>
+          <div class="vx-card"><h3>🏥 RDV médecin</h3><p class="vx-sub">Propose 3 créneaux, ajoute un ICS, envoie un rappel la veille.</p></div>
+          <div class="vx-card"><h3>💡 Factures</h3><p class="vx-sub">Alerte échéance, email de relance ou paiement assisté, reçu archivé.</p></div>
+          <div class="vx-card"><h3>🏠 Maison</h3><p class="vx-sub">Lumière restée allumée, entretien chaudière, renégociation assurances.</p></div>
+          <div class="vx-card"><h3>📦 Retours/garanties</h3><p class="vx-sub">Etiquette retour, suivi, preuve d’envoi.</p></div>
+          <div class="vx-card"><h3>🧾 Admin</h3><p class="vx-sub">Attestation manquante, justificatif, dépôt avec accusé.</p></div>
+        </div>
+      </div>`;
+    insertBeforeFooter(sec);
+  }
+
+  // 4) Preuve en exemple
+  if(!document.getElementById('proof-v3')){
+    const sec = document.createElement('section'); sec.id='proof-v3'; sec.className='vx-section';
+    const example = {
+      id:"p_"+Date.now(),
+      action_id:"rdv.medecin",
+      title:"Prise de RDV – Dr. Martin",
+      kind:"ics",
+      timestamp:new Date().toISOString(),
+      sha256:"e3b0c44298... (exemple)",
+      result:{status:"success", notes:"RDV confirmé. Fichier .ics généré."}
+    };
+    sec.innerHTML = `
+      <div class="vx-wrap">
+        <span class="vx-badge">Preuve-ou-rien</span>
+        <h2 class="vx-title">Chaque action réussie a son reçu.</h2>
+        <p class="vx-sub">Ci-dessous, un exemple de reçu JSON horodaté. En prod, un hash SHA-256 réel est calculé.</p>
+        <div class="vx-code" id="proofCode-v3"></div>
+        <div class="vx-row" style="margin-top:10px">
+          <button class="vx-cta" id="copyProof-v3">Copier le JSON</button>
+          <span class="vx-note">Consultable dans l’audit. Téléchargeable en ZIP.</span>
+        </div>
+      </div>`;
+    insertBeforeFooter(sec);
+    $('#proofCode-v3').textContent = JSON.stringify(example, null, 2);
+    $('#copyProof-v3')?.addEventListener('click', async ()=> {
+      try{ await navigator.clipboard.writeText($('#proofCode-v3').textContent); 
+           const b=$('#copyProof-v3'); b.textContent='Copié ✔'; setTimeout(()=>b.textContent='Copier le JSON',1200);
+      }catch(_){}
+    });
+  }
+
+  // 5) Avis / preuves sociales
+  if(!document.getElementById('social-v3')){
+    const sec = document.createElement('section'); sec.id='social-v3'; sec.className='vx-section';
+    sec.innerHTML = `
+      <div class="vx-wrap">
+        <span class="vx-badge">Ils en parlent</span>
+        <h2 class="vx-title">Des utilisateurs rassurés par la preuve.</h2>
+        <div class="vx-grid cols-3">
+          <div class="vx-card"><p>“J’ai validé et 40 secondes après, j’avais la preuve de réservation. Bluffant.”</p><span class="vx-pill">TTV 40 s</span></div>
+          <div class="vx-card"><p>“Le reçu JSON + email envoyé, c’est clair et vérifiable. Je fais confiance.”</p><span class="vx-pill">Preuve 100%</span></div>
+          <div class="vx-card"><p>“J’ai arrêté d’oublier les échéances — et j’ai les traces.”</p><span class="vx-pill">Zéro oubli</span></div>
+        </div>
+      </div>`;
+    insertBeforeFooter(sec);
+  }
+
+  // 6) Pricing teaser (simple pour l’instant)
+  if(!document.getElementById('pricing-v3')){
+    const sec = document.createElement('section'); sec.id='pricing-v3'; sec.className='vx-section';
+    sec.innerHTML = `
+      <div class="vx-wrap">
+        <span class="vx-badge">Tarifs (bêta)</span>
+        <h2 class="vx-title">Commencez gratuit. Passez Pro quand vous voulez.</h2>
+        <div class="vx-grid cols-3">
+          <div class="vx-card">
+            <h3>Gratuit</h3>
+            <ul class="vx-list">
+              <li>Rappels essentiels</li><li>Actions assistées</li><li>Preuves limités</li>
+            </ul>
+            <button class="vx-cta" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Essayer</button>
+          </div>
+          <div class="vx-card" style="border-color:var(--accent)">
+            <h3>Pro</h3>
+            <ul class="vx-list">
+              <li>Actions auto N0→N3</li><li>Preuves illimitées</li><li>Domain Kits avancés</li>
+            </ul>
+            <button class="vx-cta">Rejoindre la liste</button>
+          </div>
+          <div class="vx-card">
+            <h3>Team</h3>
+            <ul class="vx-list">
+              <li>Comptes multi-membres</li><li>Approbations & journal</li><li>Support prioritaire</li>
+            </ul>
+            <button class="vx-cta vx-ghost" onclick="document.getElementById('ctaContact-v2')?.click()">Contacter</button>
+          </div>
+        </div>
+      </div>`;
+    insertBeforeFooter(sec);
+  }
+
+  // 7) FAQ
+  if(!document.getElementById('faq-v3')){
+    const sec = document.createElement('section'); sec.id='faq-v3'; sec.className='vx-section';
+    sec.innerHTML = `
+      <div class="vx-wrap">
+        <span class="vx-badge">FAQ</span>
+        <h2 class="vx-title">Questions fréquentes</h2>
+        <div class="vx-grid cols-2">
+          <div class="vx-card"><h3>Recallia vs Google Agenda ?</h3><p class="vx-sub">Agenda = rappels. Recallia = rappels + exécution + preuve (reçus horodatés).</p></div>
+          <div class="vx-card"><h3>Mes données ?</h3><p class="vx-sub">Local-first. Export & suppression. Aucune revente.</p></div>
+          <div class="vx-card"><h3>Qui valide ?</h3><p class="vx-sub">Toujours vous. Niveaux N0→N3 + caps + double confirmation.</p></div>
+          <div class="vx-card"><h3>Ça marche sur mobile ?</h3><p class="vx-sub">Oui, site mobile et application installable (PWA) prochainement.</p></div>
+        </div>
+      </div>`;
+    insertBeforeFooter(sec);
+  }
+
+  // 8) Branchement CTA “Essayer maintenant” (pack v2)
+  document.getElementById('ctaTry-v2')?.addEventListener('click', () => {
+    document.getElementById('app')?.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+})();
+</script>
+<!-- ===== /SITE BOOST PACK v3 ===== --><!-- ===== /PATCH COMPLET v2 ===== --><!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
 </body>
   </html>
