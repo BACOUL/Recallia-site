@@ -328,5 +328,34 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(console.error);
 }
   </script>
+  <!-- Correctif PWA Recallia (1 bloc) -->
+<script>
+(function(){
+  // 1) Injecte automatiquement le manifest dans <head> s'il manque
+  (function ensureManifest(){
+    var href='manifest.webmanifest';
+    if (!document.querySelector('link[rel="manifest"]')) {
+      var l=document.createElement('link');
+      l.rel='manifest'; l.href=href;
+      document.head.appendChild(l);
+    }
+  })();
+
+  // 2) Enregistre le Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  }
+
+  // 3) Petit badge de diagnostic (tu peux supprimer après vérif)
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;left:12px;bottom:12px;background:#0c1421;border:1px solid #1b2432;color:#cbd5e1;padding:8px 10px;border-radius:10px;font:12px/1.3 Inter,system-ui;z-index:9999';
+  document.body.appendChild(el);
+  (async ()=>{
+    var hasManifest = !!document.querySelector('link[rel="manifest"]');
+    var sw=false; if('serviceWorker' in navigator){ const regs=await navigator.serviceWorker.getRegistrations(); sw = regs.length>0; }
+    el.textContent = 'Manifest: ' + (hasManifest?'OK':'KO') + ' · SW: ' + (sw?'OK':'non enregistré');
+  })();
+})();
+</script>
 </body>
 </html>
