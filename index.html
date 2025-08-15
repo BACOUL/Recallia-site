@@ -260,5 +260,12 @@
   // Au chargement
   loadSite();
   </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/Recallia-site/sw.js').catch(console.error);
+    });
+  }
+  </script>
 </body>
   </html>
