@@ -8,7 +8,7 @@
   "background_color": "#0E1116",
   "theme_color": "#00C2A8",
   "icons": [
-    { "src": "/Recallia-site/ic%C3%B4ne-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/Recallia-site/ic%C3%B4ne-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
