@@ -969,6 +969,204 @@
     //   .catch(()=>status.textContent='Erreur réseau.');
   });
 })();
-</script><!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
+</script>
+  <!-- ===== Recallia – PATCH COMPLET (v2) : CTA + Contact + Footer + Ancre + Créateur ===== -->
+<style>
+  /* Barre CTA collante */
+  #ctaBar-v2{position:fixed;left:12px;right:12px;bottom:12px;display:flex;gap:10px;
+    background:#0E1116;border:1px solid #263238;border-radius:12px;padding:10px;z-index:9998;
+    align-items:center;justify-content:space-between;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  #ctaBar-v2 .left{display:flex;gap:8px;align-items:center;color:#b9c1c7;font-size:14px}
+  #ctaBar-v2 .btn{padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  #ctaTry-v2{background:#00C2A8;color:#001015}
+  #ctaContact-v2{background:#1B2631;color:#EAF2F8;border:1px solid #2C3E50}
+  @media (max-width:520px){#ctaBar-v2 .left span{display:none}}
+
+  /* Modal contact */
+  #contactBack-v2{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999}
+  #contactBox-v2{position:fixed;inset:auto 12px 12px 12px;max-width:560px;margin:auto;
+    background:#0E1116;border:1px solid #263238;border-radius:14px;padding:16px;display:none;z-index:10000}
+  #contactBox-v2 h3{margin:0 0 8px;font-size:18px;color:#EAF2F8}
+  #contactBox-v2 label{font-size:13px;color:#b9c1c7}
+  #contactBox-v2 input,#contactBox-v2 textarea{width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;
+    border:1px solid #25313B;background:#0B1116;color:#EAF2F8}
+  #contactSend-v2{background:#00C2A8;color:#001015} #contactClose-v2{background:#1B2631;color:#EAF2F8;margin-left:8px}
+
+  /* Footer légal */
+  footer#legal-v2{margin:48px 0 90px; padding:16px; border-top:1px solid #263238; color:#b9c1c7}
+  .legal-links-v2{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:10px}
+  .legal-links-v2 a{color:#EAF2F8; text-decoration:none; border:1px solid #2C3E50; padding:8px 10px; border-radius:10px}
+  .legal-box-v2{margin-top:12px; background:#0B1116; border:1px solid #25313B; border-radius:12px; padding:12px}
+  .legal-box-v2 h4{margin:0 0 6px; color:#EAF2F8}
+  .legal-box-v2 p{margin:6px 0}
+  .legal-box-v2 details summary{cursor:pointer; color:#EAF2F8; margin:6px 0}
+</style>
+
+<!-- Barre CTA -->
+<div id="ctaBar-v2" role="region" aria-label="Actions principales">
+  <div class="left"><strong>Recallia</strong> <span>— Votre mémoire IA</span></div>
+  <div class="right">
+    <button id="ctaTry-v2" class="btn">Essayer maintenant</button>
+    <button id="ctaContact-v2" class="btn">Contacter</button>
+  </div>
+</div>
+
+<!-- Modal Contact -->
+<div id="contactBack-v2"></div>
+<div id="contactBox-v2" role="dialog" aria-modal="true" aria-labelledby="contactTitle-v2">
+  <h3 id="contactTitle-v2">Demander une démo</h3>
+  <form id="contactForm-v2">
+    <label>Nom</label>
+    <input name="name" required>
+    <label>Email</label>
+    <input name="email" type="email" required>
+    <label>Message</label>
+    <textarea name="message" rows="4" placeholder="Ex : Rappel médecin + envoi d’un mail…" required></textarea>
+    <div style="display:flex;justify-content:flex-end">
+      <button type="button" id="contactClose-v2" class="btn">Fermer</button>
+      <button type="submit" id="contactSend-v2" class="btn">Envoyer</button>
+    </div>
+    <p id="contactStatus-v2" style="margin:8px 0 0;font-size:13px;color:#b9c1c7"></p>
+  </form>
+</div>
+
+<!-- Footer légal -->
+<footer id="legal-v2">
+  <div class="legal-links-v2">
+    <a href="#mentions-v2">Mentions légales</a>
+    <a href="#confidentialite-v2">Confidentialité</a>
+    <a href="mailto:jeason.bacoul@gmail.com?subject=Contact%20Recallia">Contact</a>
+  </div>
+
+  <div id="mentions-v2" class="legal-box-v2">
+    <h4>Mentions légales</h4>
+    <p><strong>Éditeur :</strong> Recallia — Micro-entreprise (remplace ici par tes infos exactes).</p>
+    <p><strong>Contact :</strong> jeason.bacoul@gmail.com</p>
+    <p><strong>Hébergement :</strong> GitHub Pages (GitHub Inc.).</p>
+  </div>
+
+  <div id="confidentialite-v2" class="legal-box-v2">
+    <h4>Confidentialité (version courte)</h4>
+    <details>
+      <summary>Ce que nous collectons</summary>
+      <p>Données fournies par l’utilisateur (email, message de contact). Pas de cookies publicitaires.</p>
+    </details>
+    <details>
+      <summary>Usage des données</summary>
+      <p>Répondre aux demandes et améliorer le service. Aucune revente.</p>
+    </details>
+    <details>
+      <summary>Durée & droits</summary>
+      <p>Conservation minimale. Vous pouvez demander l’accès/suppression via le contact.</p>
+    </details>
+  </div>
+
+  <p style="margin-top:10px">© <span id="y-v2"></span> Recallia. Tous droits réservés.</p>
+</footer>
+
+<script>
+(() => {
+  /* Ancre #app : si absente, on la crée pour que “Essayer maintenant” fonctionne */
+  const appSection = document.getElementById('app') ||
+    (() => { const h2 = Array.from(document.querySelectorAll('h2'))
+                 .find(h => /app|pwa/i.test(h.textContent||'')); return h2 ? h2.parentElement : null; })();
+  if (!document.getElementById('app')) {
+    const anchor = document.createElement('section'); anchor.id = 'app';
+    if (appSection && appSection.parentNode) { appSection.parentNode.insertBefore(anchor, appSection); }
+    else { document.body.insertBefore(anchor, document.body.firstChild); }
+  }
+
+  /* CTA : scroll vers #app */
+  document.getElementById('ctaTry-v2')?.addEventListener('click', () => {
+    document.getElementById('app').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  /* Modal Contact (mailto immédiat) */
+  const back = document.getElementById('contactBack-v2');
+  const box  = document.getElementById('contactBox-v2');
+  const open = () => { back.style.display='block'; box.style.display='block'; };
+  const close= () => { back.style.display='none';  box.style.display='none'; };
+  document.getElementById('ctaContact-v2')?.addEventListener('click', open);
+  document.getElementById('contactClose-v2')?.addEventListener('click', close);
+  back.addEventListener('click', close);
+  document.getElementById('contactForm-v2')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(e.target), s = document.getElementById('contactStatus-v2');
+    const nom = encodeURIComponent(d.get('name')||'');
+    const em  = encodeURIComponent(d.get('email')||'');
+    const msg = encodeURIComponent(d.get('message')||'');
+    window.location.href = `mailto:jeason.bacoul@gmail.com?subject=Demande%20d%C3%A9mo%20Recallia&body=Nom:%20${nom}%0AEmail:%20${em}%0A%0A${msg}`;
+    s.textContent = "Ouverture de votre messagerie…"; setTimeout(close, 1200);
+  });
+
+  /* Footer : année dynamique */
+  document.getElementById('y-v2').textContent = new Date().getFullYear();
+
+  /* Créateur : branchement minimal (si présent) */
+  const creator = document.getElementById('creator') || document.querySelector('[data-creator]');
+  if (creator) {
+    const heroTitle = document.getElementById('heroTitle') || document.querySelector('h1');
+    const heroSub   = document.getElementById('heroSub')   || (heroTitle ? heroTitle.nextElementSibling : null);
+    const heroCTA   = document.getElementById('heroCta')   || document.querySelector('a.btn,.cta a,nav a.btn');
+
+    function getInputs() {
+      const inputs = Array.from(creator.querySelectorAll('input,textarea'));
+      const v = (i) => (inputs[i] && inputs[i].value || '').trim();
+      return { title: v(0), sub: v(1), cta: v(2), accent: v(3) };
+    }
+    function setAccent(hex){
+      if(!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test((hex||'').trim())) return;
+      document.documentElement.style.setProperty('--accent', hex.trim());
+      let m = document.querySelector('meta[name="theme-color"]'); if(!m){ m=document.createElement('meta'); m.name='theme-color'; document.head.appendChild(m); }
+      m.content = hex.trim();
+    }
+
+    const btnPropose = creator.querySelector('#propose,[data-action="propose"]') || Array.from(creator.querySelectorAll('button')).find(b=>/propos/i.test(b.textContent||''));
+    const btnApply   = creator.querySelector('#apply,[data-action="apply"]')     || Array.from(creator.querySelectorAll('button')).find(b=>/appliq/i.test(b.textContent||''));
+    const btnSave    = creator.querySelector('#save,[data-action="save"]')       || Array.from(creator.querySelectorAll('button')).find(b=>/sauveg|save/i.test(b.textContent||''));
+
+    btnPropose && btnPropose.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const ideas = [
+        {t:'Votre mémoire IA — simple, calme, efficace.', s:'Vous validez, on exécute. Chaque action a un reçu (hash + audit).', c:'Essayer maintenant', a:'#00C2A8'},
+        {t:'Rappelle, exécute, prouve.', s:'Anniversaires, RDV, factures — preuve par défaut.', c:'Voir une preuve', a:'#60A5FA'}
+      ];
+      const i = ideas[Math.floor(Math.random()*ideas.length)];
+      const ins = creator.querySelectorAll('input,textarea');
+      ins[0] && (ins[0].value = i.t); ins[1] && (ins[1].value = i.s); ins[2] && (ins[2].value = i.c); ins[3] && (ins[3].value = i.a);
+    });
+
+    btnApply && btnApply.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const {title, sub, cta, accent} = getInputs();
+      if (title && heroTitle) heroTitle.textContent = title;
+      if (sub && heroSub && heroSub.tagName === 'P') heroSub.textContent = sub;
+      if (cta && heroCTA) heroCTA.textContent = cta;
+      if (accent) setAccent(accent);
+    });
+
+    btnSave && btnSave.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const state = {
+        title: heroTitle?.textContent||'',
+        sub: heroSub?.textContent||'',
+        cta: heroCTA?.textContent||'',
+        accent: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
+      };
+      localStorage.setItem('recallia.site', JSON.stringify(state));
+    });
+
+    /* Recharge l’état si déjà sauvegardé */
+    try{
+      const s = JSON.parse(localStorage.getItem('recallia.site')||'{}');
+      if (s.title && heroTitle) heroTitle.textContent = s.title;
+      if (s.sub && heroSub && heroSub.tagName==='P') heroSub.textContent = s.sub;
+      if (s.cta && heroCTA) heroCTA.textContent = s.cta;
+      if (s.accent) setAccent(s.accent);
+    }catch(_){}
+  }
+})();
+</script>
+<!-- ===== /PATCH COMPLET v2 ===== --><!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
 </body>
   </html>
