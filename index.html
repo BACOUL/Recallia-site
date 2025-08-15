@@ -1006,6 +1006,192 @@ couleur.accent: #00C2A8"></textarea>
     window.open(url,'_blank');
   };
 })();
-</script><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+</script>
+  <!-- === Créateur v27-hotfix (drop-in, GitHub Pages friendly) === -->
+<style>
+  #rcCreator{position:fixed;right:12px;bottom:12px;z-index:9999;
+    width:min(560px,calc(100vw - 24px));background:#0F172A;border:1px solid #243b53;
+    border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);font-family:Inter,system-ui,Arial,sans-serif;color:#E5E7EB}
+  #rcCreator header{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #1f2937}
+  #rcCreator header b{font-weight:700}
+  #rcCreator .pill{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid #334155;color:#9CA3AF}
+  #rcCreator main{padding:10px 12px;max-height:min(60vh,520px);overflow:auto}
+  #rcCreator .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  #rcCreator input, #rcCreator button{border-radius:10px;border:1px solid #334155;background:#111827;color:#E5E7EB}
+  #rcCreator input{padding:10px 12px;flex:1;min-width:220px}
+  #rcCreator button{padding:10px 12px;cursor:pointer}
+  #rcCreator .primary{background:#00C2A8;border-color:#00C2A8;color:#0B1322}
+  #rcCreator .card{border:1px solid #1f2937;border-radius:12px;padding:12px;background:#0B1220;display:flex;gap:12px;align-items:flex-start}
+  #rcCreator .apply{margin-left:auto}
+  #rcAlerts .ok{color:#10B981} #rcAlerts .warn{color:#F59E0B} #rcAlerts .err{color:#EF4444}
+</style>
+
+<div id="rcCreator" hidden>
+  <header>
+    <b>Créateur</b><span class="pill">v27</span>
+    <span style="margin-left:auto"></span>
+    <button id="rcToggleEdit">Activer édition</button>
+    <button id="rcSave" class="primary">Sauver</button>
+  </header>
+  <main>
+    <div class="row">
+      <button id="rcScan">Scanner le site</button>
+      <span id="rcScanStatus" class="pill">prêt</span>
+    </div>
+    <div id="rcAlerts"></div>
+    <div class="row">
+      <input id="rcProposeInput" placeholder="Ex : Mets la couleur d’accent en bleu, CTA = Démarrer">
+      <button id="rcProposeBtn" class="primary">Proposer</button>
+    </div>
+    <div id="rcActions" style="display:grid;gap:8px"></div>
+  </main>
+</div>
+
+<script>
+(() => {
+  // --- 0) affichage du panneau (toujours visible, on peut le replier si tu veux) ---
+  const root = document.documentElement;
+  const byId = (id)=>document.getElementById(id);
+  const $c = byId('rcCreator'); $c.hidden = false;
+
+  // Sélecteurs "tolérants" (s’adaptent à ton HTML actuel)
+  const pick = {
+    title: ()=> document.querySelector('h1') || document.querySelector('[data-hero-title]'),
+    sub:   ()=> document.querySelector('header p, main p, [data-hero-sub]'),
+    cta:   ()=> document.querySelector('a[href^="#"], a.btn, .cta, button'),
+    kpi1:  ()=> document.querySelector('[data-kpi="1"], .kpi:nth-of-type(1)'),
+    kpi2:  ()=> document.querySelector('[data-kpi="2"], .kpi:nth-of-type(2)'),
+    kpi3:  ()=> document.querySelector('[data-kpi="3"], .kpi:nth-of-type(3)'),
+  };
+
+  function getAccent(){
+    const s = getComputedStyle(root).getPropertyValue('--accent')?.trim();
+    return s || '#00C2A8';
+  }
+  function setAccent(hex){
+    root.style.setProperty('--accent', hex);
+    // ajustement boutons existants
+    document.querySelectorAll('.cta, a.btn, button.primary').forEach(b=>{
+      b.style.background = hex; b.style.borderColor = hex; b.style.color = '#0B1322';
+    });
+  }
+  const CANON = {
+    title: () => (pick.title()?.textContent || '').trim(),
+    sub:   () => (pick.sub()?.textContent   || '').trim(),
+    cta:   () => (pick.cta()?.textContent   || '').trim(),
+    accent:() => getAccent(),
+    kpis:  () => [pick.kpi1()?.textContent, pick.kpi2()?.textContent, pick.kpi3()?.textContent].filter(Boolean)
+  };
+
+  // --- 1) SCAN & alertes PWA ---
+  async function scan(){
+    const out = [];
+    // Manifest
+    const link = document.querySelector('link[rel="manifest"]');
+    const manifestHref = link?.getAttribute('href') || 'manifest.webmanifest';
+    try {
+      const r = await fetch(manifestHref, {cache:'no-store'});
+      out.push(r.ok ? ['ok','Manifest détecté'] : ['err','Manifest manquant ou introuvable']);
+    } catch { out.push(['err','Manifest inaccessible']); }
+    // Service worker
+    if ('serviceWorker' in navigator){
+      const reg = await navigator.serviceWorker.getRegistration().catch(()=>null);
+      out.push(reg ? ['ok','Service Worker actif'] : ['warn','Service Worker non enregistré']);
+    } else out.push(['warn','Service Worker non supporté sur ce navigateur']);
+    // Thème / accent
+    const accent = getAccent();
+    out.push(accent ? ['ok','Accent actuel : ' + accent] : ['warn','Couleur d’accent non définie']);
+    byId('rcAlerts').innerHTML = out.map(([lvl,msg])=>`<div class="${lvl}">• ${msg}</div>`).join('');
+    byId('rcScanStatus').textContent = 'scan OK';
+  }
+
+  // --- 2) Générateur de propositions (3 options) ---
+  function hexFromPrompt(p){
+    const map = {bleu:'#60A5FA', cyan:'#06B6D4', vert:'#10B981', rouge:'#EF4444', violet:'#8B5CF6', orange:'#F59E0B'};
+    for (const k of Object.keys(map)) if (p.toLowerCase().includes(k)) return map[k];
+    const m = p.match(/#([0-9a-f]{6})/i); return m ? ('#'+m[1]) : null;
+  }
+  function suggest(prompt){
+    const now = { title: CANON.title(), sub: CANON.sub(), cta: CANON.cta() || 'Essayer maintenant', accent: CANON.accent() };
+    const hex = hexFromPrompt(prompt) || now.accent;
+    const cta = /cta\s*=|cta\s*:|cta\s+/.test(prompt.toLowerCase()) ? (prompt.split(/cta\s*[=:]\s*/i)[1]||'Démarrer').split(/[.,]/)[0].trim() : now.cta;
+    const variants = [
+      { title:'Votre mémoire IA — encore plus simple.', sub:'Vous validez, on le fait. Chaque action réussie a un reçu horodaté.', cta, accent:hex },
+      { title:'Rappelle, exécute, prouve.', sub:'Des actions faites avec preuve (hash + journal).', cta, accent:hex },
+      { title:'Moins d’efforts. Plus de preuves.', sub:'TTV < 60 s • VSR ≥ 90 % • 100 % des succès prouvés.', cta, accent:hex },
+    ];
+    // si prompt contient des mots clés, on remixe
+    if (/plus simple|clair|minimal/i.test(prompt)) variants[0].title = 'Votre mémoire IA, sans friction.';
+    return variants;
+  }
+
+  function renderOptions(list){
+    const $ = byId('rcActions');
+    $.innerHTML = '';
+    list.forEach((opt,i)=>{
+      const html = `
+      <div class="card">
+        <div>
+          <div style="font-weight:700;margin-bottom:6px">Option ${i+1}</div>
+          <div><b>Titre</b> : ${opt.title}</div>
+          <div><b>Sous-titre</b> : ${opt.sub}</div>
+          <div><b>CTA</b> : ${opt.cta}</div>
+          <div><b>Accent</b> : <span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${opt.accent}"></span> ${opt.accent}</div>
+        </div>
+        <button class="apply primary">Appliquer</button>
+      </div>`;
+      const wrap = document.createElement('div'); wrap.innerHTML = html;
+      wrap.querySelector('.apply').addEventListener('click', ()=> applyChanges(opt));
+      $.appendChild(wrap.firstElementChild);
+    });
+  }
+
+  function applyChanges(opt){
+    const t = pick.title(); if (t) t.textContent = opt.title;
+    const s = pick.sub();   if (s) s.textContent = opt.sub;
+    const c = pick.cta();   if (c) c.textContent = opt.cta;
+    setAccent(opt.accent);
+    toast('Modifs appliquées. Pense à cliquer “Sauver” pour exporter le JSON.');
+  }
+
+  function toast(txt){
+    const n = document.createElement('div');
+    n.textContent = txt; n.style.position='fixed'; n.style.bottom='90px'; n.style.right='20px';
+    n.style.background='#111827'; n.style.color='#E5E7EB'; n.style.border='1px solid #334155';
+    n.style.borderRadius='10px'; n.style.padding='10px 12px'; n.style.zIndex=10000;
+    document.body.appendChild(n); setTimeout(()=>n.remove(), 2200);
+  }
+
+  // --- 3) Édition & Sauvegarde ---
+  let editing = false;
+  byId('rcToggleEdit').onclick = ()=>{
+    editing = !editing;
+    [pick.title(), pick.sub()].forEach(el=> el && (el.contentEditable = editing));
+    byId('rcToggleEdit').textContent = editing ? 'Désactiver édition' : 'Activer édition';
+  };
+  byId('rcSave').onclick = ()=>{
+    const payload = {
+      saved_at: new Date().toISOString(),
+      title: CANON.title(), sub: CANON.sub(), cta: CANON.cta(),
+      accent: CANON.accent(), kpis: CANON.kpis()
+    };
+    const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'site-cms.json';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+
+  // --- 4) Brancher les boutons ---
+  byId('rcProposeBtn').onclick = ()=>{
+    const p = byId('rcProposeInput').value.trim();
+    const options = suggest(p || 'propositions par défaut');
+    renderOptions(options);
+  };
+  byId('rcScan').onclick = scan;
+
+  // afficher le panneau au chargement + scan rapide
+  scan();
+})();
+</script>
+<!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
