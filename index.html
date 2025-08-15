@@ -1303,6 +1303,355 @@ couleur.accent: #00C2A8"></textarea>
   if(btn) btn.addEventListener('click', propose);
 })();
 </script>
-<!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+<!-- ================== Créateur v30 — Propositions intelligentes + Alertes ================== -->
+<style>
+  :root{ --acc: #00C2A8 }
+  .rcp-wrap{position:fixed;inset:auto 12px 12px auto;z-index:99999;max-width:92vw}
+  .rcp-panel{background:#0B1220;color:#E5E7EB;border:1px solid #1F2937;border-radius:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.35);padding:14px;display:none;max-height:72vh;overflow:auto}
+  .rcp-title{display:flex;align-items:center;gap:10px;font-weight:700}
+  .rcp-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .rcp-badge{font-size:12px;border-radius:999px;padding:3px 8px;border:1px solid #334155}
+  .rcp-red{background:#3f1e1e;border-color:#7f1d1d;color:#fecaca}
+  .rcp-amber{background:#3a2f14;border-color:#a16207;color:#fde68a}
+  .rcp-green{background:#113426;border-color:#047857;color:#bbf7d0}
+  .rcp-row{display:grid;gap:10px;margin-top:10px}
+  .rcp-grid{display:grid;gap:10px}
+  @media(min-width:520px){ .rcp-grid{grid-template-columns:1fr 1fr} }
+  .rcp-card{border:1px solid #1F2937;background:#0b1322;border-radius:12px;padding:12px}
+  .rcp-btn{background:var(--acc);color:#0B1220;padding:8px 12px;border-radius:10px;border:0;font-weight:700}
+  .rcp-ghost{background:#0B1220;border:1px solid #334155;color:#E5E7EB}
+  .rcp-mini{font-size:12px;padding:6px 10px}
+  .rcp-input{width:100%;padding:10px;border-radius:10px;border:1px solid #1F2937;background:#0b1322;color:#E5E7EB}
+  .rcp-kv{font-size:12px;opacity:.9}
+  .rcp-fab{position:fixed;right:12px;bottom:12px;background:var(--acc);color:#0B1220;border-radius:14px;
+    padding:10px 12px;font-weight:800;border:0;z-index:99998}
+</style>
+<div class="rcp-wrap" id="rcpWrap">
+  <button class="rcp-fab" id="rcpFab">Créateur</button>
+  <div class="rcp-panel" id="rcpPanel" role="dialog" aria-label="Créateur Recallia">
+    <div class="rcp-title">
+      <span>Créateur Recallia — <span id="rcpVersion">v30</span></span>
+      <span class="rcp-badges">
+        <span class="rcp-badge" id="rcpEnv">mode privé</span>
+        <span class="rcp-badge" id="rcpScanAt"></span>
+      </span>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="rcp-btn rcp-mini rcp-ghost" id="rcpAnalyze">Analyser</button>
+        <button class="rcp-btn rcp-mini" id="rcpSave">Exporter patch</button>
+      </div>
+    </div>
+
+    <!-- Alertes & état -->
+    <div class="rcp-row">
+      <div class="rcp-card">
+        <div style="font-weight:700;margin-bottom:6px">Alertes & état de la page</div>
+        <div id="rcpAlerts" class="rcp-grid"></div>
+      </div>
+    </div>
+
+    <!-- Comprendre ta requête -->
+    <div class="rcp-row">
+      <div class="rcp-card">
+        <div style="font-weight:700;margin-bottom:6px">Que veux-tu changer ?</div>
+        <div class="rcp-grid">
+          <input id="rcpAsk" class="rcp-input" placeholder="Ex: centre le menu sur mobile / mets l’accent en bleu / ajoute la meta description / rends l’app installable" />
+          <button id="rcpPropose" class="rcp-btn">Proposer</button>
+        </div>
+        <div id="rcpOptions" class="rcp-row"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  // --- ACCÈS CRÉATEUR (privé) ---
+  const PIN = '2468'; // change plus tard
+  const qs = new URLSearchParams(location.search);
+  if(qs.get('creator')==='on') localStorage.setItem('recalliaCreator','1');
+  const unlocked = localStorage.getItem('recalliaCreator')==='1';
+  if(!unlocked){ document.getElementById('rcpWrap').style.display='none'; return; }
+  if(!localStorage.getItem('recalliaPin')){
+    const p = prompt('PIN Créateur:',''); if(p!==PIN){ alert('Accès refusé'); return; } localStorage.setItem('recalliaPin','ok');
+  }
+
+  const $ = s=>document.querySelector(s);
+  const panel = $('#rcpPanel'), fab = $('#rcpFab');
+  fab.onclick = ()=> panel.style.display = panel.style.display==='block' ? 'none' : 'block';
+
+  // ---------- OUTILS ----------
+  const addStyle = (css,id='rcpDynamic')=>{
+    let el=document.getElementById(id); if(!el){ el=document.createElement('style'); el.id=id; document.head.appendChild(el) }
+    el.textContent = (el.textContent||'') + "\n" + css;
+  };
+  const ensureTag = (tag, attrs={})=>{
+    // cherche un tag correspondant, sinon crée et l’ajoute dans <head>
+    const exists = document.head.querySelector(
+      tag + Object.entries(attrs).map(([k,v])=>`[${k}="${v}"]`).join('')
+    );
+    if(exists) return exists;
+    const el = document.createElement(tag);
+    Object.entries(attrs).forEach(([k,v])=> el.setAttribute(k,v));
+    document.head.appendChild(el);
+    return el;
+  };
+  const setHtml = (sel, html)=>{ const el=document.querySelector(sel); if(el) el.innerHTML = html; };
+  const setText = (sel, txt)=>{ const el=document.querySelector(sel); if(el) el.textContent = txt; };
+  const setAttr = (sel, k, v)=>{ const el=document.querySelector(sel); if(el) el.setAttribute(k,v); };
+  const root = document.documentElement;
+
+  // ---------- SCAN (Alertes) ----------
+  function analyze(){
+    const alerts = [];
+    // PWA
+    const hasManifest = !!document.querySelector('link[rel="manifest"]');
+    const hasSW = 'serviceWorker' in navigator;
+    const hasIcons = !!document.querySelector('link[rel*="icon"]') || !!document.querySelector('link[rel="apple-touch-icon"]');
+    alerts.push({
+      group:'PWA', ok:(hasManifest && hasIcons && hasSW),
+      issues:[
+        !hasManifest && 'Manifest manquant',
+        !hasIcons && 'Icônes manquantes (192/512)',
+        !hasSW && 'Service Worker non détecté (en prod il est nécessaire)'
+      ].filter(Boolean),
+      fix: ()=>{
+        ensureTag('link', {rel:'manifest', href:'manifest.webmanifest'});
+        ensureTag('link', {rel:'icon', href:'icons/icon-192.png', sizes:'192x192', type:'image/png'});
+        ensureTag('link', {rel:'apple-touch-icon', href:'icons/icon-192.png'});
+        // registration SW (idempotent)
+        if('serviceWorker' in navigator){
+          try{
+            navigator.serviceWorker.register('sw.js').catch(()=>{});
+          }catch(e){}
+        }
+      }
+    });
+
+    // SEO de base
+    const titleOK = document.title && document.title.length>10;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const h1OK = !!document.querySelector('h1');
+    const canonical = document.querySelector('link[rel="canonical"]');
+    alerts.push({
+      group:'SEO', ok:(titleOK && metaDesc && h1OK),
+      issues:[
+        !titleOK && 'Titre trop court ou manquant',
+        !metaDesc && 'Meta description manquante',
+        !h1OK && 'Aucun <h1> détecté',
+        !canonical && 'Lien canonical manquant'
+      ].filter(Boolean),
+      fix: ()=>{
+        if(!metaDesc) ensureTag('meta',{name:'description',content:"Recallia — votre mémoire IA : rappelle, exécute et prouve (reçus horodatés)."});
+        if(!canonical) ensureTag('link',{rel:'canonical',href:location.href.split('#')[0].split('?')[0]});
+        if(!document.documentElement.lang) document.documentElement.lang='fr';
+      }
+    });
+
+    // Accessibilité (rapide)
+    const imgs=[...document.querySelectorAll('img')];
+    const missingAlt=imgs.filter(i=>!i.hasAttribute('alt')||i.getAttribute('alt')==='').length;
+    alerts.push({
+      group:'A11y', ok:(missingAlt===0),
+      issues:[ missingAlt>0 && `${missingAlt} image(s) sans attribut alt` ].filter(Boolean),
+      fix: ()=> imgs.forEach(i=>{ if(!i.alt) i.alt='Illustration'; })
+    });
+
+    // Perf (naïf)
+    let bigImgs=0;
+    try{
+      performance.getEntriesByType('resource')
+        .filter(r=>/(\.png|\.jpg|\.jpeg|\.webp)$/i.test(r.name) && r.transferSize>300*1024)
+        .forEach(()=>bigImgs++);
+    }catch(e){}
+    alerts.push({
+      group:'Perf', ok:(bigImgs===0),
+      issues:[ bigImgs>0 && `${bigImgs} image(s) > 300 Ko (pénalise mobile)` ].filter(Boolean),
+      fix: ()=> alert("Compresser les images > 300 Ko (WebP 70–80%).")
+    });
+
+    renderAlerts(alerts);
+    $('#rcpScanAt').textContent = new Date().toLocaleTimeString();
+  }
+
+  function renderAlerts(items){
+    const box = $('#rcpAlerts'); box.innerHTML='';
+    items.forEach(it=>{
+      const el = document.createElement('div'); el.className='rcp-card';
+      const badge = it.ok ? 'rcp-green':'rcp-red';
+      el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div style="font-weight:700">${it.group}</div>
+          <span class="rcp-badge ${badge}">${it.ok?'OK':'À corriger'}</span>
+        </div>
+        <div class="rcp-kv">${(it.issues && it.issues.length)? it.issues.map(x=>'• '+x).join('<br>') : 'Rien à signaler.'}</div>
+        <div style="margin-top:8px"><button class="rcp-btn rcp-mini">Proposer un correctif</button></div>
+      `;
+      el.querySelector('button').onclick = it.fix;
+      $('#rcpAlerts').appendChild(el);
+    });
+  }
+
+  // ---------- COMPRÉHENSION REQUÊTES ----------
+  function proposeFrom(text){
+    const t = (text||'').toLowerCase();
+    const options = [];
+
+    // 1) Layout/menu mobile
+    if( /(menu|sommaire|nav)/.test(t) && /(centr[ée]|\bcenter)/.test(t) && /(mobile|téléphone)/.test(t) ){
+      options.push({
+        label:"Centrer le menu sur mobile (flex + gap)",
+        apply:()=> addStyle(`
+          @media (max-width:480px){
+            header nav, #topnav, .topbar nav, nav[role="navigation"]{
+              display:flex; flex-wrap:wrap; justify-content:center; gap:12px;
+            }
+            header nav a{ text-align:center }
+          }`,'rcpNavMobile')
+      });
+    }
+
+    // 2) Hero centré / resserrer espaces
+    if(/hero|titre|sommaire|centr[ée]/.test(t)){
+      options.push({
+        label:"Recentrer le hero et resserrer les marges",
+        apply:()=>{
+          const hero = document.querySelector('#hero, .hero, section.hero') || document.querySelector('h1')?.closest('section');
+          if(hero){ hero.style.textAlign='center'; hero.style.margin='8px auto' }
+        }
+      });
+    }
+
+    // 3) Couleur d’accent
+    const colorMap = { bleu:'#60A5FA', vert:'#10B981', turquoise:'#00C2A8', violet:'#7C3AED', rose:'#EC4899' };
+    const wanted = Object.keys(colorMap).find(k=> t.includes(k) || t.includes(colorMap[k].toLowerCase()) );
+    if(/(accent|couleur)/.test(t) && wanted){
+      options.push({
+        label:`Mettre l’accent en ${wanted} (${colorMap[wanted]})`,
+        apply:()=> root.style.setProperty('--acc', colorMap[wanted])
+      });
+    }
+
+    // 4) Texte titre & sous-titre
+    const mTitle = t.match(/titre\s*:\s*["“](.+?)["”]/);
+    const mSub   = t.match(/sous[-\s]?titre\s*:\s*["“](.+?)["”]/);
+    if(mTitle || mSub){
+      options.push({
+        label:"Mettre à jour Titre / Sous-titre du hero",
+        apply:()=>{
+          if(mTitle) setText('h1', mTitle[1]);
+          if(mSub)   setText('h1 + p, .subtitle, .lead', mSub[1]);
+        }
+      });
+    }
+
+    // 5) CTA
+    if(/(cta|bouton|démarrer|essayer|call to action)/.test(t)){
+      const m = t.match(/(cta|bouton).*?["“](.+?)["”]/);
+      options.push({
+        label:`Renommer le CTA ${m?('→ “'+m[2]+'”'):'(Garder)'} et le mettre en avant`,
+        apply:()=>{
+          const btn = document.querySelector('a[href*="#app"], a[href*="#try"], a.btn-primary, .cta a, .cta button') || document.querySelector('a,button');
+          if(!btn) return;
+          if(m) btn.textContent = m[2];
+          btn.style.background = 'var(--acc)'; btn.style.color='#0B1220'; btn.style.fontWeight='800';
+        }
+      });
+    }
+
+    // 6) PWA / installable
+    if(/(pwa|installable|installe|icone|manifest|service worker|sw)/.test(t)){
+      options.push({
+        label:"Rendre l’app installable (manifest + icônes + SW)",
+        apply:()=>{
+          ensureTag('link',{rel:'manifest',href:'manifest.webmanifest'});
+          ensureTag('link',{rel:'icon',href:'icons/icon-192.png',sizes:'192x192',type:'image/png'});
+          ensureTag('link',{rel:'apple-touch-icon',href:'icons/icon-192.png'});
+          if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+        }
+      });
+    }
+
+    // 7) SEO : meta description
+    if(/(meta|description)/.test(t)){
+      options.push({
+        label:"Ajouter/mettre à jour la meta description",
+        apply:()=> ensureTag('meta',{name:'description',content:"Votre mémoire IA : rappelle, exécute et prouve (reçus horodatés + audit)."})
+      });
+    }
+
+    // 8) KPI (TTV/VSR)
+    if(/(kpi|ttv|vsr)/.test(t)){
+      options.push({
+        label:"Mettre à jour TTV/VSR (démo)",
+        apply:()=>{
+          setText('[data-kpi="ttv"]','< 60 s');
+          setText('[data-kpi="vsr"]','≥ 90%');
+        }
+      });
+    }
+
+    // 9) Accessibilité de base
+    if(/(accessibilit|a11y|contraste|alt)/.test(t)){
+      options.push({
+        label:"Ajouter alt manquants & améliorer contrastes (rapide)",
+        apply:()=>{
+          document.querySelectorAll('img:not([alt])').forEach(i=>i.setAttribute('alt','Illustration'));
+          addStyle('body{color:#E5E7EB} a{color:var(--acc)}');
+        }
+      });
+    }
+
+    // fallback
+    if(options.length===0){
+      options.push({
+        label:"Aucune intention précise détectée — Voir Alertes (bouton Analyser)",
+        apply:()=>{}
+      });
+    }
+    return options;
+  }
+
+  function renderOptions(opts){
+    const box = $('#rcpOptions'); box.innerHTML='';
+    opts.slice(0,5).forEach(op=>{
+      const d = document.createElement('div'); d.className='rcp-card';
+      d.innerHTML = `<div style="margin-bottom:6px">${op.label}</div>
+        <div style="display:flex;gap:8px">
+          <button class="rcp-btn rcp-mini">Appliquer</button>
+        </div>`;
+      d.querySelector('button').onclick = ()=> op.apply();
+      box.appendChild(d);
+    });
+  }
+
+  // ---------- EXPORT PATCH ----------
+  $('#rcpSave').onclick = ()=>{
+    const css = (document.getElementById('rcpDynamic')?.textContent||'') +
+                (document.getElementById('rcpNavMobile')?.textContent||'');
+    const patch = {
+      at: new Date().toISOString(),
+      title: document.title,
+      lang: document.documentElement.lang,
+      acc: getComputedStyle(document.documentElement).getPropertyValue('--acc').trim(),
+      metaDesc: document.querySelector('meta[name="description"]')?.getAttribute('content')||'',
+      manifest: !!document.querySelector('link[rel="manifest"]'),
+      sw: 'serviceWorker' in navigator,
+      cssPatch: css
+    };
+    const blob = new Blob([JSON.stringify(patch,null,2)],{type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'),{href:url,download:'recallia_patch.json'});
+    a.click(); setTimeout(()=>URL.revokeObjectURL(url),2000);
+  };
+
+  // ---------- WIRING ----------
+  $('#rcpAnalyze').onclick = analyze;
+  $('#rcpPropose').onclick = ()=> renderOptions(proposeFrom($('#rcpAsk').value||''));
+  $('#rcpEnv').textContent = 'créateur actif';
+})();
+</script>
+<!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
