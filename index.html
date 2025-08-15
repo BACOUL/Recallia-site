@@ -311,5 +311,17 @@ END:VCALENDAR`;
 })();
 </script>
 <!-- === /Assistant Recallia (démo locale) ================================== -->
+<!-- Badge de diagnostic PWA -->
+<div id="pwa-badge" style="position:fixed;left:12px;bottom:12px;background:#0c1421;border:1px solid #1b2432;color:#cbd5e1;padding:8px 10px;border-radius:10px;font:12px/1.3 Inter,system-ui;z-index:9999"></div>
+<script>
+(async ()=>{
+  const bad = document.getElementById('pwa-badge');
+  const hasManifest = !!document.querySelector('link[rel="manifest"]');
+  const swCap = 'serviceWorker' in navigator;
+  let swReg = false;
+  if (swCap) { const regs = await navigator.serviceWorker.getRegistrations(); swReg = regs.length>0; }
+  bad.textContent = `Manifest: ${hasManifest?'OK':'KO'} · SW: ${swCap?(swReg?'OK':'non enregistré'):'non supporté'}`;
+})();
+</script>
 </body>
 </html>
