@@ -1192,6 +1192,117 @@ couleur.accent: #00C2A8"></textarea>
   scan();
 })();
 </script>
-<!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+<!-- ==== Créateur minimal — correctif v1 (fonctionnel) ==== -->
+<div id="rcCreator" style="margin:28px 0;padding:14px;border-radius:14px;background:#0F172A;border:1px solid #1F2937">
+  <h3 style="margin:0 0 8px;font-size:18px">Créateur (simple)</h3>
+  <p style="margin:0 0 10px;opacity:.8">Écris une intention (ex : <i>couleur #60A5FA</i>, <i>titre plus simple</i>, <i>CTA = Démarrer</i>) puis clique <b>Proposer</b>.</p>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input id="rcI" placeholder="Ex : Mets la couleur d’accent en bleu" 
+           style="flex:1;min-width:240px;padding:10px;border-radius:10px;border:1px solid #334155;background:#0B1220;color:#E5E7EB">
+    <button id="rcPropose" style="padding:10px 14px;border:1px solid #334155;border-radius:10px;background:#111827;color:#E5E7EB">Proposer</button>
+  </div>
+  <div id="rcOut" style="margin-top:12px;display:grid;gap:10px"></div>
+</div>
+
+<script>
+/* Créateur minimal – fait apparaître des options et applique les changements */
+(function(){
+  const $ = s => document.querySelector(s);
+  const root = document.documentElement;
+
+  // essaie d'attraper les éléments clés avec des IDs, sinon des sélecteurs par défaut
+  const elTitle = $('#heroTitle') || document.querySelector('h1');
+  const elSub   = $('#heroSubtitle') || document.querySelector('p');
+  const elCTA   = $('#ctaPrimary') || document.querySelector('a[href^="#"], a.btn, .cta a');
+
+  // petite sauvegarde pour "Annuler"
+  let prev = null;
+  function snapshot(){
+    prev = {
+      title: elTitle ? elTitle.textContent : null,
+      sub  : elSub   ? elSub.textContent   : null,
+      cta  : elCTA   ? elCTA.textContent   : null,
+      acc  : getComputedStyle(root).getPropertyValue('--acc') || '#00C2A8'
+    };
+  }
+  function undo(){
+    if(!prev) return;
+    if(elTitle && prev.title) elTitle.textContent = prev.title;
+    if(elSub   && prev.sub)   elSub.textContent   = prev.sub;
+    if(elCTA   && prev.cta)   elCTA.textContent   = prev.cta;
+    root.style.setProperty('--acc', String(prev.acc).trim());
+    prev = null;
+  }
+
+  function setAccent(c){ root.style.setProperty('--acc', c); }
+  function setTitle(t){ if(elTitle) elTitle.textContent = t; }
+  function setSub(t){ if(elSub) elSub.textContent = t; }
+  function setCTA(t){ if(elCTA) elCTA.textContent = t; }
+
+  function makeOption(label, applyFn){
+    const box = document.createElement('div');
+    box.style.cssText = "border:1px solid #1F2937;border-radius:10px;padding:10px;background:#0B1220";
+    box.innerHTML = `
+      <div style="font-weight:600;margin-bottom:6px">${label}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="apply" style="padding:8px 12px;border:1px solid #334155;border-radius:10px;background:#0F172A;color:#E5E7EB">Appliquer</button>
+        <button class="undo"  style="padding:8px 12px;border:1px solid #334155;border-radius:10px;background:#0F172A;color:#E5E7EB">Annuler</button>
+      </div>`;
+    box.querySelector('.apply').onclick = ()=>{ snapshot(); applyFn(); };
+    box.querySelector('.undo').onclick  = ()=> undo();
+    return box;
+  }
+
+  function propose(){
+    const out = $('#rcOut'); out.innerHTML = '';
+    const val = ($('#rcI').value || '').toLowerCase();
+
+    // détection simple d’intention
+    const hexMatch = val.match(/#([0-9a-f]{3,6})/i);
+    const wantBlue = /bleu|#60a5fa/.test(val);
+    const wantGreen= /vert|#10b981/.test(val);
+    const wantCTA  = val.match(/cta\s*=\s*([^\n]+)/i);
+    const wantTitle= val.match(/titre\s*=\s*([^\n]+)/i);
+
+    // 1) Couleur demandée explicitement
+    if(hexMatch){
+      const c = '#'+hexMatch[1];
+      out.appendChild(makeOption(`Utiliser la couleur d’accent ${c}`, ()=> setAccent(c)));
+    }
+
+    // 2) Trois options par défaut (toujours proposées)
+    out.appendChild(makeOption("Titre + sous-titre modernisés + CTA 'Démarrer'", ()=>{
+      setTitle("Votre mémoire IA – prouvée.");
+      setSub("Vous validez, on le fait. Chaque action réussie a un reçu (hash + audit).");
+      setCTA("Démarrer");
+    }));
+
+    out.appendChild(makeOption("Accent bleu + contraste renforcé", ()=>{
+      setAccent("#60A5FA");
+    }));
+
+    out.appendChild(makeOption("Accent vert + KPIs mis en avant", ()=>{
+      setAccent("#10B981");
+    }));
+
+    // 3) Intentions précises dans le champ (CTA= / titre=)
+    if(wantCTA){
+      const txt = wantCTA[1].trim();
+      out.appendChild(makeOption(`Mettre le CTA à « ${txt} »`, ()=> setCTA(txt)));
+    }
+    if(wantTitle){
+      const txt = wantTitle[1].trim();
+      out.appendChild(makeOption(`Changer le titre en « ${txt} »`, ()=> setTitle(txt)));
+    }
+
+    // si aucune option spécifique, on garde quand même les 3 options par défaut (déjà ajoutées)
+  }
+
+  // bouton Proposer
+  const btn = document.getElementById('rcPropose');
+  if(btn) btn.addEventListener('click', propose);
+})();
+</script>
+<!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
