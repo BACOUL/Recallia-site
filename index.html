@@ -875,6 +875,90 @@
   };
 })();
 </script>
-<!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
+<!-- ==== CTA collant + Modal contact (drop-in) ==== -->
+<style>
+  #ctaBar{position:fixed;left:12px;right:12px;bottom:12px;display:flex;gap:10px;
+    background:#0E1116;border:1px solid #263238;border-radius:12px;padding:10px;z-index:9998;
+    align-items:center;justify-content:space-between;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  #ctaBar .left{display:flex;gap:8px;align-items:center;color:#b9c1c7;font-size:14px}
+  #ctaBar .btn{padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  #ctaTry{background:#00C2A8;color:#001015}
+  #ctaContact{background:#1B2631;color:#EAF2F8;border:1px solid #2C3E50}
+  @media (max-width:520px){#ctaBar .left span{display:none}}
+  /* Modal */
+  #contactBack{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999}
+  #contactBox{position:fixed;inset:auto 12px 12px 12px;max-width:560px;margin:auto;
+    background:#0E1116;border:1px solid #263238;border-radius:14px;padding:16px;display:none;z-index:10000}
+  #contactBox h3{margin:0 0 8px;font-size:18px;color:#EAF2F8}
+  #contactBox label{font-size:13px;color:#b9c1c7}
+  #contactBox input,#contactBox textarea{width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;
+    border:1px solid #25313B;background:#0B1116;color:#EAF2F8}
+  #contactSend{background:#00C2A8;color:#001015} #contactClose{background:#1B2631;color:#EAF2F8;margin-left:8px}
+</style>
+
+<div id="ctaBar" role="region" aria-label="Actions principales">
+  <div class="left"><strong>Recallia</strong> <span>— Votre mémoire IA</span></div>
+  <div class="right">
+    <button id="ctaTry" class="btn">Essayer maintenant</button>
+    <button id="ctaContact" class="btn">Contacter</button>
+  </div>
+</div>
+
+<div id="contactBack"></div>
+<div id="contactBox" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <h3 id="contactTitle">Demander une démo</h3>
+  <form id="contactForm">
+    <label>Nom</label>
+    <input name="name" required>
+    <label>Email</label>
+    <input name="email" type="email" required>
+    <label>Message</label>
+    <textarea name="message" rows="4" placeholder="Ex : Je veux un rappel médecin + envoi d’un mail…" required></textarea>
+    <div style="display:flex;justify-content:flex-end">
+      <button type="button" id="contactClose" class="btn">Fermer</button>
+      <button type="submit" id="contactSend" class="btn">Envoyer</button>
+    </div>
+    <p id="contactStatus" style="margin:8px 0 0;font-size:13px;color:#b9c1c7"></p>
+  </form>
+</div>
+
+<script>
+(() => {
+  // Scroll sur le bloc #app si présent, sinon top
+  document.getElementById('ctaTry')?.addEventListener('click', () => {
+    const app = document.querySelector('#app') || document.body;
+    app.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  // Modal contact (sans backend : mailto immédiat + hook Formspree optionnel)
+  const back = document.getElementById('contactBack');
+  const box  = document.getElementById('contactBox');
+  const open = () => { back.style.display='block'; box.style.display='block'; };
+  const close= () => { back.style.display='none';  box.style.display='none'; };
+  document.getElementById('ctaContact')?.addEventListener('click', open);
+  document.getElementById('contactClose')?.addEventListener('click', close);
+  back.addEventListener('click', close);
+
+  // Envoi : par défaut ouvre le client mail (remplaçable par Formspree plus tard)
+  const form = document.getElementById('contactForm'), status = document.getElementById('contactStatus');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const nom = encodeURIComponent(d.get('name')||'');
+    const em  = encodeURIComponent(d.get('email')||'');
+    const msg = encodeURIComponent(d.get('message')||'');
+    // 👉 Option A (immédiat) : mailto
+    window.location.href = `mailto:jeason.bacoul@gmail.com?subject=Demande%20d%C3%A9mo%20Recallia&body=Nom:%20${nom}%0AEmail:%20${em}%0A%0A${msg}`;
+    status.textContent = "Ouverture de votre messagerie…";
+    setTimeout(close, 1200);
+
+    // 👉 Option B (quand tu voudras) : Formspree
+    // fetch('https://formspree.io/f/TON_ID_ICI',{method:'POST',body:d})
+    //   .then(r=>r.ok?(status.textContent='Merci, on vous répond vite.',setTimeout(close,1000))
+    //                 :(status.textContent='Erreur. Réessayez.'))
+    //   .catch(()=>status.textContent='Erreur réseau.');
+  });
+})();
+</script><!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
 </body>
   </html>
