@@ -322,5 +322,234 @@ END:VCALENDAR`;
     "offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}
   }
   </script>
+  <!-- Recallia · Assistant Créateur (édition en live + sauvegarde locale) -->
+<style>
+  .creator-fab{position:fixed;left:18px;bottom:18px;z-index:9999;border:0;border-radius:999px;
+    padding:12px 14px;background:#111c2b;color:#e5edf5;border:1px solid #2b3645;font:600 14px/1 Inter}
+  .creator-panel{position:fixed;left:18px;bottom:74px;width:min(92vw,420px);max-height:70vh;overflow:auto;
+    background:#0c1421;border:1px solid #1b2432;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.45);
+    padding:12px;display:none;z-index:9999;color:#e5edf5;font:14px Inter,system-ui}
+  .creator-panel h4{margin:2px 0 8px;font:700 14px Inter;color:#cbd5e1}
+  .creator-panel .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .creator-panel input,.creator-panel textarea{width:100%;background:#0f1623;border:1px solid #1b2432;color:#e5edf5;border-radius:10px;padding:8px}
+  .creator-panel button{background:#111c2b;border:1px solid #2b3645;color:#e5edf5;border-radius:10px;padding:8px 10px}
+  .creator-chip{display:inline-block;border:1px solid #2b3645;border-radius:999px;padding:6px 10px;margin:6px 6px 0 0;font-size:12px;color:#cbd5e1;cursor:pointer}
+  .creator-hl{outline:2px dashed #00C2A8;outline-offset:2px}
+  .creator-mini{color:#9aa4b2;font-size:12px}
+</style>
+
+<button id="creatorFab" class="creator-fab">Créateur</button>
+<div id="creatorPanel" class="creator-panel" role="dialog" aria-label="Assistant Créateur">
+  <h4>Assistant Créateur</h4>
+  <div class="row">
+    <button id="creatorEdit">Activer édition</button>
+    <button id="creatorSave">Sauver</button>
+    <button id="creatorExport">Exporter JSON</button>
+    <label style="display:inline-flex;gap:6px;align-items:center">
+      <input id="creatorImport" type="file" accept="application/json" style="display:none">
+      <button id="creatorImportBtn">Importer JSON</button>
+    </label>
+    <button id="creatorReset">Réinitialiser</button>
+  </div>
+  <div class="creator-mini">Commandes rapides (une par ligne) :</div>
+  <div style="margin-top:6px">
+    <span class="creator-chip" data-cmd="titre: Votre mémoire IA — simple, calme, efficace.">titre…</span>
+    <span class="creator-chip" data-cmd="sous-titre: Vous validez, on le fait. Chaque action réussie a un reçu vérifiable.">sous-titre…</span>
+    <span class="creator-chip" data-cmd="cta1: Essayer maintenant">cta1…</span>
+    <span class="creator-chip" data-cmd="cta2: Voir une preuve">cta2…</span>
+    <span class="creator-chip" data-cmd="tile1.titre: Rappels intelligents">tile1.titre…</span>
+    <span class="creator-chip" data-cmd="tile1.texte: Anniv, médecin, factures… au bon moment.">tile1.texte…</span>
+    <span class="creator-chip" data-cmd="bench.ttv: 45">bench.ttv…</span>
+    <span class="creator-chip" data-cmd="meta.title: Recallia — Votre mémoire IA">meta.title…</span>
+    <span class="creator-chip" data-cmd="meta.description: Rappelle, exécute et prouve (reçus vérifiables).">meta.desc…</span>
+    <span class="creator-chip" data-cmd="couleur.accent: #00C2A8">couleur…</span>
+  </div>
+  <textarea id="creatorCmds" rows="6" placeholder="Exemples:
+titre: Votre mémoire IA — simple, calme, efficace.
+sous-titre: Vous validez, on le fait...
+cta1: Essayer maintenant
+tile2.titre: Exécution assistée
+tile2.texte: Vous validez → on envoie, on planifie, on classe.
+bench.vsr: 93
+meta.title: Recallia — Mémoire IA
+couleur.accent: #00C2A8"></textarea>
+  <div class="row">
+    <button id="creatorRun">Appliquer</button>
+  </div>
+  <div id="creatorNote" class="creator-mini"></div>
+</div>
+
+<script>
+(function(){
+  // Sélecteurs clés (adaptés à ton index actuel v25/v26)
+  const SEL = {
+    heroTitle: 'section.hero h1',
+    heroLead:  'section.hero p.lead',
+    cta1:      '.cta .btn.primary',
+    cta2:      '.cta .btn.ghost',
+    how1t:     '#how .steps .tile:nth-child(1) h3',
+    how1p:     '#how .steps .tile:nth-child(1) p',
+    how2t:     '#how .steps .tile:nth-child(2) h3',
+    how2p:     '#how .steps .tile:nth-child(2) p',
+    how3t:     '#how .steps .tile:nth-child(3) h3',
+    how3p:     '#how .steps .tile:nth-child(3) p',
+    app1t:     '#app .grid .tile:nth-child(1) h3',
+    app1p:     '#app .grid .tile:nth-child(1) p',
+    app2t:     '#app .grid .tile:nth-child(2) h3',
+    app2p:     '#app .grid .tile:nth-child(2) p',
+    app3t:     '#app .grid .tile:nth-child(3) h3',
+    app3p:     '#app .grid .tile:nth-child(3) p',
+    benchTTV:  '#bench .grid .tile:nth-child(1) p',
+    benchVSR:  '#bench .grid .tile:nth-child(2) p',
+    benchCOV:  '#bench .grid .tile:nth-child(3) p',
+    footer:    'footer.footer'
+  };
+
+  const $ = (s)=>document.querySelector(s);
+  const note = (msg)=>{ const el=$('#creatorNote'); if(el){ el.textContent=msg; } };
+
+  // Chargement & application du "CMS" local
+  function loadCMS(){ try{return JSON.parse(localStorage.getItem('rec_cms')||'{}')}catch(_){return{}}}
+  function saveCMS(data){ localStorage.setItem('rec_cms', JSON.stringify(data)); }
+  function applyCMS(cms){
+    const set = (sel, val)=>{ const n=$(sel); if(n && typeof val==='string'){ n.textContent = val; } };
+    set(SEL.heroTitle, cms.heroTitle);
+    set(SEL.heroLead,  cms.heroLead);
+    set(SEL.cta1,      cms.cta1);
+    set(SEL.cta2,      cms.cta2);
+    set(SEL.how1t,     cms.how1t); set(SEL.how1p, cms.how1p);
+    set(SEL.how2t,     cms.how2t); set(SEL.how2p, cms.how2p);
+    set(SEL.how3t,     cms.how3t); set(SEL.how3p, cms.how3p);
+    set(SEL.app1t,     cms.app1t); set(SEL.app1p, cms.app1p);
+    set(SEL.app2t,     cms.app2t); set(SEL.app2p, cms.app2p);
+    set(SEL.app3t,     cms.app3t); set(SEL.app3p, cms.app3p);
+    if(typeof cms.benchTTV==='number'){ $(SEL.benchTTV)?.textContent = '< '+cms.benchTTV+' s'; }
+    if(typeof cms.benchVSR==='number'){ $(SEL.benchVSR)?.textContent = '≥ '+cms.benchVSR+' %'; }
+    if(typeof cms.benchCOV==='number'){ $(SEL.benchCOV)?.textContent = cms.benchCOV+' %'; }
+    if(cms.metaTitle){ document.title = cms.metaTitle; }
+    if(cms.metaDesc){
+      let m=document.querySelector('meta[name="description"]');
+      if(!m){ m=document.createElement('meta'); m.name='description'; document.head.appendChild(m); }
+      m.content=cms.metaDesc;
+    }
+    if(cms.colorAccent){
+      const r=document.documentElement.style;
+      r.setProperty('--accent', cms.colorAccent);
+      r.setProperty('--accent2', cms.colorAccent);
+    }
+  }
+
+  // Init
+  const cms = loadCMS(); applyCMS(cms);
+
+  // UI
+  const fab = $('#creatorFab'), panel=$('#creatorPanel'), editBtn=$('#creatorEdit');
+  const saveBtn=$('#creatorSave'), runBtn=$('#creatorRun'), cmds=$('#creatorCmds');
+  const exportBtn=$('#creatorExport'), importBtn=$('#creatorImportBtn'), importInp=$('#creatorImport');
+  const resetBtn=$('#creatorReset');
+
+  fab.addEventListener('click', ()=>{ panel.style.display = (panel.style.display==='none'||!panel.style.display)?'block':'none'; });
+
+  // Activer édition (contentEditable + surlignage)
+  let editing=false, editableNodes=[];
+  editBtn.addEventListener('click', ()=>{
+    editing=!editing;
+    const sels=[SEL.heroTitle,SEL.heroLead,SEL.cta1,SEL.cta2,SEL.how1t,SEL.how1p,SEL.how2t,SEL.how2p,SEL.how3t,SEL.how3p,SEL.app1t,SEL.app1p,SEL.app2t,SEL.app2p,SEL.app3t,SEL.app3p,SEL.benchTTV,SEL.benchVSR,SEL.benchCOV,SEL.footer];
+    editableNodes = sels.map(s=>$(s)).filter(Boolean);
+    editableNodes.forEach(n=>{ n.contentEditable = editing?'plaintext-only':'false'; n.classList.toggle('creator-hl', editing); });
+    editBtn.textContent = editing ? 'Désactiver édition' : 'Activer édition';
+    note(editing?'Édition activée : clique un texte pour le modifier, puis “Sauver”.':'Édition désactivée.');
+  });
+
+  // Sauver (DOM -> CMS -> localStorage)
+  saveBtn.addEventListener('click', ()=>{
+    const pick = (sel, k)=>{ const n=$(sel); if(n) cms[k]=n.textContent.trim(); };
+    pick(SEL.heroTitle,'heroTitle'); pick(SEL.heroLead,'heroLead');
+    pick(SEL.cta1,'cta1'); pick(SEL.cta2,'cta2');
+    pick(SEL.how1t,'how1t'); pick(SEL.how1p,'how1p');
+    pick(SEL.how2t,'how2t'); pick(SEL.how2p,'how2p');
+    pick(SEL.how3t,'how3t'); pick(SEL.how3p,'how3p');
+    pick(SEL.app1t,'app1t'); pick(SEL.app1p,'app1p');
+    pick(SEL.app2t,'app2t'); pick(SEL.app2p,'app2p');
+    pick(SEL.app3t,'app3t'); pick(SEL.app3p,'app3p');
+    // Bench parse
+    const tt=$(SEL.benchTTV)?.textContent||''; const vs=$(SEL.benchVSR)?.textContent||''; const cv=$(SEL.benchCOV)?.textContent||'';
+    const num = s=>{const m=(s.match(/\d+/)||[])[0]; return m?parseInt(m,10):undefined;}
+    const ntt=num(tt), nvs=num(vs), ncv=num(cv);
+    if(ntt!==undefined) cms.benchTTV=ntt;
+    if(nvs!==undefined) cms.benchVSR=nvs;
+    if(ncv!==undefined) cms.benchCOV=ncv;
+    saveCMS(cms);
+    note('Sauvegardé (localStorage). Pense à Exporter JSON pour versionner dans GitHub.');
+  });
+
+  // Commandes (parser ultra-simple)
+  function applyCommand(line){
+    const [k,...rest]=line.split(':'); if(!k||!rest.length) return;
+    const v = rest.join(':').trim();
+    const set = (sel,val)=>{ const n=$(sel); if(n){ n.textContent=val; } };
+    switch(k.trim().toLowerCase()){
+      case 'titre': set(SEL.heroTitle,v); cms.heroTitle=v; break;
+      case 'sous-titre': set(SEL.heroLead,v); cms.heroLead=v; break;
+      case 'cta1': set(SEL.cta1,v); cms.cta1=v; break;
+      case 'cta2': set(SEL.cta2,v); cms.cta2=v; break;
+      case 'tile1.titre': set(SEL.app1t,v); cms.app1t=v; break;
+      case 'tile1.texte': set(SEL.app1p,v); cms.app1p=v; break;
+      case 'tile2.titre': set(SEL.app2t,v); cms.app2t=v; break;
+      case 'tile2.texte': set(SEL.app2p,v); cms.app2p=v; break;
+      case 'tile3.titre': set(SEL.app3t,v); cms.app3t=v; break;
+      case 'tile3.texte': set(SEL.app3p,v); cms.app3p=v; break;
+      case 'bench.ttv': $(SEL.benchTTV).textContent='< '+parseInt(v,10)+' s'; cms.benchTTV=parseInt(v,10); break;
+      case 'bench.vsr': $(SEL.benchVSR).textContent='≥ '+parseInt(v,10)+' %'; cms.benchVSR=parseInt(v,10); break;
+      case 'bench.cov': $(SEL.benchCOV).textContent=parseInt(v,10)+' %'; cms.benchCOV=parseInt(v,10); break;
+      case 'meta.title': document.title=v; cms.metaTitle=v; break;
+      case 'meta.description':
+      case 'meta.desc': {
+        let m=document.querySelector('meta[name="description"]');
+        if(!m){ m=document.createElement('meta'); m.name='description'; document.head.appendChild(m); }
+        m.content=v; cms.metaDesc=v; break;
+      }
+      case 'couleur.accent': {
+        const r=document.documentElement.style;
+        r.setProperty('--accent', v); r.setProperty('--accent2', v); cms.colorAccent=v; break;
+      }
+      default: /* inconnu, ignore */ break;
+    }
+  }
+  runBtn.addEventListener('click', ()=>{
+    const lines = (cmds.value||'').split('\n').map(s=>s.trim()).filter(Boolean);
+    lines.forEach(applyCommand);
+    saveCMS(cms); note('Commandes appliquées et sauvegardées.');
+  });
+
+  // Chips -> ajout dans la zone
+  document.querySelectorAll('.creator-chip').forEach(ch=>{
+    ch.addEventListener('click', ()=>{ cmds.value = (cmds.value?cmds.value+'\n':'') + ch.dataset.cmd; cmds.focus(); });
+  });
+
+  // Export / Import
+  exportBtn.addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(cms,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='recallia_cms.json'; a.click();
+    URL.revokeObjectURL(url);
+  });
+  importBtn.addEventListener('click', ()=>importInp.click());
+  importInp.addEventListener('change', async (e)=>{
+    const f=e.target.files?.[0]; if(!f) return;
+    try{
+      const text = await f.text(); const data = JSON.parse(text);
+      saveCMS(data); applyCMS(data); note('Import effectué et appliqué.');
+    }catch(err){ note('Import invalide.'); }
+  });
+
+  // Reset
+  resetBtn.addEventListener('click', ()=>{
+    if(!confirm('Réinitialiser les modifications locales ?')) return;
+    localStorage.removeItem('rec_cms'); location.reload();
+  });
+})();
+</script>
+<!-- /Assistant Créateur -->
 </body>
 </html>
