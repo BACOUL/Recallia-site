@@ -271,5 +271,44 @@
     });
   }
   </script>
+  <!-- PWA: bannière "Installer l'app" -->
+<div id="pwaInstall" style="display:none;position:fixed;right:12px;bottom:12px;z-index:9999">
+  <button id="pwaBtn" class="btn" style="padding:10px 14px;border-radius:10px;background:#00C2A8;color:#0E1116">
+    Installer Recallia
+  </button>
+</div>
+
+<script>
+  // Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/Recallia-site/sw.js').catch(console.error);
+    });
+  }
+
+  // Bannière "Ajouter à l'écran d'accueil"
+  let deferredPrompt;
+  const box = document.getElementById('pwaInstall');
+  const btn = document.getElementById('pwaBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    box.style.display = 'block';
+  });
+
+  btn?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    box.style.display = 'none';
+  });
+
+  // Masquer si déjà en mode app
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    document.getElementById('pwaInstall').style.display = 'none';
+  }
+</script>
 </body>
   </html>
