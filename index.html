@@ -967,6 +967,45 @@ couleur.accent: #00C2A8"></textarea>
   // Colorise aussi juste après le clic scan
   scanBtn.addEventListener('click', ()=> setTimeout(paint, 400));
 })();
+</script>
+  <!-- Patch B · Mémoire + Publication GitHub (Issue) -->
+<script>
+(function(){
+  const headRow = document.querySelector('.rc-head .rc-row');
+  if(!headRow) return;
+
+  // Bouton Sync mémoire
+  const bSync = document.createElement('button');
+  bSync.className='rc-btn'; bSync.textContent='Sync mémoire';
+  headRow.prepend(bSync);
+
+  // Bouton Publier GitHub (Issue)
+  const bPub = document.createElement('button');
+  bPub.className='rc-btn'; bPub.textContent='Publier GitHub';
+  headRow.prepend(bPub);
+
+  const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
+
+  bSync.onclick = async ()=>{
+    try{
+      const cms = await fetch(BASE+'memory/site-cms.json',{cache:'no-store'}).then(r=>r.json());
+      localStorage.setItem('rec_cms', JSON.stringify(cms));
+      alert('Mémoire synchronisée depuis /memory/site-cms.json ✔');
+      location.reload();
+    }catch{ alert('Impossible de charger /memory/site-cms.json'); }
+  };
+
+  bPub.onclick = ()=>{
+    // Détecte owner/repo depuis l’URL GitHub Pages
+    const owner = (location.hostname.split('.')[0]||'').trim() || 'bacoul';
+    const repo = (location.pathname.split('/')[1]||'').trim() || 'Recallia-site';
+    const cms = localStorage.getItem('rec_cms') || '{}';
+    const title = encodeURIComponent('Apply CMS from site');
+    const body = encodeURIComponent(cms + '\n\n---\n_Label to apply:_ **apply-cms**');
+    const url = `https://github.com/${owner}/${repo}/issues/new?title=${title}&body=${body}`;
+    window.open(url,'_blank');
+  };
+})();
 </script><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
