@@ -930,6 +930,43 @@ couleur.accent: #00C2A8"></textarea>
   };
 })();
 </script>
-<!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+<!-- Patch A · Encadrés rouge/vert + finition Alertes -->
+<style>
+  .rc-card.ok{border:1px solid #065f46!important; box-shadow:0 0 0 2px rgba(16,185,129,.25) inset}
+  .rc-card.err{border:1px solid #b91c1c!important; box-shadow:0 0 0 2px rgba(239,68,68,.25) inset}
+  .rc-hint{font-size:12px;color:#9aa4b2;margin-top:6px}
+</style>
+<script>
+(function(){
+  const alertsBox = document.getElementById('rcAlerts');
+  const scanBtn = document.getElementById('rcScan');
+  if(!alertsBox || !scanBtn) return;
+
+  // Colorise automatiquement les cartes après un scan
+  const paint = () => {
+    [...alertsBox.querySelectorAll('.rc-card')].forEach(card=>{
+      const title = (card.querySelector('h4')?.textContent||'').toLowerCase();
+      card.classList.remove('ok','err');
+      if(title.includes('tout est ok')) card.classList.add('ok');
+      else card.classList.add('err');
+      // Ajoute une mini piste d’action si absente
+      if(!card.querySelector('.rc-hint')){
+        const hint=document.createElement('div');
+        hint.className='rc-hint';
+        hint.textContent = card.classList.contains('ok')
+          ? 'Tout est conforme ✅'
+          : 'Clique “Appliquer la correction” (si dispo) ou va dans l’onglet Fichiers.';
+        card.appendChild(hint);
+      }
+    });
+  };
+
+  // Réagit aux changements de la liste
+  const mo = new MutationObserver(paint);
+  mo.observe(alertsBox, {childList:true, subtree:true});
+  // Colorise aussi juste après le clic scan
+  scanBtn.addEventListener('click', ()=> setTimeout(paint, 400));
+})();
+</script><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
