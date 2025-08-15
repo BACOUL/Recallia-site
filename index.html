@@ -2013,6 +2013,96 @@ couleur.accent: #00C2A8"></textarea>
   };
 })();
 </script>
-<!-- ===== /Créateur v32 ===== -->!-- /Créateur v31 --><!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+<!-- === Recallia · Assistant (privé) v1.1 — drop-in === -->
+<style>
+  #rc-chat{position:fixed;right:16px;bottom:16px;z-index:9998}
+  #rc-chat button{background:var(--acc,#00C2A8);color:#0E1116;border:0;border-radius:999px;padding:10px 14px;font-weight:800}
+  #rc-chat .panel{position:fixed;right:16px;bottom:70px;width:min(92vw,420px);max-height:70vh;overflow:auto;
+    background:#0B1220;color:#E5E7EB;border:1px solid #1F2937;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.5);display:none}
+  #rc-chat .head{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #1F2937}
+  #rc-chat .msgs{padding:10px;display:grid;gap:10px}
+  #rc-chat .m{padding:10px;border-radius:10px;max-width:85%}
+  #rc-chat .me{background:#0e2a2a;justify-self:end}
+  #rc-chat .ai{background:#0b1322;border:1px solid #1F2937}
+  #rc-chat .input{display:flex;gap:6px;padding:10px;border-top:1px solid #1F2937}
+  #rc-chat input{flex:1;background:#0E1116;border:1px solid #334155;border-radius:10px;color:#E5E7EB;padding:10px}
+</style>
+<div id="rc-chat">
+  <div class="panel" id="rcp">
+    <div class="head">
+      <strong>Assistant Recallia (privé)</strong>
+      <button id="rc-close" style="border-radius:10px">Fermer</button>
+    </div>
+    <div class="msgs" id="rc-msgs">
+      <div class="m ai">Bonjour 👋 Que veux-tu faire ? (ex : “résume les KPIs d’hier”, “propose 3 idées SEO”, “écris un mail client bref”, “check PWA/SEO”)</div>
+    </div>
+    <div class="input">
+      <input id="rc-input" placeholder="Écris ta demande…" />
+      <button id="rc-send" style="border-radius:10px">Envoyer</button>
+    </div>
+  </div>
+  <button id="rc-open">Assistant</button>
+</div>
+<script>
+(function(){
+  // 1) Quand tu auras créé le proxy (étape 2), remplace par son URL:
+  const API_URL = ""; // ex: "https://TON-WORKER.workers.dev/chat"
+  const MOCK_FALLBACK = true; // répond en démo si API_URL vide / en erreur
+
+  const open = document.getElementById('rc-open');
+  const close = document.getElementById('rc-close');
+  const panel = document.getElementById('rcp');
+  const msgs  = document.getElementById('rc-msgs');
+  const input = document.getElementById('rc-input');
+  const send  = document.getElementById('rc-send');
+
+  open.onclick = ()=> panel.style.display = 'block';
+  close.onclick= ()=> panel.style.display = 'none';
+
+  const history = [];
+  function push(role, text){ const d=document.createElement('div'); d.className='m '+(role==='user'?'me':'ai'); d.textContent=text; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; }
+
+  async function mockReply(q){
+    // petites réponses utiles pour tester sans API
+    if(/kpi|ttv|vsr|bench/i.test(q)) return "KPIs (démo) : TTV médian < 60 s, VSR ≥ 90 %, couverture de preuve 100%.";
+    if(/seo|pwa|manifest|sw/i.test(q)) return "Check (démo) : ajoute `manifest.webmanifest`, icônes 192/512, et enregistre `sw.js` pour PWA.";
+    if(/mail|email/i.test(q)) return "Objet : Rappel document manquant\nBonjour, je vous envoie l’attestation demandée. Bien cordialement.";
+    return "Compris (démo). Quand l’API sera branchée, je donnerai des réponses complètes et actionnables.";
+  }
+
+  async function ask(){
+    const q=(input.value||"").trim(); if(!q) return; input.value=''; push('user', q);
+    const thinking=document.createElement('div'); thinking.className='m ai'; thinking.textContent='…'; msgs.appendChild(thinking);
+
+    async function callAPI(){
+      const res = await fetch(API_URL, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ messages: history })
+      });
+      const data = await res.json();
+      return data?.text || '(pas de réponse)';
+    }
+
+    try{
+      let answer;
+      if(!API_URL){ if(MOCK_FALLBACK){ answer = await mockReply(q); } else { throw new Error('API non configurée'); } }
+      else{
+        history.push({role:'user', content:q});
+        answer = await callAPI();
+        history.push({role:'assistant', content:answer});
+      }
+      thinking.remove(); push('assistant', answer);
+    }catch(e){
+      thinking.remove();
+      if(MOCK_FALLBACK){ push('assistant', await mockReply(q)); }
+      else{ push('assistant','Erreur réseau. Configure l’API_URL.'); }
+    }
+  }
+
+  send.onclick = ask;
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter') ask(); });
+})();
+</script>
+<!-- === /Assistant v1.1 === --><!-- ===== /Créateur v32 ===== -->!-- /Créateur v31 --><!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
