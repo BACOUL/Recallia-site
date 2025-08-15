@@ -2,2107 +2,263 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Recallia — Votre mémoire IA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Recallia : votre mémoire IA qui rappelle, exécute et fournit une preuve vérifiable pour chaque action." />
+  <meta name="description" content="Recallia rappelle, exécute et prouve. Vous validez, on le fait. Chaque action réussie a un reçu horodaté (hash + journal d’audit)." />
   <meta name="theme-color" content="#00C2A8" />
-  <link rel="canonical" href="https://bacoul.github.io/Recallia-site/">
-  <!-- Manifest (PWA) -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <!-- Polices -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sora:wght@700&display=swap" rel="stylesheet">
-  <!-- OG -->
-  <meta property="og:title" content="Recallia — Votre mémoire IA">
-  <meta property="og:description" content="Vous validez, on exécute, on prouve. Reçus vérifiables (hash + audit)." />
+  <link rel="manifest" href="manifeste.webmanifest" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   <style>
     :root{
-      --bg:#0E1116; --card:#0c1421; --line:#1b2432; --text:#F8FAFC; --muted:#A3AEC0;
-      --accent:#00C2A8; --accent2:#14B8A6; --ink:#0E1116;
-      --radius:18px; --pad:22px; --w:980px;
+      --bg:#0E1116; --panel:#131821; --text:#E8F1F2; --muted:#A7B0B5;
+      --accent:#00C2A8; --accent-2: rgba(0,194,168,.12);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;color:var(--text);
-      background:
-        radial-gradient(900px 600px at 90% -10%, rgba(0,194,168,.10), transparent 60%),
-        radial-gradient(700px 500px at -10% 120%, rgba(20,184,166,.08), transparent 60%),
-        var(--bg);
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial
-    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,"Helvetica Neue",Arial,sans-serif;}
     a{color:inherit;text-decoration:none}
-    .wrap{max-width:var(--w);margin:0 auto;padding:26px 18px}
-    /* NAV */
-    .nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand strong{font-family:Sora,Inter,Arial}
-    .badge{font-size:12px;color:#cbd5e1;border:1px solid var(--line);padding:4px 10px;border-radius:999px}
-    .links a{color:#cbd5e1;margin-left:16px}
-    .links a:hover{color:#fff}
-    /* HERO minimal */
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;margin:12px 0 32px}
-    @media (max-width:900px){.hero{grid-template-columns:1fr}}
-    h1{font:800 40px/1.12 Sora,Inter,Arial;margin:0 0 12px}
-    p.lead{color:var(--muted);font-size:18px;margin:0}
-    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:14px;border:1px solid var(--line);font-weight:600}
-    .primary{background:linear-gradient(180deg,var(--accent),var(--accent2));color:var(--ink);border:none}
-    .ghost{background:transparent;color:#fff}
-    .card{background:linear-gradient(180deg,#0f1623,#0b1220);border:1px solid var(--line);border-radius:var(--radius);padding:var(--pad)}
-    .mini{font-size:13px;color:var(--muted)}
-    /* Sections */
-    .sec{margin:56px 0 0}
-    h2{font-size:26px;margin:0 0 10px}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    @media (max-width:900px){.steps{grid-template-columns:1fr}}
-    .tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
-    .tile h3{margin:0 0 6px;font-size:18px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    @media (max-width:900px){.grid{grid-template-columns:1fr}}
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px}
-    .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
-    .kpi h3{margin:0 0 6px;color:#9aa4b2;font-size:13px}
-    .kpi strong{font-size:22px}
-    /* Footer */
-    .footer{margin:56px 0 18px;color:#94a3b8;border-top:1px solid var(--line);padding-top:18px;font-size:14px}
-    /* Assistant (démo légère) */
-    .rec-fab{position:fixed;right:18px;bottom:18px;border:0;border-radius:999px;
-      padding:14px 16px;background:linear-gradient(180deg,var(--accent),var(--accent2));color:var(--ink);
-      font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:9999}
-    .rec-panel{position:fixed;right:18px;bottom:82px;width:min(92vw,380px);
-      background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;
-      box-shadow:0 14px 40px rgba(0,0,0,.45);display:none;z-index:9999}
-    .rec-head{display:flex;align-items:center;justify-content:space-between;
-      padding:10px 12px;background:#0a101b;border-bottom:1px solid var(--line)}
-    .rec-body{max-height:54vh;overflow:auto;padding:10px}
-    .rec-msg{background:#0f1623;border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
-    .rec-me{background:#102033;border-color:#24405a}
-    .rec-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);background:#0a101b}
-    .rec-input input{flex:1;border:1px solid var(--line);background:#0c1421;color:#e5edf5;border-radius:10px;padding:10px}
-    .rec-input button{border:1px solid #2b3645;background:#111c2b;color:#fff;border-radius:10px;padding:10px 12px}
-    .rec-chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:6px 10px;margin:6px 6px 0 0;
-      font-size:12px;color:#cbd5e1;cursor:pointer}
-    /* CTA install discret */
-    .install{margin-top:10px}
-    .install small{color:var(--muted)}
+    .wrap{max-width:1120px;margin:0 auto;padding:28px 20px}
+    header{display:flex;align-items:center;gap:12px}
+    .logo{display:inline-flex;align-items:center;gap:10px}
+    .badge{background:var(--accent-2);color:var(--accent);padding:4px 10px;border-radius:999px;font-size:12px}
+    nav{margin-left:auto;display:flex;gap:14px;flex-wrap:wrap}
+    .btn{background:var(--accent);color:#002d27;border:0;padding:12px 18px;border-radius:10px;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid #2b333d;color:var(--text)}
+    .hero{margin:26px 0 8px;display:grid;gap:18px}
+    h1{font-size:clamp(34px,5vw,56px);line-height:1.05;margin:0}
+    .lead{color:var(--muted);font-size:18px;max-width:850px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:24px 0}
+    .card{background:var(--panel);border:1px solid #1c2430;border-radius:14px;padding:16px}
+    .kpi{font-size:13px;color:var(--muted);margin:0 0 6px}
+    .kpi strong{color:var(--text)}
+    .code{background:#0b0f15;border:1px solid #1c2430;border-radius:12px;padding:14px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+    .section h2{margin:6px 0 10px;font-size:26px}
+    footer{margin-top:34px;padding:22px 0;border-top:1px solid #1c2430;color:#8fa1aa;font-size:14px}
+    /* PWA install banner */
+    #pwaInstall{position:fixed;right:12px;bottom:12px;display:none;background:#101521;border:1px solid #1c2430;border-radius:14px;padding:14px;gap:10px;align-items:center;z-index:20}
+    #pwaInstall .btn{padding:10px 14px}
+    /* Créateur (fab + panneau) */
+    #creatorFab{position:fixed;right:12px;bottom:82px;background:var(--accent);color:#002d27;border:0;border-radius:999px;padding:10px 14px;font-weight:800;display:none;z-index:20}
+    #creator{position:fixed;right:12px;bottom:82px;max-width:420px;width:calc(100% - 24px);display:none;background:#0f141d;border:1px solid #1c2430;border-radius:16px;padding:14px;z-index:21}
+    #creator h3{margin:0 0 8px}
+    #creator label{font-size:12px;color:#93a0a8}
+    #creator input{width:100%;margin:4px 0 12px;padding:10px;border-radius:10px;border:1px solid #233042;background:#0b1119;color:var(--text)}
+    #creator .row{display:flex;gap:10px;flex-wrap:wrap}
+    #creator .row .btn{flex:1}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:var(--accent-2);color:var(--accent);padding:6px 10px;border-radius:999px;font-weight:700}
+    .ok{color:#1bd5a6}.warn{color:#ffbe55}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <!-- NAV -->
-    <div class="nav">
-      <a class="brand" href="#top" aria-label="Accueil Recallia">
-        <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
-          <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0%" stop-color="#00C2A8"/><stop offset="100%" stop-color="#14B8A6"/></linearGradient></defs>
-          <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#g)"/>
-          <path d="M16 33V15h10.2c4.9 0 7.8 2.5 7.8 6.3c0 3-1.8 5.3-4.8 6.1L34 33h-5.3l-4.7-4.9H20v4.9h-4zm4-8.5h6c2.2 0 3.7-1.2 3.7-3.1S28.2 18 26 18h-6v6.5z" fill="#0E1116"/></svg>
+    <header>
+      <div class="logo">
+        <div class="pill">R</div>
         <strong>Recallia</strong>
-        <span class="badge">v25</span>
-      </a>
-      <div class="links">
-        <a href="#app">App</a>
-        <a href="#how">Comment ça marche</a>
-        <a href="#bench">Benchmarks</a>
-        <a href="#help">Aide</a>
+        <span class="badge">v1</span>
       </div>
-    </div>
+      <nav>
+        <a href="#app" class="btn">Essayer maintenant</a>
+        <a href="#preuve" class="btn ghost">Voir une preuve</a>
+      </nav>
+    </header>
 
-    <!-- HERO -->
-    <section class="hero" id="top">
-      <div>
-        <h1>Votre mémoire IA — simple, calme, efficace.</h1>
-        <p class="lead">Vous validez, on le fait. Chaque action réussie a un <strong>reçu vérifiable</strong> (hash + audit).</p>
-        <div class="cta">
-          <a class="btn primary" href="#app">Essayer maintenant</a>
-          <a class="btn ghost" href="#proof">Voir une preuve</a>
-        </div>
-        <div class="install"><small>Pour l’app : menu du navigateur → “Installer l’application”.</small></div>
+    <section class="hero">
+      <h1 id="heroTitle">Votre mémoire IA qui rappelle, exécute, prouve.</h1>
+      <p class="lead" id="heroSub">Vous validez, on le fait. Chaque action réussie a un reçu horodaté (hash + journal d’audit).</p>
+      <div class="cta">
+        <a href="#app" class="btn" id="heroCta">Démarrer</a>
+        <button class="btn ghost" id="installBtn" style="display:none">Installer l’app</button>
       </div>
-      <div class="card" id="proof" aria-label="Exemple de preuve">
-        <h2>Exemple de preuve</h2>
-        <p class="mini">Reçu horodaté + SHA-256 (démonstration).</p>
-<pre>{
+      <div class="cards">
+        <div class="card"><p class="kpi">TTV médian</p><h3><strong>&lt; 60 s</strong></h3></div>
+        <div class="card"><p class="kpi">VSR</p><h3><strong>&ge; 90 %</strong></h3></div>
+        <div class="card"><p class="kpi">Preuve</p><h3><strong>100 % actions réussies</strong></h3></div>
+      </div>
+    </section>
+
+    <section class="section" id="preuve">
+      <h2>Exemple de preuve</h2>
+      <div class="code" aria-label="Exemple de reçu de preuve">
+{
   "id": "p_demo",
   "action_id": "anniv.mail",
   "timestamp": "2025-08-15T12:00:00Z",
   "sha256": "abc123…",
-  "result": {"status":"success","notes":"Message programmé"}
-}</pre>
-        <p class="mini">La preuve réelle inclut un hash vérifiable et un audit chaîné.</p>
+  "result": {"status":"success","notes":"Message envoyé"}
+}
       </div>
     </section>
 
-    <!-- HOW -->
-    <section class="sec" id="how">
-      <h2>Comment ça marche</h2>
-      <div class="steps">
-        <div class="tile"><h3>1) Dites ce qu’il faut faire</h3><p>“Rappel médecin demain 10h”, “Payer facture EDF”, “Anniversaire de Mamie”…</p></div>
-        <div class="tile"><h3>2) Validez</h3><p>Rien ne part sans votre OK. Caps et garde-fous activés.</p></div>
-        <div class="tile"><h3>3) Recevez la preuve</h3><p>Reçus JSON/PDF/ICS, horodatés et hachés.</p></div>
+    <section class="section">
+      <h2>Ce que fait Recallia</h2>
+      <div class="cards">
+        <div class="card"><strong>Rappelle</strong><br /><span class="muted">Anniversaires, rendez-vous, échéances.</span></div>
+        <div class="card"><strong>Exécute</strong><br /><span class="muted">Envoie d’emails, formulaires, relances.</span></div>
+        <div class="card"><strong>Prouve</strong><br /><span class="muted">Reçus JSON/PDF/ICS, horodatés + hash.</span></div>
+        <div class="card"><strong>Contrôle</strong><br /><span class="muted">N0→N3, caps €, temps, risque, pause globale.</span></div>
       </div>
     </section>
 
-    <!-- APP -->
-    <section class="sec" id="app">
-      <h2>L’app Recallia (PWA)</h2>
-      <div class="grid">
-        <div class="tile"><h3>Rappels intelligents</h3><p>Anniv, médecin, factures, dossiers… au bon moment.</p></div>
-        <div class="tile"><h3>Exécution assistée</h3><p>Vous validez → on envoie, on planifie, on classe, on rapporte.</p></div>
-        <div class="tile"><h3>Preuve-ou-rien</h3><p>Chaque action réussie génère un reçu vérifiable.</p></div>
-      </div>
-      <div class="kpis">
-        <div class="kpi"><h3>TTV médian</h3><strong id="kpi-ttv">&lt; 60 s</strong></div>
-        <div class="kpi"><h3>VSR</h3><strong id="kpi-vsr">≥ 90%</strong></div>
-        <div class="kpi"><h3>Preuves/jour</h3><strong id="kpi-proof">—</strong></div>
-      </div>
-    </section>
-
-    <!-- BENCH -->
-    <section class="sec" id="bench">
-      <h2>Benchmarks (transparence)</h2>
-      <div class="grid">
-        <div class="tile"><h3>TTV médian</h3><p>&lt; 60 s</p></div>
-        <div class="tile"><h3>VSR</h3><p>≥ 90 % (2 recettes phares)</p></div>
-        <div class="tile"><h3>Couverture de preuve</h3><p>100 %</p></div>
-      </div>
-      <p class="mini">Chiffres publiés automatiquement depuis des preuves réelles.</p>
-    </section>
-
-    <!-- HELP -->
-    <section class="sec" id="help">
-      <h2>Aide & Contact</h2>
-      <div class="tile">
-        <p>Installer l’app : menu du navigateur → “Installer l’application” / “Ajouter à l’écran d’accueil”.</p>
-        <p>Support : <a href="mailto:support@recallia.app">support@recallia.app</a></p>
-        <p>Confidentialité : <a href="privacy.html">lire</a> · Mentions : <a href="mentions.html">lire</a></p>
-      </div>
-    </section>
-
-    <!-- FOOT -->
-    <footer class="footer">
-      © 2025 Recallia — “Preuve-ou-rien”. · <a href="privacy.html">Confidentialité</a> · <a href="mentions.html">Mentions</a>
+    <footer>
+      © 2025 Recallia — <a href="confidentialite.html">Confidentialité</a> · <a href="mentions-legales.html">Mentions légales</a>
     </footer>
   </div>
 
-  <!-- Défilement doux -->
-  <script>
-    document.addEventListener('click',e=>{
-      const a=e.target.closest('a[href^="#"]'); if(!a) return;
-      e.preventDefault();
-      document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
-    });
-  </script>
-
-  <!-- Assistant (démo locale, discret mais présent) -->
-  <button class="rec-fab" id="recFab">Assistant</button>
-  <div class="rec-panel" id="recPanel" role="dialog" aria-label="Assistant Recallia">
-    <div class="rec-head">
-      <strong>Assistant Recallia</strong>
-      <button id="recClose" title="Fermer" style="background:none;border:0;color:#9aa4b2;font-size:18px">✕</button>
+  <!-- Bannière d’installation PWA (affichée quand dispo) -->
+  <div id="pwaInstall" role="dialog" aria-live="polite">
+    <div>
+      <strong>Installer l’app</strong><br/><span style="color:var(--muted)">Accès rapide hors-ligne.</span>
     </div>
-    <div class="rec-body" id="recBody">
-      <div class="rec-msg">
-        Bonjour 👋 Essayez : <span class="rec-chip">rappel médecin demain 10h</span>
-        <span class="rec-chip">anniversaire Marie 20/08</span>
-        <span class="rec-chip">payer facture 123</span>
-        <span class="rec-chip">liste courses: lait, riz</span>
+    <button class="btn" id="pwaInstallBtn">Installer</button>
+  </div>
+
+  <!-- Bouton & panneau Créateur (PIN) -->
+  <button id="creatorFab">🔧 Créateur</button>
+  <div id="creator" aria-modal="true" role="dialog">
+    <h3>Créateur (privé)</h3>
+    <div style="margin-bottom:8px;color:#93a0a8">🔒 Saisi PIN pour ouvrir&nbsp;: <code>2718</code></div>
+    <div id="creatorLocked" class="row" style="margin-bottom:10px">
+      <input id="pin" placeholder="PIN" inputmode="numeric" />
+      <button class="btn" id="pinOk">Déverrouiller</button>
+    </div>
+
+    <div id="creatorForm" style="display:none">
+      <label>Titre</label><input id="fTitle" />
+      <label>Sous-titre</label><input id="fSub" />
+      <label>CTA</label><input id="fCta" />
+      <label>Couleur d’accent (hex)</label><input id="fAccent" placeholder="#00C2A8" />
+      <div class="row">
+        <button class="btn" id="apply">Appliquer</button>
+        <button class="btn ghost" id="propose">Proposer</button>
+        <button class="btn ghost" id="save">Sauver</button>
       </div>
-    </div>
-    <div class="rec-input">
-      <input id="recInput" placeholder="Demande-moi une action… (ex: rappel médecin mardi 9h)"/>
-      <button id="recSend">Envoyer</button>
+      <div style="margin-top:8px;color:#93a0a8">État : <span id="creatorState" class="warn">non sauvegardé</span></div>
     </div>
   </div>
+
   <script>
-  (function(){
-    const $ = s => document.querySelector(s);
-    const fab = $('#recFab'), panel = $('#recPanel'), body = $('#recBody'),
-          input = $('#recInput'), send = $('#recSend'), closeBtn = $('#recClose');
-
-    const toHex = buf => [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-    async function sha256(txt){ return toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt))); }
-    function addMsg(html, me=false){
-      const m = document.createElement('div'); m.className='rec-msg'+(me?' rec-me':''); m.innerHTML = html;
-      body.appendChild(m); body.scrollTop = body.scrollHeight;
-    }
-    function storeProof(p){
-      const k='recallia_proofs'; const arr = JSON.parse(localStorage.getItem(k)||'[]'); arr.unshift(p);
-      localStorage.setItem(k, JSON.stringify(arr.slice(0,50)));
-    }
-    function dtstamp(d){ return d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z' }
-
-    async function proof(kind, title, result){
-      const p = { id:'p_'+Date.now(), action_id:kind, title, kind,
-        timestamp:new Date().toISOString(), level:'N1', costs:{eur:0,sec:5}, result };
-      p.sha256 = await sha256(JSON.stringify(p));
-      storeProof(p);
-      addMsg(`<b>Preuve générée</b><br><pre>${JSON.stringify(p,null,2)}</pre>`);
-    }
-    function icsRdv(summary, start){
-      const end = new Date(start.getTime()+45*60000);
-      const ICS = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Recallia//FR
-BEGIN:VEVENT
-UID:${Date.now()}@recallia
-DTSTAMP:${dtstamp(new Date())}
-DTSTART:${dtstamp(start)}
-DTEND:${dtstamp(end)}
-SUMMARY:${summary}
-END:VEVENT
-END:VCALENDAR`;
-      const url = URL.createObjectURL(new Blob([ICS],{type:'text/calendar'}));
-      return {url};
-    }
-    async function handle(cmd){
-      const t = cmd.toLowerCase();
-
-      if(t.includes('rappel') && (t.includes('medecin') || t.includes('médecin'))){
-        const hMatch = /(\d{1,2})h/.exec(t); const h = hMatch ? parseInt(hMatch[1],10) : 10;
-        const when = new Date(Date.now()+24*3600*1000); when.setHours(h,0,0,0);
-        const {url} = icsRdv('Rendez-vous médecin', when);
-        addMsg(`✅ Rappel créé. <a href="${url}" download="rappel-medecin.ics">Télécharger l’événement (.ics)</a>`);
-        await proof('rdv.medecin','Rappel médecin', {status:'success', notes:`ICS ${when.toLocaleString()}`});
-        return;
-      }
-      if(t.includes('anniversaire')){
-        await proof('anniv.msg','Préparer message anniversaire', {status:'success', notes:'Brouillon prêt (SMS/Email)'});
-        addMsg('🎉 Brouillon de message d’anniversaire préparé (démo).');
-        return;
-      }
-      if(t.includes('payer') || t.includes('facture')){
-        await proof('bill.pay.draft','Paiement facture (brouillon)', {status:'success', notes:'Préparation SEPA/QR (non exécuté)'});
-        addMsg('💳 Brouillon de paiement créé (pas d’envoi réel en démo).');
-        return;
-      }
-      if(t.includes('courses') || t.includes('course')){
-        const items = (t.split(':')[1]||'').trim() || 'lait, riz';
-        await proof('groceries.list','Liste de courses', {status:'success', items:items.split(',').map(s=>s.trim())});
-        addMsg('🧺 Liste notée : '+items);
-        return;
-      }
-      addMsg(`Je peux (démo) :<br>• <em>rappel médecin demain 10h</em><br>• <em>anniversaire Marie 20/08</em><br>• <em>payer facture 123</em> (brouillon)<br>• <em>liste courses: lait, riz</em>`);
-    }
-    fab.onclick = ()=>{ panel.style.display = 'block'; input.focus(); };
-    closeBtn.onclick = ()=> panel.style.display = 'none';
-    send.onclick = async ()=>{ const v=input.value.trim(); if(!v) return; addMsg(v, true); input.value=''; await handle(v); };
-    input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); send.click(); } });
-    document.getElementById('recPanel').addEventListener('click', e=>{
-      const chip = e.target.closest('.rec-chip'); if(!chip) return;
-      input.value = chip.textContent; send.click();
-    });
-  })();
-  </script>
-
-  <!-- PWA : enregistrement SW + bouton install (discret) -->
-  <script>
-  (function(){
-    const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
-    // Enregistre le Service Worker (si présent)
-    if('serviceWorker' in navigator){ navigator.serviceWorker.register(BASE+'sw.js').catch(()=>{}); }
-
-    // Bouton d'installation si le navigateur le propose (Android/Chrome)
-    let deferred; const btn=document.getElementById('install-btn');
-    window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferred=e; if(btn) btn.style.display='inline-flex'; });
-    btn?.addEventListener('click', async ()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; btn.style.display='none'; });
-  })();
-  </script>
-
-  <!-- Données structurées -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"SoftwareApplication",
-    "name":"Recallia",
-    "description":"Votre mémoire IA : rappelle, exécute et prouve.",
-    "applicationCategory":"ProductivityApplication",
-    "operatingSystem":"Web,PWA",
-    "url":"https://bacoul.github.io/Recallia-site/",
-    "offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}
-  }
-  </script>
-  <!-- Recallia · Assistant Créateur (édition en live + sauvegarde locale) -->
-<style>
-  .creator-fab{position:fixed;left:18px;bottom:18px;z-index:9999;border:0;border-radius:999px;
-    padding:12px 14px;background:#111c2b;color:#e5edf5;border:1px solid #2b3645;font:600 14px/1 Inter}
-  .creator-panel{position:fixed;left:18px;bottom:74px;width:min(92vw,420px);max-height:70vh;overflow:auto;
-    background:#0c1421;border:1px solid #1b2432;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.45);
-    padding:12px;display:none;z-index:9999;color:#e5edf5;font:14px Inter,system-ui}
-  .creator-panel h4{margin:2px 0 8px;font:700 14px Inter;color:#cbd5e1}
-  .creator-panel .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-  .creator-panel input,.creator-panel textarea{width:100%;background:#0f1623;border:1px solid #1b2432;color:#e5edf5;border-radius:10px;padding:8px}
-  .creator-panel button{background:#111c2b;border:1px solid #2b3645;color:#e5edf5;border-radius:10px;padding:8px 10px}
-  .creator-chip{display:inline-block;border:1px solid #2b3645;border-radius:999px;padding:6px 10px;margin:6px 6px 0 0;font-size:12px;color:#cbd5e1;cursor:pointer}
-  .creator-hl{outline:2px dashed #00C2A8;outline-offset:2px}
-  .creator-mini{color:#9aa4b2;font-size:12px}
-</style>
-
-<button id="creatorFab" class="creator-fab">Créateur</button>
-<div id="creatorPanel" class="creator-panel" role="dialog" aria-label="Assistant Créateur">
-  <h4>Assistant Créateur</h4>
-  <div class="row">
-    <button id="creatorEdit">Activer édition</button>
-    <button id="creatorSave">Sauver</button>
-    <button id="creatorExport">Exporter JSON</button>
-    <label style="display:inline-flex;gap:6px;align-items:center">
-      <input id="creatorImport" type="file" accept="application/json" style="display:none">
-      <button id="creatorImportBtn">Importer JSON</button>
-    </label>
-    <button id="creatorReset">Réinitialiser</button>
-  </div>
-  <div class="creator-mini">Commandes rapides (une par ligne) :</div>
-  <div style="margin-top:6px">
-    <span class="creator-chip" data-cmd="titre: Votre mémoire IA — simple, calme, efficace.">titre…</span>
-    <span class="creator-chip" data-cmd="sous-titre: Vous validez, on le fait. Chaque action réussie a un reçu vérifiable.">sous-titre…</span>
-    <span class="creator-chip" data-cmd="cta1: Essayer maintenant">cta1…</span>
-    <span class="creator-chip" data-cmd="cta2: Voir une preuve">cta2…</span>
-    <span class="creator-chip" data-cmd="tile1.titre: Rappels intelligents">tile1.titre…</span>
-    <span class="creator-chip" data-cmd="tile1.texte: Anniv, médecin, factures… au bon moment.">tile1.texte…</span>
-    <span class="creator-chip" data-cmd="bench.ttv: 45">bench.ttv…</span>
-    <span class="creator-chip" data-cmd="meta.title: Recallia — Votre mémoire IA">meta.title…</span>
-    <span class="creator-chip" data-cmd="meta.description: Rappelle, exécute et prouve (reçus vérifiables).">meta.desc…</span>
-    <span class="creator-chip" data-cmd="couleur.accent: #00C2A8">couleur…</span>
-  </div>
-  <textarea id="creatorCmds" rows="6" placeholder="Exemples:
-titre: Votre mémoire IA — simple, calme, efficace.
-sous-titre: Vous validez, on le fait...
-cta1: Essayer maintenant
-tile2.titre: Exécution assistée
-tile2.texte: Vous validez → on envoie, on planifie, on classe.
-bench.vsr: 93
-meta.title: Recallia — Mémoire IA
-couleur.accent: #00C2A8"></textarea>
-  <div class="row">
-    <button id="creatorRun">Appliquer</button>
-  </div>
-  <div id="creatorNote" class="creator-mini"></div>
-</div>
-
-<script>
-(function(){
-  // Sélecteurs clés (adaptés à ton index actuel v25/v26)
-  const SEL = {
-    heroTitle: 'section.hero h1',
-    heroLead:  'section.hero p.lead',
-    cta1:      '.cta .btn.primary',
-    cta2:      '.cta .btn.ghost',
-    how1t:     '#how .steps .tile:nth-child(1) h3',
-    how1p:     '#how .steps .tile:nth-child(1) p',
-    how2t:     '#how .steps .tile:nth-child(2) h3',
-    how2p:     '#how .steps .tile:nth-child(2) p',
-    how3t:     '#how .steps .tile:nth-child(3) h3',
-    how3p:     '#how .steps .tile:nth-child(3) p',
-    app1t:     '#app .grid .tile:nth-child(1) h3',
-    app1p:     '#app .grid .tile:nth-child(1) p',
-    app2t:     '#app .grid .tile:nth-child(2) h3',
-    app2p:     '#app .grid .tile:nth-child(2) p',
-    app3t:     '#app .grid .tile:nth-child(3) h3',
-    app3p:     '#app .grid .tile:nth-child(3) p',
-    benchTTV:  '#bench .grid .tile:nth-child(1) p',
-    benchVSR:  '#bench .grid .tile:nth-child(2) p',
-    benchCOV:  '#bench .grid .tile:nth-child(3) p',
-    footer:    'footer.footer'
-  };
-
-  const $ = (s)=>document.querySelector(s);
-  const note = (msg)=>{ const el=$('#creatorNote'); if(el){ el.textContent=msg; } };
-
-  // Chargement & application du "CMS" local
-  function loadCMS(){ try{return JSON.parse(localStorage.getItem('rec_cms')||'{}')}catch(_){return{}}}
-  function saveCMS(data){ localStorage.setItem('rec_cms', JSON.stringify(data)); }
-  function applyCMS(cms){
-    const set = (sel, val)=>{ const n=$(sel); if(n && typeof val==='string'){ n.textContent = val; } };
-    set(SEL.heroTitle, cms.heroTitle);
-    set(SEL.heroLead,  cms.heroLead);
-    set(SEL.cta1,      cms.cta1);
-    set(SEL.cta2,      cms.cta2);
-    set(SEL.how1t,     cms.how1t); set(SEL.how1p, cms.how1p);
-    set(SEL.how2t,     cms.how2t); set(SEL.how2p, cms.how2p);
-    set(SEL.how3t,     cms.how3t); set(SEL.how3p, cms.how3p);
-    set(SEL.app1t,     cms.app1t); set(SEL.app1p, cms.app1p);
-    set(SEL.app2t,     cms.app2t); set(SEL.app2p, cms.app2p);
-    set(SEL.app3t,     cms.app3t); set(SEL.app3p, cms.app3p);
-    if(typeof cms.benchTTV==='number'){ $(SEL.benchTTV)?.textContent = '< '+cms.benchTTV+' s'; }
-    if(typeof cms.benchVSR==='number'){ $(SEL.benchVSR)?.textContent = '≥ '+cms.benchVSR+' %'; }
-    if(typeof cms.benchCOV==='number'){ $(SEL.benchCOV)?.textContent = cms.benchCOV+' %'; }
-    if(cms.metaTitle){ document.title = cms.metaTitle; }
-    if(cms.metaDesc){
-      let m=document.querySelector('meta[name="description"]');
-      if(!m){ m=document.createElement('meta'); m.name='description'; document.head.appendChild(m); }
-      m.content=cms.metaDesc;
-    }
-    if(cms.colorAccent){
-      const r=document.documentElement.style;
-      r.setProperty('--accent', cms.colorAccent);
-      r.setProperty('--accent2', cms.colorAccent);
-    }
-  }
-
-  // Init
-  const cms = loadCMS(); applyCMS(cms);
-
-  // UI
-  const fab = $('#creatorFab'), panel=$('#creatorPanel'), editBtn=$('#creatorEdit');
-  const saveBtn=$('#creatorSave'), runBtn=$('#creatorRun'), cmds=$('#creatorCmds');
-  const exportBtn=$('#creatorExport'), importBtn=$('#creatorImportBtn'), importInp=$('#creatorImport');
-  const resetBtn=$('#creatorReset');
-
-  fab.addEventListener('click', ()=>{ panel.style.display = (panel.style.display==='none'||!panel.style.display)?'block':'none'; });
-
-  // Activer édition (contentEditable + surlignage)
-  let editing=false, editableNodes=[];
-  editBtn.addEventListener('click', ()=>{
-    editing=!editing;
-    const sels=[SEL.heroTitle,SEL.heroLead,SEL.cta1,SEL.cta2,SEL.how1t,SEL.how1p,SEL.how2t,SEL.how2p,SEL.how3t,SEL.how3p,SEL.app1t,SEL.app1p,SEL.app2t,SEL.app2p,SEL.app3t,SEL.app3p,SEL.benchTTV,SEL.benchVSR,SEL.benchCOV,SEL.footer];
-    editableNodes = sels.map(s=>$(s)).filter(Boolean);
-    editableNodes.forEach(n=>{ n.contentEditable = editing?'plaintext-only':'false'; n.classList.toggle('creator-hl', editing); });
-    editBtn.textContent = editing ? 'Désactiver édition' : 'Activer édition';
-    note(editing?'Édition activée : clique un texte pour le modifier, puis “Sauver”.':'Édition désactivée.');
-  });
-
-  // Sauver (DOM -> CMS -> localStorage)
-  saveBtn.addEventListener('click', ()=>{
-    const pick = (sel, k)=>{ const n=$(sel); if(n) cms[k]=n.textContent.trim(); };
-    pick(SEL.heroTitle,'heroTitle'); pick(SEL.heroLead,'heroLead');
-    pick(SEL.cta1,'cta1'); pick(SEL.cta2,'cta2');
-    pick(SEL.how1t,'how1t'); pick(SEL.how1p,'how1p');
-    pick(SEL.how2t,'how2t'); pick(SEL.how2p,'how2p');
-    pick(SEL.how3t,'how3t'); pick(SEL.how3p,'how3p');
-    pick(SEL.app1t,'app1t'); pick(SEL.app1p,'app1p');
-    pick(SEL.app2t,'app2t'); pick(SEL.app2p,'app2p');
-    pick(SEL.app3t,'app3t'); pick(SEL.app3p,'app3p');
-    // Bench parse
-    const tt=$(SEL.benchTTV)?.textContent||''; const vs=$(SEL.benchVSR)?.textContent||''; const cv=$(SEL.benchCOV)?.textContent||'';
-    const num = s=>{const m=(s.match(/\d+/)||[])[0]; return m?parseInt(m,10):undefined;}
-    const ntt=num(tt), nvs=num(vs), ncv=num(cv);
-    if(ntt!==undefined) cms.benchTTV=ntt;
-    if(nvs!==undefined) cms.benchVSR=nvs;
-    if(ncv!==undefined) cms.benchCOV=ncv;
-    saveCMS(cms);
-    note('Sauvegardé (localStorage). Pense à Exporter JSON pour versionner dans GitHub.');
-  });
-
-  // Commandes (parser ultra-simple)
-  function applyCommand(line){
-    const [k,...rest]=line.split(':'); if(!k||!rest.length) return;
-    const v = rest.join(':').trim();
-    const set = (sel,val)=>{ const n=$(sel); if(n){ n.textContent=val; } };
-    switch(k.trim().toLowerCase()){
-      case 'titre': set(SEL.heroTitle,v); cms.heroTitle=v; break;
-      case 'sous-titre': set(SEL.heroLead,v); cms.heroLead=v; break;
-      case 'cta1': set(SEL.cta1,v); cms.cta1=v; break;
-      case 'cta2': set(SEL.cta2,v); cms.cta2=v; break;
-      case 'tile1.titre': set(SEL.app1t,v); cms.app1t=v; break;
-      case 'tile1.texte': set(SEL.app1p,v); cms.app1p=v; break;
-      case 'tile2.titre': set(SEL.app2t,v); cms.app2t=v; break;
-      case 'tile2.texte': set(SEL.app2p,v); cms.app2p=v; break;
-      case 'tile3.titre': set(SEL.app3t,v); cms.app3t=v; break;
-      case 'tile3.texte': set(SEL.app3p,v); cms.app3p=v; break;
-      case 'bench.ttv': $(SEL.benchTTV).textContent='< '+parseInt(v,10)+' s'; cms.benchTTV=parseInt(v,10); break;
-      case 'bench.vsr': $(SEL.benchVSR).textContent='≥ '+parseInt(v,10)+' %'; cms.benchVSR=parseInt(v,10); break;
-      case 'bench.cov': $(SEL.benchCOV).textContent=parseInt(v,10)+' %'; cms.benchCOV=parseInt(v,10); break;
-      case 'meta.title': document.title=v; cms.metaTitle=v; break;
-      case 'meta.description':
-      case 'meta.desc': {
-        let m=document.querySelector('meta[name="description"]');
-        if(!m){ m=document.createElement('meta'); m.name='description'; document.head.appendChild(m); }
-        m.content=v; cms.metaDesc=v; break;
-      }
-      case 'couleur.accent': {
-        const r=document.documentElement.style;
-        r.setProperty('--accent', v); r.setProperty('--accent2', v); cms.colorAccent=v; break;
-      }
-      default: /* inconnu, ignore */ break;
-    }
-  }
-  runBtn.addEventListener('click', ()=>{
-    const lines = (cmds.value||'').split('\n').map(s=>s.trim()).filter(Boolean);
-    lines.forEach(applyCommand);
-    saveCMS(cms); note('Commandes appliquées et sauvegardées.');
-  });
-
-  // Chips -> ajout dans la zone
-  document.querySelectorAll('.creator-chip').forEach(ch=>{
-    ch.addEventListener('click', ()=>{ cmds.value = (cmds.value?cmds.value+'\n':'') + ch.dataset.cmd; cmds.focus(); });
-  });
-
-  // Export / Import
-  exportBtn.addEventListener('click', ()=>{
-    const blob = new Blob([JSON.stringify(cms,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href=url; a.download='recallia_cms.json'; a.click();
-    URL.revokeObjectURL(url);
-  });
-  importBtn.addEventListener('click', ()=>importInp.click());
-  importInp.addEventListener('change', async (e)=>{
-    const f=e.target.files?.[0]; if(!f) return;
-    try{
-      const text = await f.text(); const data = JSON.parse(text);
-      saveCMS(data); applyCMS(data); note('Import effectué et appliqué.');
-    }catch(err){ note('Import invalide.'); }
-  });
-
-  // Reset
-  resetBtn.addEventListener('click', ()=>{
-    if(!confirm('Réinitialiser les modifications locales ?')) return;
-    localStorage.removeItem('rec_cms'); location.reload();
-  });
-})();
-</script>
-<!-- === Patch sécurité · Assistant Créateur v2 (fail-safe) === -->
-<style id="creatorCSS">
-.creator-fab{position:fixed;left:18px;bottom:18px;z-index:9999;border:0;border-radius:999px;
-  padding:12px 14px;background:#111c2b;color:#e5edf5;border:1px solid #2b3645;font:600 14px/1 Inter}
-.creator-panel{position:fixed;left:18px;bottom:74px;width:min(92vw,420px);max-height:70vh;overflow:auto;
-  background:#0c1421;border:1px solid #1b2432;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.45);
-  padding:12px;display:none;z-index:9999;color:#e5edf5;font:14px Inter,system-ui}
-.creator-panel h4{margin:2px 0 8px;font:700 14px Inter;color:#cbd5e1}
-.creator-mini{color:#9aa4b2;font-size:12px}
-.creator-close{background:none;border:0;color:#9aa4b2;font-size:18px;cursor:pointer}
-.creator-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-.creator-btn{background:#111c2b;border:1px solid #2b3645;color:#e5edf5;border-radius:10px;padding:8px 10px}
-</style>
-<div id="creatorMount"></div>
-<script>
-(function(){
-  // 1) S'assurer qu'on a le bouton et le panneau (sinon on les crée)
-  function ensureFab(){
-    let b = document.getElementById('creatorFab');
-    if(!b){
-      b = document.createElement('button');
-      b.id = 'creatorFab'; b.className='creator-fab'; b.textContent='Créateur';
-      document.body.appendChild(b);
-    }
-    return b;
-  }
-  function ensurePanel(){
-    let p = document.getElementById('creatorPanel');
-    if(!p){
-      p = document.createElement('div');
-      p.id='creatorPanel'; p.className='creator-panel';
-      p.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h4>Assistant Créateur</h4>
-          <button id="creatorClose" class="creator-close" title="Fermer">✕</button>
-        </div>
-        <div id="creatorNote" class="creator-mini">Prêt.</div>
-        <div class="creator-row">
-          <button id="creatorEdit" class="creator-btn">Activer édition</button>
-          <button id="creatorSave" class="creator-btn">Sauver</button>
-        </div>`;
-      document.body.appendChild(p);
-    }
-    return p;
-  }
-
-  const fab   = ensureFab();
-  const panel = ensurePanel();
-  const closeBtn = document.getElementById('creatorClose');
-
-  // 2) Ouvrir/fermer
-  function open(){ panel.style.display='block'; fab.setAttribute('aria-expanded','true'); }
-  function close(){ panel.style.display='none'; fab.setAttribute('aria-expanded','false'); }
-  fab.addEventListener('click', ()=> panel.style.display==='block' ? close() : open());
-  closeBtn && closeBtn.addEventListener('click', close);
-
-  // 3) Édition minimale (contentEditable) si les boutons existent
-  const editBtn = document.getElementById('creatorEdit');
-  const saveBtn = document.getElementById('creatorSave');
-  const note = document.getElementById('creatorNote');
-  let editing = false, nodes = [];
-  const SELS = [
-    'section.hero h1','section.hero p.lead','.cta .btn.primary','.cta .btn.ghost',
-    '#how .steps .tile:nth-child(1) h3','#how .steps .tile:nth-child(1) p',
-    '#how .steps .tile:nth-child(2) h3','#how .steps .tile:nth-child(2) p',
-    '#how .steps .tile:nth-child(3) h3','#how .steps .tile:nth-child(3) p',
-    '#app .grid .tile:nth-child(1) h3','#app .grid .tile:nth-child(1) p',
-    '#app .grid .tile:nth-child(2) h3','#app .grid .tile:nth-child(2) p',
-    '#app .grid .tile:nth-child(3) h3','#app .grid .tile:nth-child(3) p'
-  ];
-  function $(s){ return document.querySelector(s); }
-
-  editBtn && editBtn.addEventListener('click', ()=>{
-    editing = !editing;
-    nodes = SELS.map($).filter(Boolean);
-    nodes.forEach(n=>{ n.contentEditable = editing ? 'plaintext-only' : 'false'; n.style.outline = editing?'2px dashed #00C2A8':''; n.style.outlineOffset='2px'; });
-    editBtn.textContent = editing ? 'Désactiver édition' : 'Activer édition';
-    if(note) note.textContent = editing ? 'Édition activée : modifie un texte, puis clique “Sauver”.' : 'Édition désactivée.';
-  });
-
-  saveBtn && saveBtn.addEventListener('click', ()=>{
-    const cms = {};
-    function grab(sel, key){ const n=$(sel); if(n){ cms[key]=n.textContent.trim(); } }
-    grab('section.hero h1','heroTitle'); grab('section.hero p.lead','heroLead');
-    grab('.cta .btn.primary','cta1'); grab('.cta .btn.ghost','cta2');
-    grab('#how .steps .tile:nth-child(1) h3','how1t'); grab('#how .steps .tile:nth-child(1) p','how1p');
-    grab('#how .steps .tile:nth-child(2) h3','how2t'); grab('#how .steps .tile:nth-child(2) p','how2p');
-    grab('#how .steps .tile:nth-child(3) h3','how3t'); grab('#how .steps .tile:nth-child(3) p','how3p');
-    grab('#app .grid .tile:nth-child(1) h3','app1t'); grab('#app .grid .tile:nth-child(1) p','app1p');
-    grab('#app .grid .tile:nth-child(2) h3','app2t'); grab('#app .grid .tile:nth-child(2) p','app2p');
-    grab('#app .grid .tile:nth-child(3) h3','app3t'); grab('#app .grid .tile:nth-child(3) p','app3p');
-    localStorage.setItem('rec_cms', JSON.stringify(cms));
-    if(note) note.textContent = 'Sauvegardé (local). Recharge pour vérifier la persistance.';
-  });
-
-  // 4) Au chargement, ré-appliquer les sauvegardes locales (si présentes)
-  try{
-    const saved = JSON.parse(localStorage.getItem('rec_cms')||'{}');
-    Object.entries(saved).forEach(([k,v])=>{
-      const map = {
-        heroTitle:'section.hero h1', heroLead:'section.hero p.lead',
-        cta1:'.cta .btn.primary', cta2:'.cta .btn.ghost',
-        how1t:'#how .steps .tile:nth-child(1) h3', how1p:'#how .steps .tile:nth-child(1) p',
-        how2t:'#how .steps .tile:nth-child(2) h3', how2p:'#how .steps .tile:nth-child(2) p',
-        how3t:'#how .steps .tile:nth-child(3) h3', how3p:'#how .steps .tile:nth-child(3) p',
-        app1t:'#app .grid .tile:nth-child(1) h3', app1p:'#app .grid .tile:nth-child(1) p',
-        app2t:'#app .grid .tile:nth-child(2) h3', app2p:'#app .grid .tile:nth-child(2) p',
-        app3t:'#app .grid .tile:nth-child(3) h3', app3p:'#app .grid .tile:nth-child(3) p'
-      };
-      const sel = map[k]; if(sel){ const n=$(sel); if(n) n.textContent = v; }
-    });
-  }catch(_){}
-  // Petit message pour confirmer l'init
-  if(note) note.textContent = 'Créateur initialisé ✔';
-})();
-</script>
-<!-- ===== Recallia · Créateur Pro (chat + propositions + alertes + fichiers + PIN) ===== -->
-<style>
-  /* cache l'ancien créateur si présent */
-  #creatorFab,#creatorPanel{display:none!important}
-  .rc-fab{position:fixed;left:16px;bottom:16px;z-index:9999;border:0;border-radius:999px;
-    padding:12px 14px;background:#111c2b;color:#e5edf5;border:1px solid #2b3645;font:600 14px/1 Inter}
-  .rc-panel{position:fixed;left:16px;bottom:72px;width:min(92vw,460px);max-height:74vh;overflow:auto;z-index:9999;
-    background:#0c1421;border:1px solid #1b2432;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.45);display:none;color:#e5edf5}
-  .rc-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#0a101b;border-bottom:1px solid #1b2432}
-  .rc-tabs{display:flex;gap:6px;padding:8px;border-bottom:1px solid #1b2432}
-  .rc-tab{background:#0f1623;border:1px solid #1b2432;color:#cbd5e1;border-radius:10px;padding:6px 10px;cursor:pointer}
-  .rc-tab.on{background:#111c2b;color:#fff}
-  .rc-body{padding:10px}
-  .rc-row{display:flex;gap:8px;margin:8px 0}
-  .rc-in{flex:1;border:1px solid #1b2432;background:#0f1623;color:#e5edf5;border-radius:10px;padding:10px}
-  .rc-btn{background:#111c2b;border:1px solid #2b3645;color:#e5edf5;border-radius:10px;padding:8px 10px;cursor:pointer}
-  .rc-msg{background:#0f1623;border:1px solid #1b2432;border-radius:12px;padding:10px;margin:8px 0;font:14px Inter}
-  .rc-me{background:#102033;border-color:#24405a}
-  .rc-sugg{border:1px solid #2b3645;border-radius:12px;padding:8px;margin:8px 0}
-  .rc-sugg h5{margin:0 0 6px;font:700 14px Inter;color:#cbd5e1}
-  .rc-mini{color:#9aa4b2;font-size:12px}
-  .rc-list{display:flex;flex-direction:column;gap:10px}
-  .rc-card{border:1px solid #2b3645;border-radius:12px;padding:10px;background:#0f1623}
-  .rc-card h4{margin:0 0 6px;font:700 14px Inter;color:#cbd5e1}
-  .rc-bad{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;margin-left:6px}
-  .sev-hi{background:#b91c1c;color:#fff}.sev-md{background:#b45309;color:#fff}.sev-lo{background:#065f46;color:#e5fff7}
-  .rc-kv{white-space:pre-wrap}
-  .rc-copy{background:#00C2A8;color:#0E1116;border:0;border-radius:10px;padding:6px 10px;font-weight:700;cursor:pointer}
-  .rc-pin{margin-left:6px}
-</style>
-
-<button id="rcFab" class="rc-fab">Créateur</button>
-<div id="rcPanel" class="rc-panel" role="dialog" aria-label="Créateur Pro">
-  <div class="rc-head">
-    <strong style="font:700 14px Inter">Créateur Recallia</strong>
-    <div class="rc-row" style="margin:0">
-      <button id="rcPin" class="rc-btn rc-pin" title="Verrou PIN">🔒</button>
-      <button id="rcExport" class="rc-btn" title="Exporter JSON">Exporter</button>
-      <button id="rcClose" class="rc-btn" title="Fermer">✕</button>
-    </div>
-  </div>
-  <div class="rc-tabs">
-    <button class="rc-tab on" data-tab="chat">Chat</button>
-    <button class="rc-tab" data-tab="prop">Propositions</button>
-    <button class="rc-tab" data-tab="alerts">Alertes</button>
-    <button class="rc-tab" data-tab="files">Fichiers</button>
-  </div>
-
-  <!-- CHAT -->
-  <div id="rcView-chat" class="rc-body">
-    <div id="rcChat" class="rc-msg">Dis-moi ce que tu veux changer. Je propose 1–3 options, tu cliques <b>Appliquer</b> :
-      <div class="rc-mini">Ex: “Titre : Votre mémoire IA — encore plus simple.” · “Couleur d’accent : #60A5FA” · “CTA : Démarrer” · “KPIs : TTV 45, VSR 93”</div>
-    </div>
-    <div id="rcChatBox"></div>
-    <div class="rc-row">
-      <input id="rcIn" class="rc-in" placeholder="Ex: Mets la couleur d'accent en bleu"/>
-      <button id="rcSend" class="rc-btn">Proposer</button>
-    </div>
-  </div>
-
-  <!-- PROPOSITIONS -->
-  <div id="rcView-prop" class="rc-body" hidden>
-    <div class="rc-mini">Suggestions prêtes à appliquer (site, SEO, PWA, sécurité, marketing).</div>
-    <div id="rcProps" class="rc-list"></div>
-  </div>
-
-  <!-- ALERTES -->
-  <div id="rcView-alerts" class="rc-body" hidden>
-    <div class="rc-row"><button id="rcScan" class="rc-btn">Scanner le site</button></div>
-    <div id="rcAlerts" class="rc-list"></div>
-  </div>
-
-  <!-- FICHIERS -->
-  <div id="rcView-files" class="rc-body" hidden>
-    <div class="rc-mini">Copie/colle ces fichiers à la racine du dépôt (ou dans le bon chemin). Clique “Copier”.</div>
-    <div id="rcFiles" class="rc-list"></div>
-  </div>
-</div>
-
-<script>
-(function(){
-  const $ = s=>document.querySelector(s);
-  const panel = $('#rcPanel'), fab=$('#rcFab'), closeBtn=$('#rcClose');
-  const tabs=[...document.querySelectorAll('.rc-tab')];
-  const views={chat:$('#rcView-chat'), prop:$('#rcView-prop'), alerts:$('#rcView-alerts'), files:$('#rcView-files')};
-  fab.onclick = ()=> panel.style.display = (panel.style.display==='block')?'none':'block';
-  closeBtn.onclick = ()=> panel.style.display='none';
-  tabs.forEach(t=>t.onclick=()=>{
-    tabs.forEach(x=>x.classList.toggle('on',x===t));
-    Object.values(views).forEach(v=>v.hidden=true);
-    views[t.dataset.tab].hidden=false;
-  });
-
-  /* ---------- PIN verrou (local) ---------- */
-  const pinBtn=$('#rcPin');
-  function locked(){ return !!localStorage.getItem('rec_pin_set'); }
-  function askPinOnce(){
-    const pin = prompt('Crée un code à 6 chiffres (PIN) :'); if(!pin||!/^\d{6}$/.test(pin)) return alert('PIN invalide.');
-    localStorage.setItem('rec_pin', pin); localStorage.setItem('rec_pin_set','1'); alert('PIN activé.');
-  }
-  function checkPin(){
-    const set = localStorage.getItem('rec_pin'); if(!set) return true;
-    const pin = prompt('Entre ton PIN (6 chiffres) :'); if(pin===set) return true;
-    alert('PIN incorrect.'); return false;
-  }
-  pinBtn.onclick = ()=> locked()? (localStorage.removeItem('rec_pin'),localStorage.removeItem('rec_pin_set'),alert('PIN désactivé')) : askPinOnce();
-  fab.addEventListener('click', ()=>{
-    if(panel.style.display!=='block' && localStorage.getItem('rec_pin')){
-      if(!checkPin()){ panel.style.display='none'; }
-    }
-  });
-
-  /* ---------- CMS local ---------- */
-  const SEL = {
-    heroTitle:'section.hero h1', heroLead:'section.hero p.lead',
-    cta1:'.cta .btn.primary', cta2:'.cta .btn.ghost',
-    how1t:'#how .steps .tile:nth-child(1) h3', how1p:'#how .steps .tile:nth-child(1) p',
-    how2t:'#how .steps .tile:nth-child(2) h3', how2p:'#how .steps .tile:nth-child(2) p',
-    how3t:'#how .steps .tile:nth-child(3) h3', how3p:'#how .steps .tile:nth-child(3) p',
-    app1t:'#app .grid .tile:nth-child(1) h3', app1p:'#app .grid .tile:nth-child(1) p',
-    app2t:'#app .grid .tile:nth-child(2) h3', app2p:'#app .grid .tile:nth-child(2) p',
-    app3t:'#app .grid .tile:nth-child(3) h3', app3p:'#app .grid .tile:nth-child(3) p',
-    benchTTV:'#bench .grid .tile:nth-child(1) p', benchVSR:'#bench .grid .tile:nth-child(2) p', benchCOV:'#bench .grid .tile:nth-child(3) p'
-  };
-  const loadCMS=()=>{try{return JSON.parse(localStorage.getItem('rec_cms')||'{}')}catch(_){return{}}}
-  const saveCMS=(cms)=>localStorage.setItem('rec_cms',JSON.stringify(cms));
-  const applyCMS=(cms)=>{
-    const set=(sel,v)=>{const n=$(sel); if(n&&typeof v==='string') n.textContent=v;}
-    set(SEL.heroTitle,cms.heroTitle); set(SEL.heroLead,cms.heroLead);
-    set(SEL.cta1,cms.cta1); set(SEL.cta2,cms.cta2);
-    set(SEL.how1t,cms.how1t); set(SEL.how1p,cms.how1p); set(SEL.how2t,cms.how2t); set(SEL.how2p,cms.how2p); set(SEL.how3t,cms.how3t); set(SEL.how3p,cms.how3p);
-    set(SEL.app1t,cms.app1t); set(SEL.app1p,cms.app1p); set(SEL.app2t,cms.app2t); set(SEL.app2p,cms.app2p); set(SEL.app3t,cms.app3t); set(SEL.app3p,cms.app3p);
-    if(typeof cms.benchTTV==='number') $(SEL.benchTTV).textContent='< '+cms.benchTTV+' s';
-    if(typeof cms.benchVSR==='number') $(SEL.benchVSR).textContent='≥ '+cms.benchVSR+' %';
-    if(typeof cms.benchCOV==='number') $(SEL.benchCOV).textContent=cms.benchCOV+' %';
-    if(cms.metaTitle) document.title=cms.metaTitle;
-    if(cms.metaDesc){ let m=document.querySelector('meta[name="description"]'); if(!m){m=document.createElement('meta');m.name='description';document.head.appendChild(m);} m.content=cms.metaDesc; }
-    if(cms.colorAccent){ const r=document.documentElement.style; r.setProperty('--accent',cms.colorAccent); r.setProperty('--accent2',cms.colorAccent); }
-  }
-  applyCMS(loadCMS());
-
-  /* ---------- Chat (propositions + appliquer) ---------- */
-  const chatBox=$('#rcChatBox'), inEl=$('#rcIn'), sendBtn=$('#rcSend');
-  function addMsg(h,me=false){const d=document.createElement('div');d.className='rc-msg'+(me?' rc-me':'');d.innerHTML=h;chatBox.appendChild(d);chatBox.scrollTop=chatBox.scrollHeight;}
-  function addSugg(title, preview, onApply){
-    const wrap=document.createElement('div'); wrap.className='rc-sugg';
-    wrap.innerHTML=`<h5>${title}</h5><div class="rc-mini rc-kv">${preview}</div><div class="rc-row"><button class="rc-btn rc-apply">Appliquer</button></div>`;
-    wrap.querySelector('.rc-apply').onclick=async()=>{ await onApply(); addMsg('✅ Appliqué & sauvegardé.'); };
-    chatBox.appendChild(wrap); chatBox.scrollTop=chatBox.scrollHeight;
-  }
-  const COLORS={bleu:'#60A5FA',indigo:'#6366F1',violet:'#A78BFA',rose:'#F472B6',rouge:'#F87171',orange:'#FB923C',vert:'#34D399',teal:'#00C2A8',cyan:'#22D3EE'};
-  function applySet(k,v){const map={heroTitle:SEL.heroTitle,heroLead:SEL.heroLead,cta1:SEL.cta1,cta2:SEL.cta2,app1t:SEL.app1t,app1p:SEL.app1p,app2t:SEL.app2t,app2p:SEL.app2p,app3t:SEL.app3t,app3p:SEL.app3p}; const n=$(map[k]); if(n) n.textContent=v; const cms=loadCMS(); cms[k]=v; saveCMS(cms);}
-  function parse(cmd){
-    const t=cmd.toLowerCase(); const mTitle=cmd.match(/titre.*?:\s*(.+)$/i); if(mTitle) return {type:'set',k:'heroTitle',v:mTitle[1].trim()};
-    const mLead=cmd.match(/sous[- ]?titre.*?:\s*(.+)$/i); if(mLead) return {type:'set',k:'heroLead',v:mLead[1].trim()};
-    const mCTA=cmd.match(/cta.*(principal|1)?.*:\s*(.+)$/i); if(mCTA) return {type:'set',k:'cta1',v:mCTA[2].trim()};
-    const mCTA2=cmd.match(/cta.*(secondaire|2)?.*:\s*(.+)$/i); if(mCTA2) return {type:'set',k:'cta2',v:mCTA2[2].trim()};
-    const mTile=cmd.match(/tile\s*(\d)\.(titre|texte)\s*:\s*(.+)$/i); if(mTile){const idx=parseInt(mTile[1],10);const key=mTile[2].toLowerCase()==='titre'?`app${idx}t`:`app${idx}p`;return {type:'set',k:key,v:mTile[3].trim()};}
-    if(/couleur|accent/.test(t)){ for(const k in COLORS){ if(t.includes(k)) return {type:'color',v:COLORS[k],name:k}; } const hex=cmd.match(/#([0-9a-f]{3,6})/i); if(hex) return {type:'color',v:'#'+hex[1]}; return {type:'colors'}; }
-    const mTTV=cmd.match(/ttv.*?(\d{1,3})/i), mVSR=cmd.match(/vsr.*?(\d{1,3})/i); if(mTTV||mVSR) return {type:'kpi',ttv:mTTV?parseInt(mTTV[1],10):undefined,vsr:mVSR?parseInt(mVSR[1],10):undefined};
-    if(/futuriste|plus.*(moderne|clean)/.test(t)) return {type:'preset'};
-    return {type:'help'};
-  }
-  async function onCmd(s){
-    if(!s.trim()) return; addMsg(s,true);
-    const intent=parse(s);
-    if(intent.type==='set'){ addSugg('Confirmer ce changement', `→ ${intent.k} :\n“${intent.v}”`, async()=>applySet(intent.k,intent.v)); return; }
-    if(intent.type==='color'){ addSugg('Changer la couleur', `→ ${intent.v} ${intent.name?`(${intent.name})`:''}`, async()=>{const cms=loadCMS();cms.colorAccent=intent.v;saveCMS(cms);const r=document.documentElement.style;r.setProperty('--accent',intent.v);r.setProperty('--accent2',intent.v);}); return;}
-    if(intent.type==='colors'){ ['#00C2A8','#34D399','#60A5FA','#A78BFA','#F59E0B','#EF4444'].forEach(hex=>addSugg('Couleur',hex,async()=>{const cms=loadCMS();cms.colorAccent=hex;saveCMS(cms);const r=document.documentElement.style;r.setProperty('--accent',hex);r.setProperty('--accent2',hex);})); return;}
-    if(intent.type==='kpi'){ const cms=loadCMS(); const prev=`${intent.ttv?`TTV: ${intent.ttv}s`:'(=)'} · ${intent.vsr?`VSR: ${intent.vsr}%`:'(=)'}`; addSugg('Mettre à jour les KPIs',prev,async()=>{ if(intent.ttv){cms.benchTTV=intent.ttv; $(SEL.benchTTV).textContent='< '+intent.ttv+' s';} if(intent.vsr){cms.benchVSR=intent.vsr; $(SEL.benchVSR).textContent='≥ '+intent.vsr+' %';} saveCMS(cms);}); return;}
-    if(intent.type==='preset'){ addSugg('Style “plus futuriste”','Accent cyan, titre resserré',async()=>{const cms=loadCMS(); const t='Votre mémoire IA — futur simple.'; $(SEL.heroTitle).textContent=t; cms.heroTitle=t; document.documentElement.style.setProperty('--accent','#22D3EE'); document.documentElement.style.setProperty('--accent2','#22D3EE'); cms.colorAccent='#22D3EE'; saveCMS(cms);}); return;}
-    if(intent.type==='help'){ addMsg('Je peux changer : <b>titre</b>, <b>sous-titre</b>, <b>CTA</b>, <b>couleur</b>, <b>KPIs</b>, <b>tuiles</b> (tile1/2/3.titre/texte).'); }
-  }
-  $('#rcSend').onclick=()=>{ onCmd(inEl.value); inEl.value=''; inEl.focus(); };
-  inEl.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#rcSend').click(); } });
-
-  /* ---------- Propositions (site complet) ---------- */
-  const props=[
-    {id:'seo-basic', title:'SEO de base', sev:'md', desc:'Ajouter robots.txt, sitemap.xml, canonical, JSON-LD.', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()},
-    {id:'pwa-icons', title:'Icônes PWA 192/512', sev:'md', desc:'Vérifier icons/icon-192.png et icon-512.png présents et référencés dans manifest.', apply:()=>tabs.find(t=>t.dataset.tab==='alerts').click()},
-    {id:'pwa-install', title:'CTA Installation PWA', sev:'lo', desc:'Afficher “Installer” quand disponible (déjà en place dans v26+).', apply:()=>alert('Déjà géré : bouton apparaît si le navigateur le permet.')},
-    {id:'privacy-mentions', title:'Confidentialité & Mentions', sev:'hi', desc:'Créer privacy.html et mentions.html', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()},
-    {id:'memory-cms', title:'Mémoire du site (site-cms.json)', sev:'lo', desc:'Créer memory/site-cms.json et bouton Sync mémoire.', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()},
-    {id:'pin-lock', title:'Sécuriser le Créateur (PIN)', sev:'md', desc:'Activer un code à 6 chiffres.', apply:()=>{ if(!localStorage.getItem('rec_pin')){ const pin=prompt('Choisis un PIN (6 chiffres) :'); if(pin&&/^\d{6}$/.test(pin)){localStorage.setItem('rec_pin',pin);localStorage.setItem('rec_pin_set','1'); alert('PIN activé.');}} else {alert('PIN déjà actif. Bouton 🔒 pour désactiver.');} }},
-    {id:'bench-page', title:'Benchmarks auto (page dédiée)', sev:'lo', desc:'Créer page benchmarks.html (statique pour l’instant).', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()}
-  ];
-  const propList=$('#rcProps');
-  props.forEach(p=>{
-    const card=document.createElement('div'); card.className='rc-card';
-    const badge = `<span class="rc-bad ${p.sev==='hi'?'sev-hi':p.sev==='md'?'sev-md':'sev-lo'}">${p.sev.toUpperCase()}</span>`;
-    card.innerHTML=`<h4>${p.title} ${badge}</h4><div class="rc-mini">${p.desc}</div><div class="rc-row"><button class="rc-btn">Voir/Appliquer</button></div>`;
-    card.querySelector('.rc-btn').onclick=p.apply; propList.appendChild(card);
-  });
-
-  /* ---------- Alertes (auto-scan + quick fixes DOM) ---------- */
-  const alertsBox=$('#rcAlerts'), scanBtn=$('#rcScan');
-  async function test(url){ try{const r=await fetch(url,{cache:'no-store'}); return r.ok;}catch(_){return false} }
-  function addAlert(title, sev, desc, fix){
-    const card=document.createElement('div'); card.className='rc-card';
-    const badge = `<span class="rc-bad ${sev==='hi'?'sev-hi':sev==='md'?'sev-md':'sev-lo'}">${sev.toUpperCase()}</span>`;
-    card.innerHTML=`<h4>${title} ${badge}</h4><div class="rc-mini">${desc}</div>`;
-    if(fix){ const row=document.createElement('div'); row.className='rc-row'; const btn=document.createElement('button'); btn.className='rc-btn'; btn.textContent='Appliquer la correction'; btn.onclick=fix; row.appendChild(btn); card.appendChild(row); }
-    alertsBox.appendChild(card);
-  }
-  scanBtn.onclick = async ()=>{
-    alertsBox.innerHTML='';
-    const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
-    const okManifest = await test(BASE+'manifest.webmanifest');
-    const ok192 = await test(BASE+'icons/icon-192.png');
-    const ok512 = await test(BASE+'icons/icon-512.png');
-    const okPriv = await test(BASE+'privacy.html');
-    const okMent = await test(BASE+'mentions.html');
-    const okRob = await test(BASE+'robots.txt');
-    const okMap = await test(BASE+'sitemap.xml');
-
-    if(!okManifest) addAlert('Manifest manquant','hi','Ajoute manifest.webmanifest (onglet Fichiers).',null);
-    if(!ok192||!ok512) addAlert('Icônes PWA manquantes','md','Ajoute icons/icon-192.png et icons/icon-512.png (onglet Fichiers).',null);
-    if(!okPriv||!okMent) addAlert('Pages légales manquantes','hi','Crée privacy.html et mentions.html (onglet Fichiers).',null);
-    if(!okRob||!okMap) addAlert('SEO: robots/sitemap manquants','md','Ajoute robots.txt et sitemap.xml (onglet Fichiers).',null);
-
-    // Canonical + JSON-LD (quick fix DOM possible)
-    const hasCanon = !!document.querySelector('link[rel="canonical"]');
-    if(!hasCanon) addAlert('Canonical absent','md','Ajoute un lien canonical dans <head>.', ()=>{
-      const l=document.createElement('link'); l.rel='canonical'; l.href=location.origin+location.pathname; document.head.appendChild(l);
-      alert('Canonical ajouté dans la page. Pense à l’intégrer en dur dans index.html.');
-    });
-    const hasLD = !!document.querySelector('script[type="application/ld+json"]');
-    if(!hasLD) addAlert('JSON-LD absent','lo','Ajoute des données structurées SoftwareApplication.', ()=>{
-      const s=document.createElement('script'); s.type='application/ld+json';
-      s.textContent=JSON.stringify({"@context":"https://schema.org","@type":"SoftwareApplication","name":"Recallia","description":"Votre mémoire IA : rappelle, exécute et prouve.","applicationCategory":"ProductivityApplication","operatingSystem":"Web,PWA","url":location.origin+location.pathname,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}});
-      document.head.appendChild(s); alert('JSON-LD injecté (temporaire). Mets-le en dur dans index.html.');
-    });
-
-    if(alertsBox.children.length===0){
-      addAlert('Tout est OK','lo','Aucun problème critique détecté. 🎉',null);
-    }
-  };
-
-  /* ---------- Fichiers (modèles + copier) ---------- */
-  const filesBox=$('#rcFiles');
-  const files = [
-    {name:'robots.txt', sev:'md', content:`User-agent: *\nAllow: /\nSitemap: https://bacoul.github.io/Recallia-site/sitemap.xml\n`, path:'robots.txt'},
-    {name:'sitemap.xml', sev:'md', content:`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://bacoul.github.io/Recallia-site/</loc></url>\n  <url><loc>https://bacoul.github.io/Recallia-site/privacy.html</loc></url>\n  <url><loc>https://bacoul.github.io/Recallia-site/mentions.html</loc></url>\n</urlset>\n`, path:'sitemap.xml'},
-    {name:'privacy.html', sev:'hi', content:`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recallia — Confidentialité</title></head><body><h1>Confidentialité</h1><ul><li>Local-first, minimisation</li><li>“Preuve-ou-rien” (hash + audit)</li><li>Export & suppression sur demande</li><li>Pas de revente de données</li></ul><p>Contact : <a href="mailto:support@recallia.app">support@recallia.app</a></p><p><a href="./">← Retour</a></p></body></html>`, path:'privacy.html'},
-    {name:'mentions.html', sev:'hi', content:`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recallia — Mentions légales</title></head><body><h1>Mentions légales</h1><p><strong>Éditeur :</strong> Recallia (micro-entreprise).<br><strong>Contact :</strong> <a href="mailto:support@recallia.app">support@recallia.app</a><br><strong>Hébergement :</strong> GitHub Pages.</p><p>Contenu fourni en l’état.</p><p><a href="./">← Retour</a></p></body></html>`, path:'mentions.html'},
-    {name:'manifest.webmanifest', sev:'md', content:`{"name":"Recallia","short_name":"Recallia","start_url":"/Recallia-site/","display":"standalone","background_color":"#0E1116","theme_color":"#00C2A8","icons":[{"src":"icons/icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icons/icon-512.png","sizes":"512x512","type":"image/png"}]}\n`, path:'manifest.webmanifest'},
-    {name:'sw.js', sev:'lo', content:`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',()=>{});\n`, path:'sw.js'},
-    {name:'memory/site-cms.json', sev:'lo', content:`{\n  "heroTitle":"Votre mémoire IA — simple, calme, efficace.",\n  "heroLead":"Vous validez, on le fait. Chaque action réussie a un reçu vérifiable.",\n  "cta1":"Essayer maintenant",\n  "cta2":"Voir une preuve",\n  "how1t":"1) Dites ce qu’il faut faire",\n  "how1p":"“Rappel médecin demain 10h”, “Payer facture EDF”…",\n  "how2t":"2) Validez",\n  "how2p":"Rien ne part sans votre OK. Caps et garde-fous.",\n  "how3t":"3) Recevez la preuve",\n  "how3p":"Reçus JSON/PDF/ICS, horodatés et hachés.",\n  "app1t":"Rappels intelligents","app1p":"Anniv, médecin, factures… au bon moment.",\n  "app2t":"Exécution assistée","app2p":"Vous validez → on envoie, on planifie, on classe.",\n  "app3t":"Preuve-ou-rien","app3p":"Chaque action réussie génère un reçu vérifiable.",\n  "benchTTV":55,"benchVSR":92,"benchCOV":100,\n  "metaTitle":"Recallia — Votre mémoire IA","metaDesc":"Votre mémoire IA : rappelle, exécute et prouve.","colorAccent":"#00C2A8"\n}\n`, path:'memory/site-cms.json'}
-  ];
-  files.forEach(f=>{
-    const card=document.createElement('div'); card.className='rc-card';
-    const badge = `<span class="rc-bad ${f.sev==='hi'?'sev-hi':f.sev==='md'?'sev-md':'sev-lo'}">${f.sev.toUpperCase()}</span>`;
-    card.innerHTML=`<h4>${f.name} ${badge}</h4><div class="rc-mini">Chemin : <code>${f.path}</code></div><pre class="rc-kv" style="white-space:pre-wrap">${f.content.replace(/</g,'&lt;')}</pre><div class="rc-row"><button class="rc-copy">Copier</button></div>`;
-    card.querySelector('.rc-copy').onclick=()=>{ navigator.clipboard.writeText(f.content); alert(`${f.name} copié. Ajoute-le dans GitHub → Add file.`); };
-    filesBox.appendChild(card);
-  });
-
-  /* ---------- Export JSON CMS ---------- */
-  $('#rcExport').onclick=()=>{
-    const cms=loadCMS(); const blob=new Blob([JSON.stringify(cms,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='recallia_cms.json'; a.click(); URL.revokeObjectURL(url);
-  };
-})();
-</script>
-<!-- Patch A · Encadrés rouge/vert + finition Alertes -->
-<style>
-  .rc-card.ok{border:1px solid #065f46!important; box-shadow:0 0 0 2px rgba(16,185,129,.25) inset}
-  .rc-card.err{border:1px solid #b91c1c!important; box-shadow:0 0 0 2px rgba(239,68,68,.25) inset}
-  .rc-hint{font-size:12px;color:#9aa4b2;margin-top:6px}
-</style>
-<script>
-(function(){
-  const alertsBox = document.getElementById('rcAlerts');
-  const scanBtn = document.getElementById('rcScan');
-  if(!alertsBox || !scanBtn) return;
-
-  // Colorise automatiquement les cartes après un scan
-  const paint = () => {
-    [...alertsBox.querySelectorAll('.rc-card')].forEach(card=>{
-      const title = (card.querySelector('h4')?.textContent||'').toLowerCase();
-      card.classList.remove('ok','err');
-      if(title.includes('tout est ok')) card.classList.add('ok');
-      else card.classList.add('err');
-      // Ajoute une mini piste d’action si absente
-      if(!card.querySelector('.rc-hint')){
-        const hint=document.createElement('div');
-        hint.className='rc-hint';
-        hint.textContent = card.classList.contains('ok')
-          ? 'Tout est conforme ✅'
-          : 'Clique “Appliquer la correction” (si dispo) ou va dans l’onglet Fichiers.';
-        card.appendChild(hint);
-      }
-    });
-  };
-
-  // Réagit aux changements de la liste
-  const mo = new MutationObserver(paint);
-  mo.observe(alertsBox, {childList:true, subtree:true});
-  // Colorise aussi juste après le clic scan
-  scanBtn.addEventListener('click', ()=> setTimeout(paint, 400));
-})();
-</script>
-  <!-- Patch B · Mémoire + Publication GitHub (Issue) -->
-<script>
-(function(){
-  const headRow = document.querySelector('.rc-head .rc-row');
-  if(!headRow) return;
-
-  // Bouton Sync mémoire
-  const bSync = document.createElement('button');
-  bSync.className='rc-btn'; bSync.textContent='Sync mémoire';
-  headRow.prepend(bSync);
-
-  // Bouton Publier GitHub (Issue)
-  const bPub = document.createElement('button');
-  bPub.className='rc-btn'; bPub.textContent='Publier GitHub';
-  headRow.prepend(bPub);
-
-  const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
-
-  bSync.onclick = async ()=>{
-    try{
-      const cms = await fetch(BASE+'memory/site-cms.json',{cache:'no-store'}).then(r=>r.json());
-      localStorage.setItem('rec_cms', JSON.stringify(cms));
-      alert('Mémoire synchronisée depuis /memory/site-cms.json ✔');
-      location.reload();
-    }catch{ alert('Impossible de charger /memory/site-cms.json'); }
-  };
-
-  bPub.onclick = ()=>{
-    // Détecte owner/repo depuis l’URL GitHub Pages
-    const owner = (location.hostname.split('.')[0]||'').trim() || 'bacoul';
-    const repo = (location.pathname.split('/')[1]||'').trim() || 'Recallia-site';
-    const cms = localStorage.getItem('rec_cms') || '{}';
-    const title = encodeURIComponent('Apply CMS from site');
-    const body = encodeURIComponent(cms + '\n\n---\n_Label to apply:_ **apply-cms**');
-    const url = `https://github.com/${owner}/${repo}/issues/new?title=${title}&body=${body}`;
-    window.open(url,'_blank');
-  };
-})();
-</script>
-  <!-- === Créateur v27-hotfix (drop-in, GitHub Pages friendly) === -->
-<style>
-  #rcCreator{position:fixed;right:12px;bottom:12px;z-index:9999;
-    width:min(560px,calc(100vw - 24px));background:#0F172A;border:1px solid #243b53;
-    border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);font-family:Inter,system-ui,Arial,sans-serif;color:#E5E7EB}
-  #rcCreator header{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #1f2937}
-  #rcCreator header b{font-weight:700}
-  #rcCreator .pill{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid #334155;color:#9CA3AF}
-  #rcCreator main{padding:10px 12px;max-height:min(60vh,520px);overflow:auto}
-  #rcCreator .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-  #rcCreator input, #rcCreator button{border-radius:10px;border:1px solid #334155;background:#111827;color:#E5E7EB}
-  #rcCreator input{padding:10px 12px;flex:1;min-width:220px}
-  #rcCreator button{padding:10px 12px;cursor:pointer}
-  #rcCreator .primary{background:#00C2A8;border-color:#00C2A8;color:#0B1322}
-  #rcCreator .card{border:1px solid #1f2937;border-radius:12px;padding:12px;background:#0B1220;display:flex;gap:12px;align-items:flex-start}
-  #rcCreator .apply{margin-left:auto}
-  #rcAlerts .ok{color:#10B981} #rcAlerts .warn{color:#F59E0B} #rcAlerts .err{color:#EF4444}
-</style>
-
-<div id="rcCreator" hidden>
-  <header>
-    <b>Créateur</b><span class="pill">v27</span>
-    <span style="margin-left:auto"></span>
-    <button id="rcToggleEdit">Activer édition</button>
-    <button id="rcSave" class="primary">Sauver</button>
-  </header>
-  <main>
-    <div class="row">
-      <button id="rcScan">Scanner le site</button>
-      <span id="rcScanStatus" class="pill">prêt</span>
-    </div>
-    <div id="rcAlerts"></div>
-    <div class="row">
-      <input id="rcProposeInput" placeholder="Ex : Mets la couleur d’accent en bleu, CTA = Démarrer">
-      <button id="rcProposeBtn" class="primary">Proposer</button>
-    </div>
-    <div id="rcActions" style="display:grid;gap:8px"></div>
-  </main>
-</div>
-
-<script>
-(() => {
-  // --- 0) affichage du panneau (toujours visible, on peut le replier si tu veux) ---
-  const root = document.documentElement;
-  const byId = (id)=>document.getElementById(id);
-  const $c = byId('rcCreator'); $c.hidden = false;
-
-  // Sélecteurs "tolérants" (s’adaptent à ton HTML actuel)
-  const pick = {
-    title: ()=> document.querySelector('h1') || document.querySelector('[data-hero-title]'),
-    sub:   ()=> document.querySelector('header p, main p, [data-hero-sub]'),
-    cta:   ()=> document.querySelector('a[href^="#"], a.btn, .cta, button'),
-    kpi1:  ()=> document.querySelector('[data-kpi="1"], .kpi:nth-of-type(1)'),
-    kpi2:  ()=> document.querySelector('[data-kpi="2"], .kpi:nth-of-type(2)'),
-    kpi3:  ()=> document.querySelector('[data-kpi="3"], .kpi:nth-of-type(3)'),
-  };
-
-  function getAccent(){
-    const s = getComputedStyle(root).getPropertyValue('--accent')?.trim();
-    return s || '#00C2A8';
-  }
-  function setAccent(hex){
-    root.style.setProperty('--accent', hex);
-    // ajustement boutons existants
-    document.querySelectorAll('.cta, a.btn, button.primary').forEach(b=>{
-      b.style.background = hex; b.style.borderColor = hex; b.style.color = '#0B1322';
-    });
-  }
-  const CANON = {
-    title: () => (pick.title()?.textContent || '').trim(),
-    sub:   () => (pick.sub()?.textContent   || '').trim(),
-    cta:   () => (pick.cta()?.textContent   || '').trim(),
-    accent:() => getAccent(),
-    kpis:  () => [pick.kpi1()?.textContent, pick.kpi2()?.textContent, pick.kpi3()?.textContent].filter(Boolean)
-  };
-
-  // --- 1) SCAN & alertes PWA ---
-  async function scan(){
-    const out = [];
-    // Manifest
-    const link = document.querySelector('link[rel="manifest"]');
-    const manifestHref = link?.getAttribute('href') || 'manifest.webmanifest';
-    try {
-      const r = await fetch(manifestHref, {cache:'no-store'});
-      out.push(r.ok ? ['ok','Manifest détecté'] : ['err','Manifest manquant ou introuvable']);
-    } catch { out.push(['err','Manifest inaccessible']); }
-    // Service worker
-    if ('serviceWorker' in navigator){
-      const reg = await navigator.serviceWorker.getRegistration().catch(()=>null);
-      out.push(reg ? ['ok','Service Worker actif'] : ['warn','Service Worker non enregistré']);
-    } else out.push(['warn','Service Worker non supporté sur ce navigateur']);
-    // Thème / accent
-    const accent = getAccent();
-    out.push(accent ? ['ok','Accent actuel : ' + accent] : ['warn','Couleur d’accent non définie']);
-    byId('rcAlerts').innerHTML = out.map(([lvl,msg])=>`<div class="${lvl}">• ${msg}</div>`).join('');
-    byId('rcScanStatus').textContent = 'scan OK';
-  }
-
-  // --- 2) Générateur de propositions (3 options) ---
-  function hexFromPrompt(p){
-    const map = {bleu:'#60A5FA', cyan:'#06B6D4', vert:'#10B981', rouge:'#EF4444', violet:'#8B5CF6', orange:'#F59E0B'};
-    for (const k of Object.keys(map)) if (p.toLowerCase().includes(k)) return map[k];
-    const m = p.match(/#([0-9a-f]{6})/i); return m ? ('#'+m[1]) : null;
-  }
-  function suggest(prompt){
-    const now = { title: CANON.title(), sub: CANON.sub(), cta: CANON.cta() || 'Essayer maintenant', accent: CANON.accent() };
-    const hex = hexFromPrompt(prompt) || now.accent;
-    const cta = /cta\s*=|cta\s*:|cta\s+/.test(prompt.toLowerCase()) ? (prompt.split(/cta\s*[=:]\s*/i)[1]||'Démarrer').split(/[.,]/)[0].trim() : now.cta;
-    const variants = [
-      { title:'Votre mémoire IA — encore plus simple.', sub:'Vous validez, on le fait. Chaque action réussie a un reçu horodaté.', cta, accent:hex },
-      { title:'Rappelle, exécute, prouve.', sub:'Des actions faites avec preuve (hash + journal).', cta, accent:hex },
-      { title:'Moins d’efforts. Plus de preuves.', sub:'TTV < 60 s • VSR ≥ 90 % • 100 % des succès prouvés.', cta, accent:hex },
-    ];
-    // si prompt contient des mots clés, on remixe
-    if (/plus simple|clair|minimal/i.test(prompt)) variants[0].title = 'Votre mémoire IA, sans friction.';
-    return variants;
-  }
-
-  function renderOptions(list){
-    const $ = byId('rcActions');
-    $.innerHTML = '';
-    list.forEach((opt,i)=>{
-      const html = `
-      <div class="card">
-        <div>
-          <div style="font-weight:700;margin-bottom:6px">Option ${i+1}</div>
-          <div><b>Titre</b> : ${opt.title}</div>
-          <div><b>Sous-titre</b> : ${opt.sub}</div>
-          <div><b>CTA</b> : ${opt.cta}</div>
-          <div><b>Accent</b> : <span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:${opt.accent}"></span> ${opt.accent}</div>
-        </div>
-        <button class="apply primary">Appliquer</button>
-      </div>`;
-      const wrap = document.createElement('div'); wrap.innerHTML = html;
-      wrap.querySelector('.apply').addEventListener('click', ()=> applyChanges(opt));
-      $.appendChild(wrap.firstElementChild);
-    });
-  }
-
-  function applyChanges(opt){
-    const t = pick.title(); if (t) t.textContent = opt.title;
-    const s = pick.sub();   if (s) s.textContent = opt.sub;
-    const c = pick.cta();   if (c) c.textContent = opt.cta;
-    setAccent(opt.accent);
-    toast('Modifs appliquées. Pense à cliquer “Sauver” pour exporter le JSON.');
-  }
-
-  function toast(txt){
-    const n = document.createElement('div');
-    n.textContent = txt; n.style.position='fixed'; n.style.bottom='90px'; n.style.right='20px';
-    n.style.background='#111827'; n.style.color='#E5E7EB'; n.style.border='1px solid #334155';
-    n.style.borderRadius='10px'; n.style.padding='10px 12px'; n.style.zIndex=10000;
-    document.body.appendChild(n); setTimeout(()=>n.remove(), 2200);
-  }
-
-  // --- 3) Édition & Sauvegarde ---
-  let editing = false;
-  byId('rcToggleEdit').onclick = ()=>{
-    editing = !editing;
-    [pick.title(), pick.sub()].forEach(el=> el && (el.contentEditable = editing));
-    byId('rcToggleEdit').textContent = editing ? 'Désactiver édition' : 'Activer édition';
-  };
-  byId('rcSave').onclick = ()=>{
-    const payload = {
-      saved_at: new Date().toISOString(),
-      title: CANON.title(), sub: CANON.sub(), cta: CANON.cta(),
-      accent: CANON.accent(), kpis: CANON.kpis()
-    };
-    const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'site-cms.json';
-    document.body.appendChild(a); a.click(); a.remove();
-  };
-
-  // --- 4) Brancher les boutons ---
-  byId('rcProposeBtn').onclick = ()=>{
-    const p = byId('rcProposeInput').value.trim();
-    const options = suggest(p || 'propositions par défaut');
-    renderOptions(options);
-  };
-  byId('rcScan').onclick = scan;
-
-  // afficher le panneau au chargement + scan rapide
-  scan();
-})();
-</script>
-<!-- ==== Créateur minimal — correctif v1 (fonctionnel) ==== -->
-<div id="rcCreator" style="margin:28px 0;padding:14px;border-radius:14px;background:#0F172A;border:1px solid #1F2937">
-  <h3 style="margin:0 0 8px;font-size:18px">Créateur (simple)</h3>
-  <p style="margin:0 0 10px;opacity:.8">Écris une intention (ex : <i>couleur #60A5FA</i>, <i>titre plus simple</i>, <i>CTA = Démarrer</i>) puis clique <b>Proposer</b>.</p>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-    <input id="rcI" placeholder="Ex : Mets la couleur d’accent en bleu" 
-           style="flex:1;min-width:240px;padding:10px;border-radius:10px;border:1px solid #334155;background:#0B1220;color:#E5E7EB">
-    <button id="rcPropose" style="padding:10px 14px;border:1px solid #334155;border-radius:10px;background:#111827;color:#E5E7EB">Proposer</button>
-  </div>
-  <div id="rcOut" style="margin-top:12px;display:grid;gap:10px"></div>
-</div>
-
-<script>
-/* Créateur minimal – fait apparaître des options et applique les changements */
-(function(){
+  // ---- Utilitaires
   const $ = s => document.querySelector(s);
-  const root = document.documentElement;
-
-  // essaie d'attraper les éléments clés avec des IDs, sinon des sélecteurs par défaut
-  const elTitle = $('#heroTitle') || document.querySelector('h1');
-  const elSub   = $('#heroSubtitle') || document.querySelector('p');
-  const elCTA   = $('#ctaPrimary') || document.querySelector('a[href^="#"], a.btn, .cta a');
-
-  // petite sauvegarde pour "Annuler"
-  let prev = null;
-  function snapshot(){
-    prev = {
-      title: elTitle ? elTitle.textContent : null,
-      sub  : elSub   ? elSub.textContent   : null,
-      cta  : elCTA   ? elCTA.textContent   : null,
-      acc  : getComputedStyle(root).getPropertyValue('--acc') || '#00C2A8'
-    };
-  }
-  function undo(){
-    if(!prev) return;
-    if(elTitle && prev.title) elTitle.textContent = prev.title;
-    if(elSub   && prev.sub)   elSub.textContent   = prev.sub;
-    if(elCTA   && prev.cta)   elCTA.textContent   = prev.cta;
-    root.style.setProperty('--acc', String(prev.acc).trim());
-    prev = null;
-  }
-
-  function setAccent(c){ root.style.setProperty('--acc', c); }
-  function setTitle(t){ if(elTitle) elTitle.textContent = t; }
-  function setSub(t){ if(elSub) elSub.textContent = t; }
-  function setCTA(t){ if(elCTA) elCTA.textContent = t; }
-
-  function makeOption(label, applyFn){
-    const box = document.createElement('div');
-    box.style.cssText = "border:1px solid #1F2937;border-radius:10px;padding:10px;background:#0B1220";
-    box.innerHTML = `
-      <div style="font-weight:600;margin-bottom:6px">${label}</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="apply" style="padding:8px 12px;border:1px solid #334155;border-radius:10px;background:#0F172A;color:#E5E7EB">Appliquer</button>
-        <button class="undo"  style="padding:8px 12px;border:1px solid #334155;border-radius:10px;background:#0F172A;color:#E5E7EB">Annuler</button>
-      </div>`;
-    box.querySelector('.apply').onclick = ()=>{ snapshot(); applyFn(); };
-    box.querySelector('.undo').onclick  = ()=> undo();
-    return box;
-  }
-
-  function propose(){
-    const out = $('#rcOut'); out.innerHTML = '';
-    const val = ($('#rcI').value || '').toLowerCase();
-
-    // détection simple d’intention
-    const hexMatch = val.match(/#([0-9a-f]{3,6})/i);
-    const wantBlue = /bleu|#60a5fa/.test(val);
-    const wantGreen= /vert|#10b981/.test(val);
-    const wantCTA  = val.match(/cta\s*=\s*([^\n]+)/i);
-    const wantTitle= val.match(/titre\s*=\s*([^\n]+)/i);
-
-    // 1) Couleur demandée explicitement
-    if(hexMatch){
-      const c = '#'+hexMatch[1];
-      out.appendChild(makeOption(`Utiliser la couleur d’accent ${c}`, ()=> setAccent(c)));
-    }
-
-    // 2) Trois options par défaut (toujours proposées)
-    out.appendChild(makeOption("Titre + sous-titre modernisés + CTA 'Démarrer'", ()=>{
-      setTitle("Votre mémoire IA – prouvée.");
-      setSub("Vous validez, on le fait. Chaque action réussie a un reçu (hash + audit).");
-      setCTA("Démarrer");
-    }));
-
-    out.appendChild(makeOption("Accent bleu + contraste renforcé", ()=>{
-      setAccent("#60A5FA");
-    }));
-
-    out.appendChild(makeOption("Accent vert + KPIs mis en avant", ()=>{
-      setAccent("#10B981");
-    }));
-
-    // 3) Intentions précises dans le champ (CTA= / titre=)
-    if(wantCTA){
-      const txt = wantCTA[1].trim();
-      out.appendChild(makeOption(`Mettre le CTA à « ${txt} »`, ()=> setCTA(txt)));
-    }
-    if(wantTitle){
-      const txt = wantTitle[1].trim();
-      out.appendChild(makeOption(`Changer le titre en « ${txt} »`, ()=> setTitle(txt)));
-    }
-
-    // si aucune option spécifique, on garde quand même les 3 options par défaut (déjà ajoutées)
-  }
-
-  // bouton Proposer
-  const btn = document.getElementById('rcPropose');
-  if(btn) btn.addEventListener('click', propose);
-})();
-</script>
-<!-- ================== Créateur v30 — Propositions intelligentes + Alertes ================== -->
-<style>
-  :root{ --acc: #00C2A8 }
-  .rcp-wrap{position:fixed;inset:auto 12px 12px auto;z-index:99999;max-width:92vw}
-  .rcp-panel{background:#0B1220;color:#E5E7EB;border:1px solid #1F2937;border-radius:14px;
-    box-shadow:0 12px 30px rgba(0,0,0,.35);padding:14px;display:none;max-height:72vh;overflow:auto}
-  .rcp-title{display:flex;align-items:center;gap:10px;font-weight:700}
-  .rcp-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-  .rcp-badge{font-size:12px;border-radius:999px;padding:3px 8px;border:1px solid #334155}
-  .rcp-red{background:#3f1e1e;border-color:#7f1d1d;color:#fecaca}
-  .rcp-amber{background:#3a2f14;border-color:#a16207;color:#fde68a}
-  .rcp-green{background:#113426;border-color:#047857;color:#bbf7d0}
-  .rcp-row{display:grid;gap:10px;margin-top:10px}
-  .rcp-grid{display:grid;gap:10px}
-  @media(min-width:520px){ .rcp-grid{grid-template-columns:1fr 1fr} }
-  .rcp-card{border:1px solid #1F2937;background:#0b1322;border-radius:12px;padding:12px}
-  .rcp-btn{background:var(--acc);color:#0B1220;padding:8px 12px;border-radius:10px;border:0;font-weight:700}
-  .rcp-ghost{background:#0B1220;border:1px solid #334155;color:#E5E7EB}
-  .rcp-mini{font-size:12px;padding:6px 10px}
-  .rcp-input{width:100%;padding:10px;border-radius:10px;border:1px solid #1F2937;background:#0b1322;color:#E5E7EB}
-  .rcp-kv{font-size:12px;opacity:.9}
-  .rcp-fab{position:fixed;right:12px;bottom:12px;background:var(--acc);color:#0B1220;border-radius:14px;
-    padding:10px 12px;font-weight:800;border:0;z-index:99998}
-</style>
-<div class="rcp-wrap" id="rcpWrap">
-  <button class="rcp-fab" id="rcpFab">Créateur</button>
-  <div class="rcp-panel" id="rcpPanel" role="dialog" aria-label="Créateur Recallia">
-    <div class="rcp-title">
-      <span>Créateur Recallia — <span id="rcpVersion">v30</span></span>
-      <span class="rcp-badges">
-        <span class="rcp-badge" id="rcpEnv">mode privé</span>
-        <span class="rcp-badge" id="rcpScanAt"></span>
-      </span>
-      <div style="margin-left:auto;display:flex;gap:8px">
-        <button class="rcp-btn rcp-mini rcp-ghost" id="rcpAnalyze">Analyser</button>
-        <button class="rcp-btn rcp-mini" id="rcpSave">Exporter patch</button>
-      </div>
-    </div>
-
-    <!-- Alertes & état -->
-    <div class="rcp-row">
-      <div class="rcp-card">
-        <div style="font-weight:700;margin-bottom:6px">Alertes & état de la page</div>
-        <div id="rcpAlerts" class="rcp-grid"></div>
-      </div>
-    </div>
-
-    <!-- Comprendre ta requête -->
-    <div class="rcp-row">
-      <div class="rcp-card">
-        <div style="font-weight:700;margin-bottom:6px">Que veux-tu changer ?</div>
-        <div class="rcp-grid">
-          <input id="rcpAsk" class="rcp-input" placeholder="Ex: centre le menu sur mobile / mets l’accent en bleu / ajoute la meta description / rends l’app installable" />
-          <button id="rcpPropose" class="rcp-btn">Proposer</button>
-        </div>
-        <div id="rcpOptions" class="rcp-row"></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<script>
-(function(){
-  // --- ACCÈS CRÉATEUR (privé) ---
-  const PIN = '2468'; // change plus tard
-  const qs = new URLSearchParams(location.search);
-  if(qs.get('creator')==='on') localStorage.setItem('recalliaCreator','1');
-  const unlocked = localStorage.getItem('recalliaCreator')==='1';
-  if(!unlocked){ document.getElementById('rcpWrap').style.display='none'; return; }
-  if(!localStorage.getItem('recalliaPin')){
-    const p = prompt('PIN Créateur:',''); if(p!==PIN){ alert('Accès refusé'); return; } localStorage.setItem('recalliaPin','ok');
-  }
-
-  const $ = s=>document.querySelector(s);
-  const panel = $('#rcpPanel'), fab = $('#rcpFab');
-  fab.onclick = ()=> panel.style.display = panel.style.display==='block' ? 'none' : 'block';
-
-  // ---------- OUTILS ----------
-  const addStyle = (css,id='rcpDynamic')=>{
-    let el=document.getElementById(id); if(!el){ el=document.createElement('style'); el.id=id; document.head.appendChild(el) }
-    el.textContent = (el.textContent||'') + "\n" + css;
+  const setAccent = hex => {
+    if(!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(hex||"")) return;
+    document.documentElement.style.setProperty('--accent', hex);
+    document.documentElement.style.setProperty('--accent-2', hex+'20');
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', hex);
   };
-  const ensureTag = (tag, attrs={})=>{
-    // cherche un tag correspondant, sinon crée et l’ajoute dans <head>
-    const exists = document.head.querySelector(
-      tag + Object.entries(attrs).map(([k,v])=>`[${k}="${v}"]`).join('')
-    );
-    if(exists) return exists;
-    const el = document.createElement(tag);
-    Object.entries(attrs).forEach(([k,v])=> el.setAttribute(k,v));
-    document.head.appendChild(el);
-    return el;
+  const saveSite = () => {
+    localStorage.setItem('recallia.site', JSON.stringify({
+      title: $('#heroTitle').textContent,
+      sub: $('#heroSub').textContent,
+      cta: $('#heroCta').textContent,
+      accent: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
+    }));
+    $('#creatorState').textContent = 'sauvegardé'; $('#creatorState').className='ok';
   };
-  const setHtml = (sel, html)=>{ const el=document.querySelector(sel); if(el) el.innerHTML = html; };
-  const setText = (sel, txt)=>{ const el=document.querySelector(sel); if(el) el.textContent = txt; };
-  const setAttr = (sel, k, v)=>{ const el=document.querySelector(sel); if(el) el.setAttribute(k,v); };
-  const root = document.documentElement;
-
-  // ---------- SCAN (Alertes) ----------
-  function analyze(){
-    const alerts = [];
-    // PWA
-    const hasManifest = !!document.querySelector('link[rel="manifest"]');
-    const hasSW = 'serviceWorker' in navigator;
-    const hasIcons = !!document.querySelector('link[rel*="icon"]') || !!document.querySelector('link[rel="apple-touch-icon"]');
-    alerts.push({
-      group:'PWA', ok:(hasManifest && hasIcons && hasSW),
-      issues:[
-        !hasManifest && 'Manifest manquant',
-        !hasIcons && 'Icônes manquantes (192/512)',
-        !hasSW && 'Service Worker non détecté (en prod il est nécessaire)'
-      ].filter(Boolean),
-      fix: ()=>{
-        ensureTag('link', {rel:'manifest', href:'manifest.webmanifest'});
-        ensureTag('link', {rel:'icon', href:'icons/icon-192.png', sizes:'192x192', type:'image/png'});
-        ensureTag('link', {rel:'apple-touch-icon', href:'icons/icon-192.png'});
-        // registration SW (idempotent)
-        if('serviceWorker' in navigator){
-          try{
-            navigator.serviceWorker.register('sw.js').catch(()=>{});
-          }catch(e){}
-        }
-      }
-    });
-
-    // SEO de base
-    const titleOK = document.title && document.title.length>10;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    const h1OK = !!document.querySelector('h1');
-    const canonical = document.querySelector('link[rel="canonical"]');
-    alerts.push({
-      group:'SEO', ok:(titleOK && metaDesc && h1OK),
-      issues:[
-        !titleOK && 'Titre trop court ou manquant',
-        !metaDesc && 'Meta description manquante',
-        !h1OK && 'Aucun <h1> détecté',
-        !canonical && 'Lien canonical manquant'
-      ].filter(Boolean),
-      fix: ()=>{
-        if(!metaDesc) ensureTag('meta',{name:'description',content:"Recallia — votre mémoire IA : rappelle, exécute et prouve (reçus horodatés)."});
-        if(!canonical) ensureTag('link',{rel:'canonical',href:location.href.split('#')[0].split('?')[0]});
-        if(!document.documentElement.lang) document.documentElement.lang='fr';
-      }
-    });
-
-    // Accessibilité (rapide)
-    const imgs=[...document.querySelectorAll('img')];
-    const missingAlt=imgs.filter(i=>!i.hasAttribute('alt')||i.getAttribute('alt')==='').length;
-    alerts.push({
-      group:'A11y', ok:(missingAlt===0),
-      issues:[ missingAlt>0 && `${missingAlt} image(s) sans attribut alt` ].filter(Boolean),
-      fix: ()=> imgs.forEach(i=>{ if(!i.alt) i.alt='Illustration'; })
-    });
-
-    // Perf (naïf)
-    let bigImgs=0;
+  const loadSite = () => {
+    const s = localStorage.getItem('recallia.site');
+    if(!s) return;
     try{
-      performance.getEntriesByType('resource')
-        .filter(r=>/(\.png|\.jpg|\.jpeg|\.webp)$/i.test(r.name) && r.transferSize>300*1024)
-        .forEach(()=>bigImgs++);
+      const v = JSON.parse(s);
+      if(v.title) $('#heroTitle').textContent = v.title;
+      if(v.sub)   $('#heroSub').textContent   = v.sub;
+      if(v.cta)   $('#heroCta').textContent   = v.cta;
+      if(v.accent) setAccent(v.accent);
     }catch(e){}
-    alerts.push({
-      group:'Perf', ok:(bigImgs===0),
-      issues:[ bigImgs>0 && `${bigImgs} image(s) > 300 Ko (pénalise mobile)` ].filter(Boolean),
-      fix: ()=> alert("Compresser les images > 300 Ko (WebP 70–80%).")
-    });
-
-    renderAlerts(alerts);
-    $('#rcpScanAt').textContent = new Date().toLocaleTimeString();
-  }
-
-  function renderAlerts(items){
-    const box = $('#rcpAlerts'); box.innerHTML='';
-    items.forEach(it=>{
-      const el = document.createElement('div'); el.className='rcp-card';
-      const badge = it.ok ? 'rcp-green':'rcp-red';
-      el.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-          <div style="font-weight:700">${it.group}</div>
-          <span class="rcp-badge ${badge}">${it.ok?'OK':'À corriger'}</span>
-        </div>
-        <div class="rcp-kv">${(it.issues && it.issues.length)? it.issues.map(x=>'• '+x).join('<br>') : 'Rien à signaler.'}</div>
-        <div style="margin-top:8px"><button class="rcp-btn rcp-mini">Proposer un correctif</button></div>
-      `;
-      el.querySelector('button').onclick = it.fix;
-      $('#rcpAlerts').appendChild(el);
-    });
-  }
-
-  // ---------- COMPRÉHENSION REQUÊTES ----------
-  function proposeFrom(text){
-    const t = (text||'').toLowerCase();
-    const options = [];
-
-    // 1) Layout/menu mobile
-    if( /(menu|sommaire|nav)/.test(t) && /(centr[ée]|\bcenter)/.test(t) && /(mobile|téléphone)/.test(t) ){
-      options.push({
-        label:"Centrer le menu sur mobile (flex + gap)",
-        apply:()=> addStyle(`
-          @media (max-width:480px){
-            header nav, #topnav, .topbar nav, nav[role="navigation"]{
-              display:flex; flex-wrap:wrap; justify-content:center; gap:12px;
-            }
-            header nav a{ text-align:center }
-          }`,'rcpNavMobile')
-      });
-    }
-
-    // 2) Hero centré / resserrer espaces
-    if(/hero|titre|sommaire|centr[ée]/.test(t)){
-      options.push({
-        label:"Recentrer le hero et resserrer les marges",
-        apply:()=>{
-          const hero = document.querySelector('#hero, .hero, section.hero') || document.querySelector('h1')?.closest('section');
-          if(hero){ hero.style.textAlign='center'; hero.style.margin='8px auto' }
-        }
-      });
-    }
-
-    // 3) Couleur d’accent
-    const colorMap = { bleu:'#60A5FA', vert:'#10B981', turquoise:'#00C2A8', violet:'#7C3AED', rose:'#EC4899' };
-    const wanted = Object.keys(colorMap).find(k=> t.includes(k) || t.includes(colorMap[k].toLowerCase()) );
-    if(/(accent|couleur)/.test(t) && wanted){
-      options.push({
-        label:`Mettre l’accent en ${wanted} (${colorMap[wanted]})`,
-        apply:()=> root.style.setProperty('--acc', colorMap[wanted])
-      });
-    }
-
-    // 4) Texte titre & sous-titre
-    const mTitle = t.match(/titre\s*:\s*["“](.+?)["”]/);
-    const mSub   = t.match(/sous[-\s]?titre\s*:\s*["“](.+?)["”]/);
-    if(mTitle || mSub){
-      options.push({
-        label:"Mettre à jour Titre / Sous-titre du hero",
-        apply:()=>{
-          if(mTitle) setText('h1', mTitle[1]);
-          if(mSub)   setText('h1 + p, .subtitle, .lead', mSub[1]);
-        }
-      });
-    }
-
-    // 5) CTA
-    if(/(cta|bouton|démarrer|essayer|call to action)/.test(t)){
-      const m = t.match(/(cta|bouton).*?["“](.+?)["”]/);
-      options.push({
-        label:`Renommer le CTA ${m?('→ “'+m[2]+'”'):'(Garder)'} et le mettre en avant`,
-        apply:()=>{
-          const btn = document.querySelector('a[href*="#app"], a[href*="#try"], a.btn-primary, .cta a, .cta button') || document.querySelector('a,button');
-          if(!btn) return;
-          if(m) btn.textContent = m[2];
-          btn.style.background = 'var(--acc)'; btn.style.color='#0B1220'; btn.style.fontWeight='800';
-        }
-      });
-    }
-
-    // 6) PWA / installable
-    if(/(pwa|installable|installe|icone|manifest|service worker|sw)/.test(t)){
-      options.push({
-        label:"Rendre l’app installable (manifest + icônes + SW)",
-        apply:()=>{
-          ensureTag('link',{rel:'manifest',href:'manifest.webmanifest'});
-          ensureTag('link',{rel:'icon',href:'icons/icon-192.png',sizes:'192x192',type:'image/png'});
-          ensureTag('link',{rel:'apple-touch-icon',href:'icons/icon-192.png'});
-          if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
-        }
-      });
-    }
-
-    // 7) SEO : meta description
-    if(/(meta|description)/.test(t)){
-      options.push({
-        label:"Ajouter/mettre à jour la meta description",
-        apply:()=> ensureTag('meta',{name:'description',content:"Votre mémoire IA : rappelle, exécute et prouve (reçus horodatés + audit)."})
-      });
-    }
-
-    // 8) KPI (TTV/VSR)
-    if(/(kpi|ttv|vsr)/.test(t)){
-      options.push({
-        label:"Mettre à jour TTV/VSR (démo)",
-        apply:()=>{
-          setText('[data-kpi="ttv"]','< 60 s');
-          setText('[data-kpi="vsr"]','≥ 90%');
-        }
-      });
-    }
-
-    // 9) Accessibilité de base
-    if(/(accessibilit|a11y|contraste|alt)/.test(t)){
-      options.push({
-        label:"Ajouter alt manquants & améliorer contrastes (rapide)",
-        apply:()=>{
-          document.querySelectorAll('img:not([alt])').forEach(i=>i.setAttribute('alt','Illustration'));
-          addStyle('body{color:#E5E7EB} a{color:var(--acc)}');
-        }
-      });
-    }
-
-    // fallback
-    if(options.length===0){
-      options.push({
-        label:"Aucune intention précise détectée — Voir Alertes (bouton Analyser)",
-        apply:()=>{}
-      });
-    }
-    return options;
-  }
-
-  function renderOptions(opts){
-    const box = $('#rcpOptions'); box.innerHTML='';
-    opts.slice(0,5).forEach(op=>{
-      const d = document.createElement('div'); d.className='rcp-card';
-      d.innerHTML = `<div style="margin-bottom:6px">${op.label}</div>
-        <div style="display:flex;gap:8px">
-          <button class="rcp-btn rcp-mini">Appliquer</button>
-        </div>`;
-      d.querySelector('button').onclick = ()=> op.apply();
-      box.appendChild(d);
-    });
-  }
-
-  // ---------- EXPORT PATCH ----------
-  $('#rcpSave').onclick = ()=>{
-    const css = (document.getElementById('rcpDynamic')?.textContent||'') +
-                (document.getElementById('rcpNavMobile')?.textContent||'');
-    const patch = {
-      at: new Date().toISOString(),
-      title: document.title,
-      lang: document.documentElement.lang,
-      acc: getComputedStyle(document.documentElement).getPropertyValue('--acc').trim(),
-      metaDesc: document.querySelector('meta[name="description"]')?.getAttribute('content')||'',
-      manifest: !!document.querySelector('link[rel="manifest"]'),
-      sw: 'serviceWorker' in navigator,
-      cssPatch: css
-    };
-    const blob = new Blob([JSON.stringify(patch,null,2)],{type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'),{href:url,download:'recallia_patch.json'});
-    a.click(); setTimeout(()=>URL.revokeObjectURL(url),2000);
   };
 
-  // ---------- WIRING ----------
-  $('#rcpAnalyze').onclick = analyze;
-  $('#rcpPropose').onclick = ()=> renderOptions(proposeFrom($('#rcpAsk').value||''));
-  $('#rcpEnv').textContent = 'créateur actif';
-})();
-</script>
-<!-- Créateur Recallia — v31 (copie/colle avant </body>) -->
-<style id="creator-style">
-:root{ --accent:#00C2A8;}
-.recallia-fab{position:fixed;right:16px;bottom:16px;z-index:9999;background:var(--accent);color:#0E1116;padding:12px 16px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-.recallia-panel{position:fixed;right:12px;bottom:12px;width:min(100%,420px);max-height:80vh;overflow:auto;background:#101418;color:#e5e7eb;border:1px solid #1f2937;border-radius:16px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:99999}
-.recallia-row{display:flex;gap:8px;align-items:center}
-.recallia-btn{background:#0ea5a5;border:none;padding:8px 12px;border-radius:10px;font-weight:700}
-.recallia-badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px}
-.badge-ok{background:#065f46}.badge-warn{background:#854d0e}.badge-crit{background:#7f1d1d}
-.nav-center{justify-content:center !important;text-align:center}
-</style>
-<script>
-(function(){
-  const ENABLE=new URLSearchParams(location.search).get('creator')==='on'||localStorage.getItem('recalliaCreator')==='1';
-  const PIN='2468'; // change-moi
-  if(!ENABLE) return;
-  if(localStorage.getItem('recalliaPin')!==PIN){
-    const p=prompt('PIN créateur :'); if(p!==PIN){alert('Accès refusé');return;}
-    localStorage.setItem('recalliaPin',PIN); localStorage.setItem('recalliaCreator','1');
-  }
-  const $=s=>document.querySelector(s);
-  const pick=a=>{for(const s of a){const el=document.querySelector(s);if(el) return el}return null};
-  const els={
-    title: pick(['[data-hero="title"]','#hero-title','main h1','h1']),
-    subtitle: pick(['[data-hero="subtitle"]','#hero-subtitle','main h1+p','h1 + p']),
-    cta: pick(['[data-hero="cta"]','a.cta','.cta-primary','main a[href^="#"]','a[href*="#app"]']),
-    nav: pick(['header nav','#nav','nav','.nav'])
+  // ---- PWA : SW + bouton d’installation
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt', (e)=>{
+    e.preventDefault(); deferredPrompt = e;
+    $('#installBtn').style.display='inline-flex';
+    $('#pwaInstall').style.display='flex';
+  });
+  const doInstall = async ()=>{
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice.catch(()=>{});
+    $('#pwaInstall').style.display='none';
   };
-  const cfgKey='recalliaSiteCfg';
-  const def={title:els.title?.textContent?.trim()||'Votre mémoire IA',
-             subtitle:els.subtitle?.textContent?.trim()||'',
-             cta:'Essayer maintenant',ctaHref:'#app',
-             accent:getComputedStyle(document.documentElement).getPropertyValue('--accent')?.trim()||'#00C2A8',
-             menuCenter:false};
-  function applyConfig(c){
-    const conf=Object.assign({},def,c||{});
-    if(els.title) els.title.textContent=conf.title;
-    if(els.subtitle) els.subtitle.textContent=conf.subtitle;
-    if(els.cta){ els.cta.textContent=conf.cta; if(conf.ctaHref) els.cta.setAttribute('href',conf.ctaHref); }
-    document.documentElement.style.setProperty('--accent',conf.accent);
-    if(els.nav){ els.nav.style.display='flex'; els.nav.classList.toggle('nav-center',!!conf.menuCenter); }
-    localStorage.setItem(cfgKey,JSON.stringify(conf));
-    return conf;
-  }
-  try{const saved=JSON.parse(localStorage.getItem(cfgKey)||'null'); if(saved) applyConfig(saved);}catch(e){}
-  const proposals=[
-    {id:'opt1',title:'Simplifier le héros',changes:{title:'Votre mémoire IA — encore plus simple.',subtitle:'Vous validez, on le fait. Chaque action réussie a un reçu horodaté.',cta:'Essayer maintenant',accent:'#00C2A8',menuCenter:true}},
-    {id:'opt2',title:'Ton plus direct',changes:{title:'Rappelle, exécute, prouve.',subtitle:'Des actions faites avec preuve (hash + journal).',cta:'Démarrer',accent:'#0EA5E9',menuCenter:true}}
-  ];
-  async function audit(){
-    const A=[]; const add=(sev,msg,fix)=>A.push({sev,msg,fix});
-    const link=document.querySelector('link[rel="manifest"]');
-    if(!link) add('crit','Manifest PWA manquant',()=>{const l=document.createElement('link');l.rel='manifest';l.href='manifeste.webmanifest';document.head.appendChild(l);});
-    try{ if(link){const r=await fetch(link.href); if(r.ok){const m=await r.json(); if(!m.icons||m.icons.length===0) add('warn','Aucune icône dans le manifest (192/512 requises)');}}}catch(e){}
-    if(!('serviceWorker' in navigator)) add('warn','Service Worker non supporté par ce navigateur.');
-    if(!$('meta[name="description"]')) add('warn','Meta description absente (SEO).',()=>{const m=document.createElement('meta');m.name='description';m.content='Recallia : votre mémoire IA qui rappelle, exécute et prouve.';document.head.appendChild(m);});
-    if(!$('meta[property="og:title"]')) add('warn','OpenGraph (og:title) manquant.',()=>{const m=document.createElement('meta');m.setAttribute('property','og:title');m.content=document.title||'Recallia';document.head.appendChild(m);});
-    if(els.title && els.title.textContent.length>90) add('warn','Titre très long (>90 caractères)');
-    return A;
-  }
-  const fab=document.createElement('button'); fab.className='recallia-fab'; fab.textContent='Créateur'; document.body.appendChild(fab);
-  let panel;
-  fab.onclick=async()=>{
-    if(panel){panel.remove();panel=null;return;}
-    panel=document.createElement('div'); panel.className='recallia-panel';
-    panel.innerHTML=`
-      <div class="recallia-row" style="justify-content:space-between;margin-bottom:8px">
-        <strong>Créateur Recallia — v31</strong>
-        <div><button id="creator-save" class="recallia-btn">Sauver</button>
-             <button id="creator-close" class="recallia-btn" style="background:#334155;color:#e5e7eb">Fermer</button></div>
-      </div>
-      <div id="creator-alerts" style="margin:8px 0;padding:8px;border:1px dashed #334155;border-radius:10px"><em>Scans…</em></div>
-      <div style="margin-top:6px">
-        <div style="font-weight:700;margin:6px 0">Propositions</div>
-        ${proposals.map((p,i)=>`
-          <div style="border:1px solid #334155;border-radius:10px;padding:10px;margin-bottom:8px">
-            <div style="font-weight:600;margin-bottom:6px">Option ${i+1} — ${p.title}</div>
-            <div style="font-size:14px;opacity:.85">Titre : ${p.changes.title}<br>CTA : ${p.changes.cta} · Accent : ${p.changes.accent}</div>
-            <div class="recallia-row" style="margin-top:8px">
-              <button class="recallia-btn" data-apply="${p.id}">Appliquer</button>
-            </div>
-          </div>`).join('')}
-      </div>
-      <div style="margin-top:10px">
-        <div style="font-weight:700;margin:6px 0">Commande rapide</div>
-        <div class="recallia-row">
-          <input id="creator-cmd" placeholder="ex : mets l’accent en bleu" style="flex:1;background:#0b1220;border:1px solid #334155;color:#e5e7eb;padding:8px;border-radius:10px"/>
-          <button id="creator-propose" class="recallia-btn">OK</button>
-        </div>
-        <div id="creator-msg" style="font-size:12px;opacity:.8;margin-top:6px"></div>
-      </div>`;
-    document.body.appendChild(panel);
-    const a=await audit(); const wrap=panel.querySelector('#creator-alerts');
-    if(a.length===0){ wrap.innerHTML=`<span class="recallia-badge badge-ok">OK</span> Aucun problème critique trouvé.`;}
-    else{
-      wrap.innerHTML=a.map((it,idx)=>`
-        <div style="margin:6px 0;display:flex;gap:8px;align-items:center">
-          <span class="recallia-badge ${it.sev==='crit'?'badge-crit':(it.sev==='warn'?'badge-warn':'badge-ok')}">${it.sev.toUpperCase()}</span>
-          <span style="flex:1">${it.msg}</span>
-          ${it.fix?`<button class="recallia-btn" data-fix="${idx}">Corriger</button>`:''}
-        </div>`).join('');
-      wrap.querySelectorAll('[data-fix]').forEach(btn=>{
-        btn.onclick=()=>{const i=+btn.dataset.fix; a[i].fix&&a[i].fix(); btn.disabled=true; btn.textContent='Corrigé';};
-      });
+  $('#installBtn').addEventListener('click',doInstall);
+  $('#pwaInstallBtn').addEventListener('click',doInstall);
+
+  // ---- Créateur (PIN 2718)
+  const showFab = ()=>{ $('#creatorFab').style.display='inline-flex'; };
+  // Appuyer 5 fois sur le badge pour activer le fab (local)
+  let taps=0; document.querySelector('.badge').addEventListener('click',()=>{
+    taps++; if(taps>=5){ localStorage.setItem('recallia.creator','1'); showFab(); }
+    setTimeout(()=>taps=0,1200);
+  });
+  if(localStorage.getItem('recallia.creator')==='1') showFab();
+
+  const openCreator = ()=>{
+    $('#creator').style.display='block';
+    const unlocked = localStorage.getItem('recallia.creator.unlocked')==='1';
+    $('#creatorLocked').style.display = unlocked ? 'none':'flex';
+    $('#creatorForm').style.display   = unlocked ? 'block':'none';
+    if(unlocked){
+      $('#fTitle').value = $('#heroTitle').textContent;
+      $('#fSub').value   = $('#heroSub').textContent;
+      $('#fCta').value   = $('#heroCta').textContent;
+      $('#fAccent').value= getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#00C2A8';
     }
-    panel.querySelectorAll('[data-apply]').forEach(btn=>{
-      btn.onclick=()=>{ const p=proposals.find(x=>x.id===btn.dataset.apply); applyConfig(p.changes); panel.querySelector('#creator-msg').textContent='Appliqué. Clique “Sauver” pour mémoriser.'; };
-    });
-    const colorMap={bleu:'#0EA5E9',vert:'#00C2A8',violet:'#7C3AED',rose:'#EC4899',orange:'#F97316',rouge:'#EF4444',jaune:'#F59E0B'};
-    panel.querySelector('#creator-propose').onclick=()=>{
-      const q=(panel.querySelector('#creator-cmd').value||'').toLowerCase();
-      let c=JSON.parse(localStorage.getItem(cfgKey)||'null')||def;
-      if(/accent|couleur/.test(q)){ for(const [n,hex] of Object.entries(colorMap)) if(q.includes(n)) c.accent=hex; }
-      if(/titre|title/.test(q)){ const m=q.match(/"(.*)"/); if(m) c.title=m[1]; }
-      if(/menu.*centr/.test(q)) c.menuCenter=true;
-      applyConfig(c); panel.querySelector('#creator-msg').textContent='Commandes appliquées.';
-    };
-    panel.querySelector('#creator-save').onclick=()=>{ alert('Enregistré localement. (Synchro GitHub viendra ensuite)'); };
-    panel.querySelector('#creator-close').onclick=()=>{ panel.remove(); panel=null; };
   };
-})();
-</script>
-<<!-- ===== Recallia · Créateur v32 — no-touch (drop-in) ===== -->
-<style id="rc32-style">
-:root{--accent:#00C2A8}
-.rc32-fab{position:fixed;right:14px;bottom:14px;z-index:9999;background:var(--accent);color:#0E1116;
-  border:0;border-radius:14px;padding:10px 14px;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-.rc32-panel{position:fixed;right:12px;bottom:12px;z-index:99999;width:min(92vw,520px);max-height:80vh;overflow:auto;
-  background:#0B1220;color:#E5E7EB;border:1px solid #1F2937;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.5);padding:14px}
-.rc32-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.rc32-btn{background:var(--accent);color:#0E1116;border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
-.rc32-ghost{background:#0B1220;color:#E5E7EB;border:1px solid #334155}
-.rc32-card{border:1px solid #1F2937;border-radius:12px;background:#0b1322;padding:12px}
-.rc32-badge{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid #334155}
-.rc32-ok{background:#113426;border-color:#047857;color:#bbf7d0}
-.rc32-warn{background:#3a2f14;border-color:#a16207;color:#fde68a}
-.rc32-crit{background:#3f1e1e;border-color:#7f1d1d;color:#fecaca}
-@media(max-width:480px){
-  header nav, nav[role="navigation"], #topnav, .topbar nav{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-  header nav a, nav a{text-align:center}
-}
-</style>
-<script>
-(function(){
-  // --- Activer le mode créateur seulement pour toi ---
-  const Q = new URLSearchParams(location.search);
-  if (Q.get('creator')==='on') localStorage.setItem('recCreator','1');
-  if (localStorage.getItem('recCreator')!=='1') return;
-  const PIN = '2468'; // change-le plus tard
-  if (localStorage.getItem('recPin')!==PIN){
-    const p = prompt('PIN créateur :'); if (p!==PIN){ alert('Accès refusé'); return; }
-    localStorage.setItem('recPin', PIN);
-  }
-
-  // --- Helpers DOM ---
-  const $ = s=>document.querySelector(s);
-  const addStyle = (css,id='rc32-dyn')=>{
-    let el = document.getElementById(id); if(!el){ el=document.createElement('style'); el.id=id; document.head.appendChild(el); }
-    el.textContent += '\n'+css;
-  };
-  const ensure = (tag, attrs={})=>{
-    const sel = tag + Object.entries(attrs).map(([k,v])=>`[${k}="${v}"]`).join('');
-    const ex = document.head.querySelector(sel); if (ex) return ex;
-    const el = document.createElement(tag); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v)); document.head.appendChild(el); return el;
-  };
-
-  // --- Auto-balise HÉROS (sans modifier ton HTML à la main) ---
-  function firstVisible(sel){
-    const list = [...document.querySelectorAll(sel)];
-    return list.find(el=>{const r=el.getBoundingClientRect(); const cs=getComputedStyle(el); return r.width>0 && r.height>0 && cs.visibility!=='hidden' && cs.display!=='none';}) || null;
-  }
-  function tagHeroIfMissing(){
-    let h1 = document.querySelector('[data-hero="title"]') || firstVisible('main h1, header h1, h1');
-    if (h1 && !h1.dataset.hero) h1.setAttribute('data-hero','title');
-    let sub = document.querySelector('[data-hero="subtitle"]') || (h1 ? (h1.nextElementSibling && h1.nextElementSibling.tagName==='P' ? h1.nextElementSibling : firstVisible('h1 + p, main p, header p')) : null);
-    if (sub && !sub.dataset.hero) sub.setAttribute('data-hero','subtitle');
-    let cta = document.querySelector('[data-hero="cta"]') || firstVisible('a.cta, .cta a, a.btn, .btn a, a[href^="#"], button');
-    if (cta && !cta.dataset.hero) cta.setAttribute('data-hero','cta');
-    // Si rien n’existe, on crée un mini héros discret (au tout début du body)
-    if (!h1){
-      const sec = document.createElement('section'); sec.id='hero'; sec.style.cssText='padding:40px 16px';
-      sec.innerHTML = `
-        <h1 data-hero="title" style="font-size:clamp(28px,6vw,46px);line-height:1.1;margin:0 0 10px">
-          Votre mémoire IA qui rappelle, exécute et prouve.
-        </h1>
-        <p data-hero="subtitle" style="opacity:.85;margin:0 0 16px">
-          Vous validez, on le fait. Chaque succès a un reçu horodaté (hash + journal).
-        </p>
-        <a data-hero="cta" href="#app" style="display:inline-block;background:var(--accent,#00C2A8);color:#0E1116;padding:10px 16px;border-radius:12px;font-weight:800;text-decoration:none">
-          Essayer maintenant
-        </a>`;
-      document.body.insertAdjacentElement('afterbegin', sec);
+  $('#creatorFab').addEventListener('click', openCreator);
+  $('#pinOk').addEventListener('click', ()=>{
+    if($('#pin').value.trim()==='2718'){
+      localStorage.setItem('recallia.creator.unlocked','1');
+      $('#creatorLocked').style.display='none';
+      $('#creatorForm').style.display='block';
+      $('#creatorState').textContent='déverrouillé';
+      $('#creatorState').className='ok';
+      $('#fTitle').value = $('#heroTitle').textContent;
+      $('#fSub').value   = $('#heroSub').textContent;
+      $('#fCta').value   = $('#heroCta').textContent;
+      $('#fAccent').value= getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#00C2A8';
+    } else {
+      $('#creatorState').textContent='PIN invalide';
+      $('#creatorState').className='warn';
     }
-  }
-  tagHeroIfMissing();
-
-  // --- Pointeurs "tolérants" vers les éléments clés ---
-  const els = {
-    title: ()=> document.querySelector('[data-hero="title"]'),
-    sub:   ()=> document.querySelector('[data-hero="subtitle"]'),
-    cta:   ()=> document.querySelector('[data-hero="cta"]'),
-    nav:   ()=> document.querySelector('header nav, nav[role="navigation"], #topnav, .topbar nav, nav')
-  };
-
-  // --- Config persistée (localStorage) ---
-  const CFG_KEY='recSiteCfg';
-  const defCfg = {
-    title: els.title()?.textContent?.trim() || 'Votre mémoire IA',
-    subtitle: els.sub()?.textContent?.trim() || '',
-    ctaText: els.cta()?.textContent?.trim() || 'Essayer maintenant',
-    ctaHref: els.cta()?.getAttribute('href') || '#app',
-    accent: getComputedStyle(document.documentElement).getPropertyValue('--accent')?.trim() || '#00C2A8',
-    menuCenter: false
-  };
-  function applyCfg(c){
-    const cfg = Object.assign({}, defCfg, c||{});
-    if (els.title()) els.title().textContent = cfg.title;
-    if (els.sub())   els.sub().textContent   = cfg.subtitle;
-    if (els.cta()){ els.cta().textContent = cfg.ctaText; els.cta().setAttribute('href', cfg.ctaHref); }
-    document.documentElement.style.setProperty('--accent', cfg.accent);
-    const nv = els.nav(); if (nv){ nv.style.display='flex'; nv.style.flexWrap='wrap'; nv.style.gap='12px'; nv.style.justifyContent = cfg.menuCenter ? 'center':'flex-start'; }
-    localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
-  }
-  try{ const saved = JSON.parse(localStorage.getItem(CFG_KEY)||'null'); if(saved) applyCfg(saved); }catch(e){}
-
-  // --- Scans & Alertes ---
-  async function scanAlerts(){
-    const list=[];
-    const hasManifest = !!document.querySelector('link[rel="manifest"]');
-    if(!hasManifest) list.push({sev:'crit', msg:'Manifest PWA manquant', fix:()=>ensure('link',{rel:'manifest',href:'manifest.webmanifest'})});
-    const hasIcon = !!document.querySelector('link[rel*="icon"], link[rel="apple-touch-icon"]');
-    if(!hasIcon) list.push({sev:'warn', msg:'Icônes (192/512) manquantes', fix:()=>{
-      ensure('link',{rel:'icon',href:'icons/icon-192.png',sizes:'192x192',type:'image/png'});
-      ensure('link',{rel:'apple-touch-icon',href:'icons/icon-192.png'});
-    }});
-    if(!$('meta[name="description"]')) list.push({sev:'warn', msg:'Meta description absente (SEO)', fix:()=>ensure('meta',{name:'description',content:'Recallia — votre mémoire IA : rappelle, exécute et prouve.'})});
-    if(!document.documentElement.lang) list.push({sev:'warn', msg:'Attribut lang manquant (fr)', fix:()=>document.documentElement.lang='fr'});
-    if(!document.querySelector('h1')) list.push({sev:'warn', msg:'Aucun <h1> détecté', fix:()=>{ /* le héros auto en ajoute un */ }});
-    // Perf images >300KB (si API dispo)
-    let big=0; try{
-      performance.getEntriesByType('resource').filter(r=>/(\.png|\.jpe?g|\.webp)$/i.test(r.name) && r.transferSize>300*1024).forEach(()=>big++);
-    }catch(e){}; if(big>0) list.push({sev:'warn', msg:`${big} image(s) > 300 Ko (compresser en WebP)`});
-    return list;
-  }
-
-  // --- Panneau UI ---
-  const fab = document.createElement('button'); fab.className='rc32-fab'; fab.textContent='Créateur'; document.body.appendChild(fab);
-  let panel=null;
-  fab.onclick = async () => {
-    if(panel){ panel.remove(); panel=null; return; }
-    panel = document.createElement('div'); panel.className='rc32-panel';
-    panel.innerHTML = `
-      <div class="rc32-row" style="justify-content:space-between;margin-bottom:6px">
-        <strong>Créateur Recallia — v32</strong>
-        <div class="rc32-row">
-          <button id="rc32-scan" class="rc32-btn rc32-ghost">Analyser</button>
-          <button id="rc32-save" class="rc32-btn">Sauver</button>
-          <button id="rc32-close" class="rc32-btn rc32-ghost">Fermer</button>
-        </div>
-      </div>
-      <div id="rc32-alerts" class="rc32-card"><em>Cliquer “Analyser”</em></div>
-      <div class="rc32-card" style="margin-top:10px">
-        <div style="font-weight:700;margin-bottom:6px">Ta demande</div>
-        <div class="rc32-row">
-          <input id="rc32-ask" placeholder='ex: "centre le menu sur mobile", "accent bleu", "CTA = Démarrer"' style="flex:1;background:#0b1322;border:1px solid #334155;border-radius:10px;color:#E5E7EB;padding:10px">
-          <button id="rc32-propose" class="rc32-btn">Proposer</button>
-        </div>
-        <div id="rc32-options" style="margin-top:8px;display:grid;gap:8px"></div>
-      </div>
-      <div class="rc32-card" style="margin-top:10px">
-        <div style="font-weight:700;margin-bottom:6px">Raccourcis</div>
-        <div class="rc32-row">
-          <button data-quick="hero1" class="rc32-btn rc32-ghost">Héros simplifié</button>
-          <button data-quick="blue"  class="rc32-btn rc32-ghost">Accent bleu</button>
-          <button data-quick="green" class="rc32-btn rc32-ghost">Accent vert</button>
-          <button data-quick="center" class="rc32-btn rc32-ghost">Menu centré</button>
-        </div>
-      </div>`;
-    document.body.appendChild(panel);
-
-    // actions panneau
-    const elAlerts = panel.querySelector('#rc32-alerts');
-    panel.querySelector('#rc32-close').onclick = ()=>{ panel.remove(); panel=null; };
-    panel.querySelector('#rc32-save').onclick  = ()=>{ alert('Enregistré localement pour ce navigateur.'); };
-    panel.querySelector('#rc32-scan').onclick  = async ()=>{
-      const items = await scanAlerts();
-      if(items.length===0){ elAlerts.innerHTML = `<span class="rc32-badge rc32-ok">OK</span> Aucun problème critique.`; return; }
-      elAlerts.innerHTML = items.map((it,i)=>`
-        <div class="rc32-row" style="justify-content:space-between">
-          <div>
-            <span class="rc32-badge ${it.sev==='crit'?'rc32-crit':(it.sev==='warn'?'rc32-warn':'rc32-ok')}">${it.sev.toUpperCase()}</span>
-            <span>${it.msg}</span>
-          </div>
-          ${it.fix?`<button class="rc32-btn rc32-ghost" data-fix="${i}">Corriger</button>`:''}
-        </div>`).join('');
-      elAlerts.querySelectorAll('[data-fix]').forEach(btn=>{
-        btn.onclick=()=>{
-          const it = items[+btn.dataset.fix]; if(it.fix) it.fix();
-          btn.disabled=true; btn.textContent='Corrigé';
-        };
-      });
-    };
-
-    // Raccourcis
-    panel.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>{
-      const cfg = JSON.parse(localStorage.getItem(CFG_KEY)||'null') || defCfg;
-      if (b.dataset.quick==='hero1'){ cfg.title='Votre mémoire IA — encore plus simple.'; cfg.subtitle='Vous validez, on le fait. Preuve horodatée à chaque succès.'; cfg.ctaText='Démarrer'; }
-      if (b.dataset.quick==='blue'){ cfg.accent='#60A5FA'; }
-      if (b.dataset.quick==='green'){ cfg.accent='#10B981'; }
-      if (b.dataset.quick==='center'){ cfg.menuCenter=true; }
-      applyCfg(cfg);
-    });
-
-    // Propositions intelligentes
-    function proposeFrom(text){
-      const t = (text||'').toLowerCase();
-      const opts = [];
-      // menu centré mobile
-      if ( /(menu|nav|sommaire)/.test(t) && /(centr[ée]|center)/.test(t) && /(mobile|téléphone)/.test(t) ){
-        opts.push({label:'Centrer le menu sur mobile', apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; cfg.menuCenter=true; applyCfg(cfg);} });
+  });
+  $('#apply').addEventListener('click',()=>{
+    if($('#fTitle').value) $('#heroTitle').textContent = $('#fTitle').value;
+    if($('#fSub').value)   $('#heroSub').textContent   = $('#fSub').value;
+    if($('#fCta').value)   $('#heroCta').textContent   = $('#fCta').value;
+    if($('#fAccent').value) setAccent($('#fAccent').value.trim());
+    $('#creatorState').textContent='appliqué (non sauvegardé)';
+    $('#creatorState').className='warn';
+  });
+  $('#save').addEventListener('click', saveSite);
+  $('#propose').addEventListener('click', ()=>{
+    // 3 propositions simples (offline) selon le contenu actuel
+    const base = [
+      {
+        t:"Votre mémoire IA — encore plus simple.",
+        s:"Vous validez, on exécute. Preuve horodatée pour chaque action.",
+        c:"Commencer",
+        a:"#00C2A8"
+      },
+      {
+        t:"Rappelle, exécute, prouve.",
+        s:"Anniversaires, rendez-vous, factures… le tout sous votre contrôle.",
+        c:"Essayer",
+        a:"#60A5FA"
+      },
+      {
+        t:"Ne rien oublier. Jamais.",
+        s:"Des rappels intelligents et des actions avec reçus vérifiables.",
+        c:"Activer Recallia",
+        a:"#22D3EE"
       }
-      // couleur d’accent
-      const map={bleu:'#60A5FA', cyan:'#06B6D4', vert:'#10B981', violet:'#7C3AED', orange:'#F59E0B', rouge:'#EF4444', rose:'#EC4899'};
-      const want = Object.keys(map).find(k=> t.includes(k) );
-      if (/(accent|couleur)/.test(t) && want){
-        opts.push({label:`Mettre l’accent ${want} (${map[want]})`, apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; cfg.accent=map[want]; applyCfg(cfg);} });
-      }
-      // CTA
-      const mCta = t.match(/cta\s*=\s*["“']?([^"”']+)["”']?/i);
-      if (mCta){ opts.push({label:`Renommer le CTA en “${mCta[1]}”`, apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; cfg.ctaText=mCta[1]; applyCfg(cfg);} }); }
-      // Titre / Sous-titre
-      const mTitle = t.match(/titre\s*=\s*["“'](.+?)["”']/i);
-      const mSub   = t.match(/sous[-\s]?titre\s*=\s*["“'](.+?)["”']/i);
-      if (mTitle || mSub){
-        opts.push({label:'Mettre à jour Titre/Sous-titre', apply:()=>{ const cfg=JSON.parse(localStorage.getItem(CFG_KEY)||'null')||defCfg; if(mTitle) cfg.title=mTitle[1]; if(mSub) cfg.subtitle=mSub[1]; applyCfg(cfg);} });
-      }
-      // PWA installable
-      if (/(pwa|installable|manifest|service worker|sw|installe)/.test(t)){
-        opts.push({label:'Configurer PWA (manifest + icônes + SW)', apply:()=>{ ensure('link',{rel:'manifest',href:'manifest.webmanifest'}); ensure('link',{rel:'icon',href:'icons/icon-192.png',sizes:'192x192',type:'image/png'}); ensure('link',{rel:'apple-touch-icon',href:'icons/icon-192.png'}); if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{});} }});
-      }
-      // SEO meta description
-      if (/(meta|description)/.test(t)){
-        opts.push({label:'Ajouter/mettre à jour la meta description', apply:()=>ensure('meta',{name:'description',content:'Recallia — votre mémoire IA : rappelle, exécute et prouve.'})});
-      }
-      if (opts.length===0) opts.push({label:'Aucune intention précise détectée — essaie : “centre le menu sur mobile”, “accent bleu”, “CTA = Démarrer”', apply:()=>{}});
-      return opts;
-    }
-    const out = panel.querySelector('#rc32-options');
-    panel.querySelector('#rc32-propose').onclick = ()=>{
-      out.innerHTML=''; const q = panel.querySelector('#rc32-ask').value||'';
-      const opts = proposeFrom(q).slice(0,6);
-      opts.forEach(op=>{
-        const div=document.createElement('div'); div.className='rc32-card';
-        div.innerHTML=`<div style="margin-bottom:6px">${op.label}</div><button class="rc32-btn rc32-ghost">Appliquer</button>`;
-        div.querySelector('button').onclick = op.apply;
-        out.appendChild(div);
-      });
-    };
-  };
-})();
-</script>
-<!-- === Recallia · Assistant (privé) v1.1 — drop-in === -->
-<style>
-  #rc-chat{position:fixed;right:16px;bottom:16px;z-index:9998}
-  #rc-chat button{background:var(--acc,#00C2A8);color:#0E1116;border:0;border-radius:999px;padding:10px 14px;font-weight:800}
-  #rc-chat .panel{position:fixed;right:16px;bottom:70px;width:min(92vw,420px);max-height:70vh;overflow:auto;
-    background:#0B1220;color:#E5E7EB;border:1px solid #1F2937;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.5);display:none}
-  #rc-chat .head{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #1F2937}
-  #rc-chat .msgs{padding:10px;display:grid;gap:10px}
-  #rc-chat .m{padding:10px;border-radius:10px;max-width:85%}
-  #rc-chat .me{background:#0e2a2a;justify-self:end}
-  #rc-chat .ai{background:#0b1322;border:1px solid #1F2937}
-  #rc-chat .input{display:flex;gap:6px;padding:10px;border-top:1px solid #1F2937}
-  #rc-chat input{flex:1;background:#0E1116;border:1px solid #334155;border-radius:10px;color:#E5E7EB;padding:10px}
-</style>
-<div id="rc-chat">
-  <div class="panel" id="rcp">
-    <div class="head">
-      <strong>Assistant Recallia (privé)</strong>
-      <button id="rc-close" style="border-radius:10px">Fermer</button>
-    </div>
-    <div class="msgs" id="rc-msgs">
-      <div class="m ai">Bonjour 👋 Que veux-tu faire ? (ex : “résume les KPIs d’hier”, “propose 3 idées SEO”, “écris un mail client bref”, “check PWA/SEO”)</div>
-    </div>
-    <div class="input">
-      <input id="rc-input" placeholder="Écris ta demande…" />
-      <button id="rc-send" style="border-radius:10px">Envoyer</button>
-    </div>
-  </div>
-  <button id="rc-open">Assistant</button>
-</div>
-<script>
-(function(){
-  // 1) Quand tu auras créé le proxy (étape 2), remplace par son URL:
-  const API_URL = ""; // ex: "https://TON-WORKER.workers.dev/chat"
-  const MOCK_FALLBACK = true; // répond en démo si API_URL vide / en erreur
+    ];
+    const pick = base[Math.floor(Math.random()*base.length)];
+    $('#fTitle').value = pick.t; $('#fSub').value = pick.s; $('#fCta').value = pick.c; $('#fAccent').value = pick.a;
+  });
 
-  const open = document.getElementById('rc-open');
-  const close = document.getElementById('rc-close');
-  const panel = document.getElementById('rcp');
-  const msgs  = document.getElementById('rc-msgs');
-  const input = document.getElementById('rc-input');
-  const send  = document.getElementById('rc-send');
-
-  open.onclick = ()=> panel.style.display = 'block';
-  close.onclick= ()=> panel.style.display = 'none';
-
-  const history = [];
-  function push(role, text){ const d=document.createElement('div'); d.className='m '+(role==='user'?'me':'ai'); d.textContent=text; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; }
-
-  async function mockReply(q){
-    // petites réponses utiles pour tester sans API
-    if(/kpi|ttv|vsr|bench/i.test(q)) return "KPIs (démo) : TTV médian < 60 s, VSR ≥ 90 %, couverture de preuve 100%.";
-    if(/seo|pwa|manifest|sw/i.test(q)) return "Check (démo) : ajoute `manifest.webmanifest`, icônes 192/512, et enregistre `sw.js` pour PWA.";
-    if(/mail|email/i.test(q)) return "Objet : Rappel document manquant\nBonjour, je vous envoie l’attestation demandée. Bien cordialement.";
-    return "Compris (démo). Quand l’API sera branchée, je donnerai des réponses complètes et actionnables.";
-  }
-
-  async function ask(){
-    const q=(input.value||"").trim(); if(!q) return; input.value=''; push('user', q);
-    const thinking=document.createElement('div'); thinking.className='m ai'; thinking.textContent='…'; msgs.appendChild(thinking);
-
-    async function callAPI(){
-      const res = await fetch(API_URL, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ messages: history })
-      });
-      const data = await res.json();
-      return data?.text || '(pas de réponse)';
-    }
-
-    try{
-      let answer;
-      if(!API_URL){ if(MOCK_FALLBACK){ answer = await mockReply(q); } else { throw new Error('API non configurée'); } }
-      else{
-        history.push({role:'user', content:q});
-        answer = await callAPI();
-        history.push({role:'assistant', content:answer});
-      }
-      thinking.remove(); push('assistant', answer);
-    }catch(e){
-      thinking.remove();
-      if(MOCK_FALLBACK){ push('assistant', await mockReply(q)); }
-      else{ push('assistant','Erreur réseau. Configure l’API_URL.'); }
-    }
-  }
-
-  send.onclick = ask;
-  input.addEventListener('keydown', e=>{ if(e.key==='Enter') ask(); });
-})();
-</script>
-<!-- === /Assistant v1.1 === --><!-- ===== /Créateur v32 ===== -->!-- /Créateur v31 --><!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+  // Au chargement
+  loadSite();
+  </script>
 </body>
-</html>
+  </html>
