@@ -666,6 +666,270 @@ couleur.accent: #00C2A8"></textarea>
   if(note) note.textContent = 'Créateur initialisé ✔';
 })();
 </script>
-<!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+<!-- ===== Recallia · Créateur Pro (chat + propositions + alertes + fichiers + PIN) ===== -->
+<style>
+  /* cache l'ancien créateur si présent */
+  #creatorFab,#creatorPanel{display:none!important}
+  .rc-fab{position:fixed;left:16px;bottom:16px;z-index:9999;border:0;border-radius:999px;
+    padding:12px 14px;background:#111c2b;color:#e5edf5;border:1px solid #2b3645;font:600 14px/1 Inter}
+  .rc-panel{position:fixed;left:16px;bottom:72px;width:min(92vw,460px);max-height:74vh;overflow:auto;z-index:9999;
+    background:#0c1421;border:1px solid #1b2432;border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.45);display:none;color:#e5edf5}
+  .rc-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#0a101b;border-bottom:1px solid #1b2432}
+  .rc-tabs{display:flex;gap:6px;padding:8px;border-bottom:1px solid #1b2432}
+  .rc-tab{background:#0f1623;border:1px solid #1b2432;color:#cbd5e1;border-radius:10px;padding:6px 10px;cursor:pointer}
+  .rc-tab.on{background:#111c2b;color:#fff}
+  .rc-body{padding:10px}
+  .rc-row{display:flex;gap:8px;margin:8px 0}
+  .rc-in{flex:1;border:1px solid #1b2432;background:#0f1623;color:#e5edf5;border-radius:10px;padding:10px}
+  .rc-btn{background:#111c2b;border:1px solid #2b3645;color:#e5edf5;border-radius:10px;padding:8px 10px;cursor:pointer}
+  .rc-msg{background:#0f1623;border:1px solid #1b2432;border-radius:12px;padding:10px;margin:8px 0;font:14px Inter}
+  .rc-me{background:#102033;border-color:#24405a}
+  .rc-sugg{border:1px solid #2b3645;border-radius:12px;padding:8px;margin:8px 0}
+  .rc-sugg h5{margin:0 0 6px;font:700 14px Inter;color:#cbd5e1}
+  .rc-mini{color:#9aa4b2;font-size:12px}
+  .rc-list{display:flex;flex-direction:column;gap:10px}
+  .rc-card{border:1px solid #2b3645;border-radius:12px;padding:10px;background:#0f1623}
+  .rc-card h4{margin:0 0 6px;font:700 14px Inter;color:#cbd5e1}
+  .rc-bad{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;margin-left:6px}
+  .sev-hi{background:#b91c1c;color:#fff}.sev-md{background:#b45309;color:#fff}.sev-lo{background:#065f46;color:#e5fff7}
+  .rc-kv{white-space:pre-wrap}
+  .rc-copy{background:#00C2A8;color:#0E1116;border:0;border-radius:10px;padding:6px 10px;font-weight:700;cursor:pointer}
+  .rc-pin{margin-left:6px}
+</style>
+
+<button id="rcFab" class="rc-fab">Créateur</button>
+<div id="rcPanel" class="rc-panel" role="dialog" aria-label="Créateur Pro">
+  <div class="rc-head">
+    <strong style="font:700 14px Inter">Créateur Recallia</strong>
+    <div class="rc-row" style="margin:0">
+      <button id="rcPin" class="rc-btn rc-pin" title="Verrou PIN">🔒</button>
+      <button id="rcExport" class="rc-btn" title="Exporter JSON">Exporter</button>
+      <button id="rcClose" class="rc-btn" title="Fermer">✕</button>
+    </div>
+  </div>
+  <div class="rc-tabs">
+    <button class="rc-tab on" data-tab="chat">Chat</button>
+    <button class="rc-tab" data-tab="prop">Propositions</button>
+    <button class="rc-tab" data-tab="alerts">Alertes</button>
+    <button class="rc-tab" data-tab="files">Fichiers</button>
+  </div>
+
+  <!-- CHAT -->
+  <div id="rcView-chat" class="rc-body">
+    <div id="rcChat" class="rc-msg">Dis-moi ce que tu veux changer. Je propose 1–3 options, tu cliques <b>Appliquer</b> :
+      <div class="rc-mini">Ex: “Titre : Votre mémoire IA — encore plus simple.” · “Couleur d’accent : #60A5FA” · “CTA : Démarrer” · “KPIs : TTV 45, VSR 93”</div>
+    </div>
+    <div id="rcChatBox"></div>
+    <div class="rc-row">
+      <input id="rcIn" class="rc-in" placeholder="Ex: Mets la couleur d'accent en bleu"/>
+      <button id="rcSend" class="rc-btn">Proposer</button>
+    </div>
+  </div>
+
+  <!-- PROPOSITIONS -->
+  <div id="rcView-prop" class="rc-body" hidden>
+    <div class="rc-mini">Suggestions prêtes à appliquer (site, SEO, PWA, sécurité, marketing).</div>
+    <div id="rcProps" class="rc-list"></div>
+  </div>
+
+  <!-- ALERTES -->
+  <div id="rcView-alerts" class="rc-body" hidden>
+    <div class="rc-row"><button id="rcScan" class="rc-btn">Scanner le site</button></div>
+    <div id="rcAlerts" class="rc-list"></div>
+  </div>
+
+  <!-- FICHIERS -->
+  <div id="rcView-files" class="rc-body" hidden>
+    <div class="rc-mini">Copie/colle ces fichiers à la racine du dépôt (ou dans le bon chemin). Clique “Copier”.</div>
+    <div id="rcFiles" class="rc-list"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = s=>document.querySelector(s);
+  const panel = $('#rcPanel'), fab=$('#rcFab'), closeBtn=$('#rcClose');
+  const tabs=[...document.querySelectorAll('.rc-tab')];
+  const views={chat:$('#rcView-chat'), prop:$('#rcView-prop'), alerts:$('#rcView-alerts'), files:$('#rcView-files')};
+  fab.onclick = ()=> panel.style.display = (panel.style.display==='block')?'none':'block';
+  closeBtn.onclick = ()=> panel.style.display='none';
+  tabs.forEach(t=>t.onclick=()=>{
+    tabs.forEach(x=>x.classList.toggle('on',x===t));
+    Object.values(views).forEach(v=>v.hidden=true);
+    views[t.dataset.tab].hidden=false;
+  });
+
+  /* ---------- PIN verrou (local) ---------- */
+  const pinBtn=$('#rcPin');
+  function locked(){ return !!localStorage.getItem('rec_pin_set'); }
+  function askPinOnce(){
+    const pin = prompt('Crée un code à 6 chiffres (PIN) :'); if(!pin||!/^\d{6}$/.test(pin)) return alert('PIN invalide.');
+    localStorage.setItem('rec_pin', pin); localStorage.setItem('rec_pin_set','1'); alert('PIN activé.');
+  }
+  function checkPin(){
+    const set = localStorage.getItem('rec_pin'); if(!set) return true;
+    const pin = prompt('Entre ton PIN (6 chiffres) :'); if(pin===set) return true;
+    alert('PIN incorrect.'); return false;
+  }
+  pinBtn.onclick = ()=> locked()? (localStorage.removeItem('rec_pin'),localStorage.removeItem('rec_pin_set'),alert('PIN désactivé')) : askPinOnce();
+  fab.addEventListener('click', ()=>{
+    if(panel.style.display!=='block' && localStorage.getItem('rec_pin')){
+      if(!checkPin()){ panel.style.display='none'; }
+    }
+  });
+
+  /* ---------- CMS local ---------- */
+  const SEL = {
+    heroTitle:'section.hero h1', heroLead:'section.hero p.lead',
+    cta1:'.cta .btn.primary', cta2:'.cta .btn.ghost',
+    how1t:'#how .steps .tile:nth-child(1) h3', how1p:'#how .steps .tile:nth-child(1) p',
+    how2t:'#how .steps .tile:nth-child(2) h3', how2p:'#how .steps .tile:nth-child(2) p',
+    how3t:'#how .steps .tile:nth-child(3) h3', how3p:'#how .steps .tile:nth-child(3) p',
+    app1t:'#app .grid .tile:nth-child(1) h3', app1p:'#app .grid .tile:nth-child(1) p',
+    app2t:'#app .grid .tile:nth-child(2) h3', app2p:'#app .grid .tile:nth-child(2) p',
+    app3t:'#app .grid .tile:nth-child(3) h3', app3p:'#app .grid .tile:nth-child(3) p',
+    benchTTV:'#bench .grid .tile:nth-child(1) p', benchVSR:'#bench .grid .tile:nth-child(2) p', benchCOV:'#bench .grid .tile:nth-child(3) p'
+  };
+  const loadCMS=()=>{try{return JSON.parse(localStorage.getItem('rec_cms')||'{}')}catch(_){return{}}}
+  const saveCMS=(cms)=>localStorage.setItem('rec_cms',JSON.stringify(cms));
+  const applyCMS=(cms)=>{
+    const set=(sel,v)=>{const n=$(sel); if(n&&typeof v==='string') n.textContent=v;}
+    set(SEL.heroTitle,cms.heroTitle); set(SEL.heroLead,cms.heroLead);
+    set(SEL.cta1,cms.cta1); set(SEL.cta2,cms.cta2);
+    set(SEL.how1t,cms.how1t); set(SEL.how1p,cms.how1p); set(SEL.how2t,cms.how2t); set(SEL.how2p,cms.how2p); set(SEL.how3t,cms.how3t); set(SEL.how3p,cms.how3p);
+    set(SEL.app1t,cms.app1t); set(SEL.app1p,cms.app1p); set(SEL.app2t,cms.app2t); set(SEL.app2p,cms.app2p); set(SEL.app3t,cms.app3t); set(SEL.app3p,cms.app3p);
+    if(typeof cms.benchTTV==='number') $(SEL.benchTTV).textContent='< '+cms.benchTTV+' s';
+    if(typeof cms.benchVSR==='number') $(SEL.benchVSR).textContent='≥ '+cms.benchVSR+' %';
+    if(typeof cms.benchCOV==='number') $(SEL.benchCOV).textContent=cms.benchCOV+' %';
+    if(cms.metaTitle) document.title=cms.metaTitle;
+    if(cms.metaDesc){ let m=document.querySelector('meta[name="description"]'); if(!m){m=document.createElement('meta');m.name='description';document.head.appendChild(m);} m.content=cms.metaDesc; }
+    if(cms.colorAccent){ const r=document.documentElement.style; r.setProperty('--accent',cms.colorAccent); r.setProperty('--accent2',cms.colorAccent); }
+  }
+  applyCMS(loadCMS());
+
+  /* ---------- Chat (propositions + appliquer) ---------- */
+  const chatBox=$('#rcChatBox'), inEl=$('#rcIn'), sendBtn=$('#rcSend');
+  function addMsg(h,me=false){const d=document.createElement('div');d.className='rc-msg'+(me?' rc-me':'');d.innerHTML=h;chatBox.appendChild(d);chatBox.scrollTop=chatBox.scrollHeight;}
+  function addSugg(title, preview, onApply){
+    const wrap=document.createElement('div'); wrap.className='rc-sugg';
+    wrap.innerHTML=`<h5>${title}</h5><div class="rc-mini rc-kv">${preview}</div><div class="rc-row"><button class="rc-btn rc-apply">Appliquer</button></div>`;
+    wrap.querySelector('.rc-apply').onclick=async()=>{ await onApply(); addMsg('✅ Appliqué & sauvegardé.'); };
+    chatBox.appendChild(wrap); chatBox.scrollTop=chatBox.scrollHeight;
+  }
+  const COLORS={bleu:'#60A5FA',indigo:'#6366F1',violet:'#A78BFA',rose:'#F472B6',rouge:'#F87171',orange:'#FB923C',vert:'#34D399',teal:'#00C2A8',cyan:'#22D3EE'};
+  function applySet(k,v){const map={heroTitle:SEL.heroTitle,heroLead:SEL.heroLead,cta1:SEL.cta1,cta2:SEL.cta2,app1t:SEL.app1t,app1p:SEL.app1p,app2t:SEL.app2t,app2p:SEL.app2p,app3t:SEL.app3t,app3p:SEL.app3p}; const n=$(map[k]); if(n) n.textContent=v; const cms=loadCMS(); cms[k]=v; saveCMS(cms);}
+  function parse(cmd){
+    const t=cmd.toLowerCase(); const mTitle=cmd.match(/titre.*?:\s*(.+)$/i); if(mTitle) return {type:'set',k:'heroTitle',v:mTitle[1].trim()};
+    const mLead=cmd.match(/sous[- ]?titre.*?:\s*(.+)$/i); if(mLead) return {type:'set',k:'heroLead',v:mLead[1].trim()};
+    const mCTA=cmd.match(/cta.*(principal|1)?.*:\s*(.+)$/i); if(mCTA) return {type:'set',k:'cta1',v:mCTA[2].trim()};
+    const mCTA2=cmd.match(/cta.*(secondaire|2)?.*:\s*(.+)$/i); if(mCTA2) return {type:'set',k:'cta2',v:mCTA2[2].trim()};
+    const mTile=cmd.match(/tile\s*(\d)\.(titre|texte)\s*:\s*(.+)$/i); if(mTile){const idx=parseInt(mTile[1],10);const key=mTile[2].toLowerCase()==='titre'?`app${idx}t`:`app${idx}p`;return {type:'set',k:key,v:mTile[3].trim()};}
+    if(/couleur|accent/.test(t)){ for(const k in COLORS){ if(t.includes(k)) return {type:'color',v:COLORS[k],name:k}; } const hex=cmd.match(/#([0-9a-f]{3,6})/i); if(hex) return {type:'color',v:'#'+hex[1]}; return {type:'colors'}; }
+    const mTTV=cmd.match(/ttv.*?(\d{1,3})/i), mVSR=cmd.match(/vsr.*?(\d{1,3})/i); if(mTTV||mVSR) return {type:'kpi',ttv:mTTV?parseInt(mTTV[1],10):undefined,vsr:mVSR?parseInt(mVSR[1],10):undefined};
+    if(/futuriste|plus.*(moderne|clean)/.test(t)) return {type:'preset'};
+    return {type:'help'};
+  }
+  async function onCmd(s){
+    if(!s.trim()) return; addMsg(s,true);
+    const intent=parse(s);
+    if(intent.type==='set'){ addSugg('Confirmer ce changement', `→ ${intent.k} :\n“${intent.v}”`, async()=>applySet(intent.k,intent.v)); return; }
+    if(intent.type==='color'){ addSugg('Changer la couleur', `→ ${intent.v} ${intent.name?`(${intent.name})`:''}`, async()=>{const cms=loadCMS();cms.colorAccent=intent.v;saveCMS(cms);const r=document.documentElement.style;r.setProperty('--accent',intent.v);r.setProperty('--accent2',intent.v);}); return;}
+    if(intent.type==='colors'){ ['#00C2A8','#34D399','#60A5FA','#A78BFA','#F59E0B','#EF4444'].forEach(hex=>addSugg('Couleur',hex,async()=>{const cms=loadCMS();cms.colorAccent=hex;saveCMS(cms);const r=document.documentElement.style;r.setProperty('--accent',hex);r.setProperty('--accent2',hex);})); return;}
+    if(intent.type==='kpi'){ const cms=loadCMS(); const prev=`${intent.ttv?`TTV: ${intent.ttv}s`:'(=)'} · ${intent.vsr?`VSR: ${intent.vsr}%`:'(=)'}`; addSugg('Mettre à jour les KPIs',prev,async()=>{ if(intent.ttv){cms.benchTTV=intent.ttv; $(SEL.benchTTV).textContent='< '+intent.ttv+' s';} if(intent.vsr){cms.benchVSR=intent.vsr; $(SEL.benchVSR).textContent='≥ '+intent.vsr+' %';} saveCMS(cms);}); return;}
+    if(intent.type==='preset'){ addSugg('Style “plus futuriste”','Accent cyan, titre resserré',async()=>{const cms=loadCMS(); const t='Votre mémoire IA — futur simple.'; $(SEL.heroTitle).textContent=t; cms.heroTitle=t; document.documentElement.style.setProperty('--accent','#22D3EE'); document.documentElement.style.setProperty('--accent2','#22D3EE'); cms.colorAccent='#22D3EE'; saveCMS(cms);}); return;}
+    if(intent.type==='help'){ addMsg('Je peux changer : <b>titre</b>, <b>sous-titre</b>, <b>CTA</b>, <b>couleur</b>, <b>KPIs</b>, <b>tuiles</b> (tile1/2/3.titre/texte).'); }
+  }
+  $('#rcSend').onclick=()=>{ onCmd(inEl.value); inEl.value=''; inEl.focus(); };
+  inEl.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#rcSend').click(); } });
+
+  /* ---------- Propositions (site complet) ---------- */
+  const props=[
+    {id:'seo-basic', title:'SEO de base', sev:'md', desc:'Ajouter robots.txt, sitemap.xml, canonical, JSON-LD.', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()},
+    {id:'pwa-icons', title:'Icônes PWA 192/512', sev:'md', desc:'Vérifier icons/icon-192.png et icon-512.png présents et référencés dans manifest.', apply:()=>tabs.find(t=>t.dataset.tab==='alerts').click()},
+    {id:'pwa-install', title:'CTA Installation PWA', sev:'lo', desc:'Afficher “Installer” quand disponible (déjà en place dans v26+).', apply:()=>alert('Déjà géré : bouton apparaît si le navigateur le permet.')},
+    {id:'privacy-mentions', title:'Confidentialité & Mentions', sev:'hi', desc:'Créer privacy.html et mentions.html', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()},
+    {id:'memory-cms', title:'Mémoire du site (site-cms.json)', sev:'lo', desc:'Créer memory/site-cms.json et bouton Sync mémoire.', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()},
+    {id:'pin-lock', title:'Sécuriser le Créateur (PIN)', sev:'md', desc:'Activer un code à 6 chiffres.', apply:()=>{ if(!localStorage.getItem('rec_pin')){ const pin=prompt('Choisis un PIN (6 chiffres) :'); if(pin&&/^\d{6}$/.test(pin)){localStorage.setItem('rec_pin',pin);localStorage.setItem('rec_pin_set','1'); alert('PIN activé.');}} else {alert('PIN déjà actif. Bouton 🔒 pour désactiver.');} }},
+    {id:'bench-page', title:'Benchmarks auto (page dédiée)', sev:'lo', desc:'Créer page benchmarks.html (statique pour l’instant).', apply:()=>tabs.find(t=>t.dataset.tab==='files').click()}
+  ];
+  const propList=$('#rcProps');
+  props.forEach(p=>{
+    const card=document.createElement('div'); card.className='rc-card';
+    const badge = `<span class="rc-bad ${p.sev==='hi'?'sev-hi':p.sev==='md'?'sev-md':'sev-lo'}">${p.sev.toUpperCase()}</span>`;
+    card.innerHTML=`<h4>${p.title} ${badge}</h4><div class="rc-mini">${p.desc}</div><div class="rc-row"><button class="rc-btn">Voir/Appliquer</button></div>`;
+    card.querySelector('.rc-btn').onclick=p.apply; propList.appendChild(card);
+  });
+
+  /* ---------- Alertes (auto-scan + quick fixes DOM) ---------- */
+  const alertsBox=$('#rcAlerts'), scanBtn=$('#rcScan');
+  async function test(url){ try{const r=await fetch(url,{cache:'no-store'}); return r.ok;}catch(_){return false} }
+  function addAlert(title, sev, desc, fix){
+    const card=document.createElement('div'); card.className='rc-card';
+    const badge = `<span class="rc-bad ${sev==='hi'?'sev-hi':sev==='md'?'sev-md':'sev-lo'}">${sev.toUpperCase()}</span>`;
+    card.innerHTML=`<h4>${title} ${badge}</h4><div class="rc-mini">${desc}</div>`;
+    if(fix){ const row=document.createElement('div'); row.className='rc-row'; const btn=document.createElement('button'); btn.className='rc-btn'; btn.textContent='Appliquer la correction'; btn.onclick=fix; row.appendChild(btn); card.appendChild(row); }
+    alertsBox.appendChild(card);
+  }
+  scanBtn.onclick = async ()=>{
+    alertsBox.innerHTML='';
+    const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
+    const okManifest = await test(BASE+'manifest.webmanifest');
+    const ok192 = await test(BASE+'icons/icon-192.png');
+    const ok512 = await test(BASE+'icons/icon-512.png');
+    const okPriv = await test(BASE+'privacy.html');
+    const okMent = await test(BASE+'mentions.html');
+    const okRob = await test(BASE+'robots.txt');
+    const okMap = await test(BASE+'sitemap.xml');
+
+    if(!okManifest) addAlert('Manifest manquant','hi','Ajoute manifest.webmanifest (onglet Fichiers).',null);
+    if(!ok192||!ok512) addAlert('Icônes PWA manquantes','md','Ajoute icons/icon-192.png et icons/icon-512.png (onglet Fichiers).',null);
+    if(!okPriv||!okMent) addAlert('Pages légales manquantes','hi','Crée privacy.html et mentions.html (onglet Fichiers).',null);
+    if(!okRob||!okMap) addAlert('SEO: robots/sitemap manquants','md','Ajoute robots.txt et sitemap.xml (onglet Fichiers).',null);
+
+    // Canonical + JSON-LD (quick fix DOM possible)
+    const hasCanon = !!document.querySelector('link[rel="canonical"]');
+    if(!hasCanon) addAlert('Canonical absent','md','Ajoute un lien canonical dans <head>.', ()=>{
+      const l=document.createElement('link'); l.rel='canonical'; l.href=location.origin+location.pathname; document.head.appendChild(l);
+      alert('Canonical ajouté dans la page. Pense à l’intégrer en dur dans index.html.');
+    });
+    const hasLD = !!document.querySelector('script[type="application/ld+json"]');
+    if(!hasLD) addAlert('JSON-LD absent','lo','Ajoute des données structurées SoftwareApplication.', ()=>{
+      const s=document.createElement('script'); s.type='application/ld+json';
+      s.textContent=JSON.stringify({"@context":"https://schema.org","@type":"SoftwareApplication","name":"Recallia","description":"Votre mémoire IA : rappelle, exécute et prouve.","applicationCategory":"ProductivityApplication","operatingSystem":"Web,PWA","url":location.origin+location.pathname,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}});
+      document.head.appendChild(s); alert('JSON-LD injecté (temporaire). Mets-le en dur dans index.html.');
+    });
+
+    if(alertsBox.children.length===0){
+      addAlert('Tout est OK','lo','Aucun problème critique détecté. 🎉',null);
+    }
+  };
+
+  /* ---------- Fichiers (modèles + copier) ---------- */
+  const filesBox=$('#rcFiles');
+  const files = [
+    {name:'robots.txt', sev:'md', content:`User-agent: *\nAllow: /\nSitemap: https://bacoul.github.io/Recallia-site/sitemap.xml\n`, path:'robots.txt'},
+    {name:'sitemap.xml', sev:'md', content:`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://bacoul.github.io/Recallia-site/</loc></url>\n  <url><loc>https://bacoul.github.io/Recallia-site/privacy.html</loc></url>\n  <url><loc>https://bacoul.github.io/Recallia-site/mentions.html</loc></url>\n</urlset>\n`, path:'sitemap.xml'},
+    {name:'privacy.html', sev:'hi', content:`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recallia — Confidentialité</title></head><body><h1>Confidentialité</h1><ul><li>Local-first, minimisation</li><li>“Preuve-ou-rien” (hash + audit)</li><li>Export & suppression sur demande</li><li>Pas de revente de données</li></ul><p>Contact : <a href="mailto:support@recallia.app">support@recallia.app</a></p><p><a href="./">← Retour</a></p></body></html>`, path:'privacy.html'},
+    {name:'mentions.html', sev:'hi', content:`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recallia — Mentions légales</title></head><body><h1>Mentions légales</h1><p><strong>Éditeur :</strong> Recallia (micro-entreprise).<br><strong>Contact :</strong> <a href="mailto:support@recallia.app">support@recallia.app</a><br><strong>Hébergement :</strong> GitHub Pages.</p><p>Contenu fourni en l’état.</p><p><a href="./">← Retour</a></p></body></html>`, path:'mentions.html'},
+    {name:'manifest.webmanifest', sev:'md', content:`{"name":"Recallia","short_name":"Recallia","start_url":"/Recallia-site/","display":"standalone","background_color":"#0E1116","theme_color":"#00C2A8","icons":[{"src":"icons/icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icons/icon-512.png","sizes":"512x512","type":"image/png"}]}\n`, path:'manifest.webmanifest'},
+    {name:'sw.js', sev:'lo', content:`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',()=>{});\n`, path:'sw.js'},
+    {name:'memory/site-cms.json', sev:'lo', content:`{\n  "heroTitle":"Votre mémoire IA — simple, calme, efficace.",\n  "heroLead":"Vous validez, on le fait. Chaque action réussie a un reçu vérifiable.",\n  "cta1":"Essayer maintenant",\n  "cta2":"Voir une preuve",\n  "how1t":"1) Dites ce qu’il faut faire",\n  "how1p":"“Rappel médecin demain 10h”, “Payer facture EDF”…",\n  "how2t":"2) Validez",\n  "how2p":"Rien ne part sans votre OK. Caps et garde-fous.",\n  "how3t":"3) Recevez la preuve",\n  "how3p":"Reçus JSON/PDF/ICS, horodatés et hachés.",\n  "app1t":"Rappels intelligents","app1p":"Anniv, médecin, factures… au bon moment.",\n  "app2t":"Exécution assistée","app2p":"Vous validez → on envoie, on planifie, on classe.",\n  "app3t":"Preuve-ou-rien","app3p":"Chaque action réussie génère un reçu vérifiable.",\n  "benchTTV":55,"benchVSR":92,"benchCOV":100,\n  "metaTitle":"Recallia — Votre mémoire IA","metaDesc":"Votre mémoire IA : rappelle, exécute et prouve.","colorAccent":"#00C2A8"\n}\n`, path:'memory/site-cms.json'}
+  ];
+  files.forEach(f=>{
+    const card=document.createElement('div'); card.className='rc-card';
+    const badge = `<span class="rc-bad ${f.sev==='hi'?'sev-hi':f.sev==='md'?'sev-md':'sev-lo'}">${f.sev.toUpperCase()}</span>`;
+    card.innerHTML=`<h4>${f.name} ${badge}</h4><div class="rc-mini">Chemin : <code>${f.path}</code></div><pre class="rc-kv" style="white-space:pre-wrap">${f.content.replace(/</g,'&lt;')}</pre><div class="rc-row"><button class="rc-copy">Copier</button></div>`;
+    card.querySelector('.rc-copy').onclick=()=>{ navigator.clipboard.writeText(f.content); alert(`${f.name} copié. Ajoute-le dans GitHub → Add file.`); };
+    filesBox.appendChild(card);
+  });
+
+  /* ---------- Export JSON CMS ---------- */
+  $('#rcExport').onclick=()=>{
+    const cms=loadCMS(); const blob=new Blob([JSON.stringify(cms,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='recallia_cms.json'; a.click(); URL.revokeObjectURL(url);
+  };
+})();
+</script>
+<!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
