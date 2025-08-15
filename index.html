@@ -1652,6 +1652,128 @@ couleur.accent: #00C2A8"></textarea>
   $('#rcpEnv').textContent = 'créateur actif';
 })();
 </script>
-<!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
+<!-- Créateur Recallia — v31 (copie/colle avant </body>) -->
+<style id="creator-style">
+:root{ --accent:#00C2A8;}
+.recallia-fab{position:fixed;right:16px;bottom:16px;z-index:9999;background:var(--accent);color:#0E1116;padding:12px 16px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.recallia-panel{position:fixed;right:12px;bottom:12px;width:min(100%,420px);max-height:80vh;overflow:auto;background:#101418;color:#e5e7eb;border:1px solid #1f2937;border-radius:16px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:99999}
+.recallia-row{display:flex;gap:8px;align-items:center}
+.recallia-btn{background:#0ea5a5;border:none;padding:8px 12px;border-radius:10px;font-weight:700}
+.recallia-badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px}
+.badge-ok{background:#065f46}.badge-warn{background:#854d0e}.badge-crit{background:#7f1d1d}
+.nav-center{justify-content:center !important;text-align:center}
+</style>
+<script>
+(function(){
+  const ENABLE=new URLSearchParams(location.search).get('creator')==='on'||localStorage.getItem('recalliaCreator')==='1';
+  const PIN='2468'; // change-moi
+  if(!ENABLE) return;
+  if(localStorage.getItem('recalliaPin')!==PIN){
+    const p=prompt('PIN créateur :'); if(p!==PIN){alert('Accès refusé');return;}
+    localStorage.setItem('recalliaPin',PIN); localStorage.setItem('recalliaCreator','1');
+  }
+  const $=s=>document.querySelector(s);
+  const pick=a=>{for(const s of a){const el=document.querySelector(s);if(el) return el}return null};
+  const els={
+    title: pick(['[data-hero="title"]','#hero-title','main h1','h1']),
+    subtitle: pick(['[data-hero="subtitle"]','#hero-subtitle','main h1+p','h1 + p']),
+    cta: pick(['[data-hero="cta"]','a.cta','.cta-primary','main a[href^="#"]','a[href*="#app"]']),
+    nav: pick(['header nav','#nav','nav','.nav'])
+  };
+  const cfgKey='recalliaSiteCfg';
+  const def={title:els.title?.textContent?.trim()||'Votre mémoire IA',
+             subtitle:els.subtitle?.textContent?.trim()||'',
+             cta:'Essayer maintenant',ctaHref:'#app',
+             accent:getComputedStyle(document.documentElement).getPropertyValue('--accent')?.trim()||'#00C2A8',
+             menuCenter:false};
+  function applyConfig(c){
+    const conf=Object.assign({},def,c||{});
+    if(els.title) els.title.textContent=conf.title;
+    if(els.subtitle) els.subtitle.textContent=conf.subtitle;
+    if(els.cta){ els.cta.textContent=conf.cta; if(conf.ctaHref) els.cta.setAttribute('href',conf.ctaHref); }
+    document.documentElement.style.setProperty('--accent',conf.accent);
+    if(els.nav){ els.nav.style.display='flex'; els.nav.classList.toggle('nav-center',!!conf.menuCenter); }
+    localStorage.setItem(cfgKey,JSON.stringify(conf));
+    return conf;
+  }
+  try{const saved=JSON.parse(localStorage.getItem(cfgKey)||'null'); if(saved) applyConfig(saved);}catch(e){}
+  const proposals=[
+    {id:'opt1',title:'Simplifier le héros',changes:{title:'Votre mémoire IA — encore plus simple.',subtitle:'Vous validez, on le fait. Chaque action réussie a un reçu horodaté.',cta:'Essayer maintenant',accent:'#00C2A8',menuCenter:true}},
+    {id:'opt2',title:'Ton plus direct',changes:{title:'Rappelle, exécute, prouve.',subtitle:'Des actions faites avec preuve (hash + journal).',cta:'Démarrer',accent:'#0EA5E9',menuCenter:true}}
+  ];
+  async function audit(){
+    const A=[]; const add=(sev,msg,fix)=>A.push({sev,msg,fix});
+    const link=document.querySelector('link[rel="manifest"]');
+    if(!link) add('crit','Manifest PWA manquant',()=>{const l=document.createElement('link');l.rel='manifest';l.href='manifeste.webmanifest';document.head.appendChild(l);});
+    try{ if(link){const r=await fetch(link.href); if(r.ok){const m=await r.json(); if(!m.icons||m.icons.length===0) add('warn','Aucune icône dans le manifest (192/512 requises)');}}}catch(e){}
+    if(!('serviceWorker' in navigator)) add('warn','Service Worker non supporté par ce navigateur.');
+    if(!$('meta[name="description"]')) add('warn','Meta description absente (SEO).',()=>{const m=document.createElement('meta');m.name='description';m.content='Recallia : votre mémoire IA qui rappelle, exécute et prouve.';document.head.appendChild(m);});
+    if(!$('meta[property="og:title"]')) add('warn','OpenGraph (og:title) manquant.',()=>{const m=document.createElement('meta');m.setAttribute('property','og:title');m.content=document.title||'Recallia';document.head.appendChild(m);});
+    if(els.title && els.title.textContent.length>90) add('warn','Titre très long (>90 caractères)');
+    return A;
+  }
+  const fab=document.createElement('button'); fab.className='recallia-fab'; fab.textContent='Créateur'; document.body.appendChild(fab);
+  let panel;
+  fab.onclick=async()=>{
+    if(panel){panel.remove();panel=null;return;}
+    panel=document.createElement('div'); panel.className='recallia-panel';
+    panel.innerHTML=`
+      <div class="recallia-row" style="justify-content:space-between;margin-bottom:8px">
+        <strong>Créateur Recallia — v31</strong>
+        <div><button id="creator-save" class="recallia-btn">Sauver</button>
+             <button id="creator-close" class="recallia-btn" style="background:#334155;color:#e5e7eb">Fermer</button></div>
+      </div>
+      <div id="creator-alerts" style="margin:8px 0;padding:8px;border:1px dashed #334155;border-radius:10px"><em>Scans…</em></div>
+      <div style="margin-top:6px">
+        <div style="font-weight:700;margin:6px 0">Propositions</div>
+        ${proposals.map((p,i)=>`
+          <div style="border:1px solid #334155;border-radius:10px;padding:10px;margin-bottom:8px">
+            <div style="font-weight:600;margin-bottom:6px">Option ${i+1} — ${p.title}</div>
+            <div style="font-size:14px;opacity:.85">Titre : ${p.changes.title}<br>CTA : ${p.changes.cta} · Accent : ${p.changes.accent}</div>
+            <div class="recallia-row" style="margin-top:8px">
+              <button class="recallia-btn" data-apply="${p.id}">Appliquer</button>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div style="margin-top:10px">
+        <div style="font-weight:700;margin:6px 0">Commande rapide</div>
+        <div class="recallia-row">
+          <input id="creator-cmd" placeholder="ex : mets l’accent en bleu" style="flex:1;background:#0b1220;border:1px solid #334155;color:#e5e7eb;padding:8px;border-radius:10px"/>
+          <button id="creator-propose" class="recallia-btn">OK</button>
+        </div>
+        <div id="creator-msg" style="font-size:12px;opacity:.8;margin-top:6px"></div>
+      </div>`;
+    document.body.appendChild(panel);
+    const a=await audit(); const wrap=panel.querySelector('#creator-alerts');
+    if(a.length===0){ wrap.innerHTML=`<span class="recallia-badge badge-ok">OK</span> Aucun problème critique trouvé.`;}
+    else{
+      wrap.innerHTML=a.map((it,idx)=>`
+        <div style="margin:6px 0;display:flex;gap:8px;align-items:center">
+          <span class="recallia-badge ${it.sev==='crit'?'badge-crit':(it.sev==='warn'?'badge-warn':'badge-ok')}">${it.sev.toUpperCase()}</span>
+          <span style="flex:1">${it.msg}</span>
+          ${it.fix?`<button class="recallia-btn" data-fix="${idx}">Corriger</button>`:''}
+        </div>`).join('');
+      wrap.querySelectorAll('[data-fix]').forEach(btn=>{
+        btn.onclick=()=>{const i=+btn.dataset.fix; a[i].fix&&a[i].fix(); btn.disabled=true; btn.textContent='Corrigé';};
+      });
+    }
+    panel.querySelectorAll('[data-apply]').forEach(btn=>{
+      btn.onclick=()=>{ const p=proposals.find(x=>x.id===btn.dataset.apply); applyConfig(p.changes); panel.querySelector('#creator-msg').textContent='Appliqué. Clique “Sauver” pour mémoriser.'; };
+    });
+    const colorMap={bleu:'#0EA5E9',vert:'#00C2A8',violet:'#7C3AED',rose:'#EC4899',orange:'#F97316',rouge:'#EF4444',jaune:'#F59E0B'};
+    panel.querySelector('#creator-propose').onclick=()=>{
+      const q=(panel.querySelector('#creator-cmd').value||'').toLowerCase();
+      let c=JSON.parse(localStorage.getItem(cfgKey)||'null')||def;
+      if(/accent|couleur/.test(q)){ for(const [n,hex] of Object.entries(colorMap)) if(q.includes(n)) c.accent=hex; }
+      if(/titre|title/.test(q)){ const m=q.match(/"(.*)"/); if(m) c.title=m[1]; }
+      if(/menu.*centr/.test(q)) c.menuCenter=true;
+      applyConfig(c); panel.querySelector('#creator-msg').textContent='Commandes appliquées.';
+    };
+    panel.querySelector('#creator-save').onclick=()=>{ alert('Enregistré localement. (Synchro GitHub viendra ensuite)'); };
+    panel.querySelector('#creator-close').onclick=()=>{ panel.remove(); panel=null; };
+  };
+})();
+</script>
+<!-- /Créateur v31 --><!-- ================== /Créateur v30 ================== --><!-- ==== /Créateur minimal ==== --><!-- === /Créateur v27-hotfix === --><!-- ===== /Créateur Pro ===== --><!-- === /Patch sécurité Créateur v2 === --><!-- /Assistant Créateur -->
 </body>
 </html>
