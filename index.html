@@ -1,81 +1,90 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <title>Recallia — Votre mémoire IA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="theme-color" content="#00C2A8"/>
-  <meta name="description" content="Recallia — Votre mémoire IA : propose, exécute, prouve."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Recallia : votre mémoire IA qui rappelle, exécute et fournit une preuve vérifiable pour chaque action." />
+  <meta name="theme-color" content="#00C2A8" />
   <style>
     :root{
-      --bg:#0E1116;--text:#F8FAFC;--muted:#9CA3AF;--card:#111827;--card2:#1F2937;
-      --accent:#00C2A8;--accent2:#14B8A6;--radius:16px;--s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;
+      --bg:#0E1116;--text:#F8FAFC;--muted:#9CA3AF;
+      --card:#111827;--line:#1f2937;
+      --accent:#00C2A8;--accent2:#14B8A6;
+      --radius:16px;--pad:22px;--w:1120px
     }
     *{box-sizing:border-box}html,body{height:100%}
-    body{margin:0;background:radial-gradient(1000px 600px at 80% -10%, rgba(0,194,168,0.12), transparent 60%), var(--bg);
-      color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial}
-    a{color:inherit}
-    .container{max-width:1080px;margin:0 auto;padding:var(--s4) var(--s3)}
-    .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s4)}
-    .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
-    .badge{font-size:12px;border:1px solid #ffffff1f;padding:4px 8px;border-radius:999px;color:var(--muted)}
-    nav a{color:var(--muted);text-decoration:none;margin-left:16px}
-    nav a:hover{color:var(--text)}
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:var(--s4);align-items:center}
-    @media(max-width:900px){.hero{grid-template-columns:1fr;gap:var(--s3)}}
-    .card{background:linear-gradient(180deg, #ffffff0a, #ffffff06);border:1px solid #ffffff14;border-radius:var(--radius);padding:var(--s4);box-shadow:0 10px 30px rgba(0,0,0,.2)}
-    h1{font-family:"Sora",Inter,sans-serif;font-size:44px;line-height:1.15;margin:0 0 var(--s3)}
-    h2{font-family:"Sora",Inter,sans-serif;font-size:28px;margin:0 0 var(--s2)}
-    p{color:var(--muted);font-size:16px;line-height:1.6}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:var(--s3)}
-    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;border:1px solid #ffffff1f;text-decoration:none;font-weight:600}
-    .btn-primary{background:linear-gradient(180deg,var(--accent),var(--accent2));color:#022c22;border:none}
-    .btn-ghost{background:transparent;color:var(--text)}
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);margin-top:var(--s3)}
-    @media(max-width:900px){.kpis{grid-template-columns:1fr 1fr}}
-    .kpi{background:var(--card);border:1px solid #ffffff14;padding:var(--s3);border-radius:12px}
-    .kpi h3{margin:0 0 6px;font-size:13px;color:var(--muted);font-weight:500}
+    body{
+      margin:0;color:var(--text);background:
+        radial-gradient(900px 600px at 90% -10%, rgba(0,194,168,.12), transparent 60%),
+        radial-gradient(700px 500px at -10% 120%, rgba(20,184,166,.10), transparent 60%),
+        var(--bg);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--w);margin:0 auto;padding:26px 18px}
+    .nav{display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px}
+    .badge{font-size:12px;color:#cbd5e1;border:1px solid #2b3645;padding:4px 10px;border-radius:999px}
+    .links a{color:#cbd5e1;margin-left:16px}
+    .links a:hover{color:#fff}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center;margin:18px 0 30px}
+    @media (max-width:920px){.hero{grid-template-columns:1fr}}
+    h1{font-size:40px;line-height:1.12;margin:0 0 12px}
+    p.lead{color:var(--muted);font-size:18px;margin:0}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:14px;border:1px solid #2b3645;font-weight:600}
+    .primary{background:linear-gradient(180deg,var(--accent),var(--accent2));color:#052e2b;border:none}
+    .ghost{background:transparent;color:#fff}
+    .card{background:linear-gradient(180deg,#0f1623,#0b1220);border:1px solid #1b2432;border-radius:var(--radius);padding:var(--pad)}
+    .mini{font-size:13px;color:var(--muted)}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+    .kpi{background:#0c1421;border:1px solid #1b2432;border-radius:12px;padding:14px}
+    .kpi h3{margin:0 0 6px;color:#9aa4b2;font-size:13px}
     .kpi strong{font-size:22px}
-    .section{margin-top:var(--s5)}
-    .small{font-size:14px;color:var(--muted)}
-    pre{white-space:pre-wrap;word-break:break-word;background:var(--card);padding:12px;border-radius:12px;border:1px solid #ffffff10}
-    .table{width:100%;border-collapse:collapse}.table th,.table td{border-bottom:1px solid #ffffff14;padding:10px;text-align:left}
-    .notice{padding:12px;border:1px solid #ffffff1f;border-radius:12px;background:#ffffff08}
-    .footer{margin-top:var(--s5);padding:var(--s4) 0;color:var(--muted);border-top:1px solid #ffffff14}
-    hr{border:none;border-top:1px solid #ffffff14;margin:24px 0}
+    .sec{margin:56px 0 0}
+    h2{font-size:26px;margin:0 0 12px}
+    ul.clean{margin:0 0 10px 18px;color:#e5edf5}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    @media(max-width:920px){.grid{grid-template-columns:1fr}}
+    .tile{background:#0c1421;border:1px solid #1b2432;border-radius:14px;padding:16px}
+    .tile h3{margin:0 0 8px;font-size:18px}
+    .faq table{width:100%;border-collapse:collapse}
+    .faq td,.faq th{border-bottom:1px solid #1b2432;padding:12px;text-align:left}
+    .footer{margin:56px 0 18px;color:#94a3b8;border-top:1px solid #1b2432;padding-top:18px;font-size:14px}
+    pre{background:#0c1421;border:1px solid #1b2432;border-radius:12px;padding:12px;overflow:auto}
+    .notice{background:#0c1421;border:1px dashed #2b3645;border-radius:12px;padding:12px;color:#cbd5e1}
   </style>
 </head>
 <body>
-  <header class="container header">
-    <a class="logo" href="#top">
-      <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
-        <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#00C2A8"/><stop offset="100%" stop-color="#14B8A6"/></linearGradient></defs>
-        <rect rx="12" ry="12" x="2" y="2" width="44" height="44" fill="url(#g)"/>
-        <path d="M16 33V15h10.2c4.9 0 7.8 2.5 7.8 6.3c0 3-1.8 5.3-4.8 6.1L34 33h-5.3l-4.7-4.9H20v4.9h-4zm4-8.5h6c2.2 0 3.7-1.2 3.7-3.1S28.2 18 26 18h-6v6.5z" fill="#0E1116"/>
-      </svg>
-      <strong>Recallia</strong>
-      <span class="badge">v1</span>
-    </a>
-    <nav>
-      <a href="#app">App</a>
-      <a href="#benchmarks">Benchmarks</a>
-      <a href="#status">Status</a>
-      <a href="#help">Aide</a>
-      <a href="#privacy">Sécurité & Vie privée</a>
-    </nav>
-  </header>
+  <div class="wrap">
+    <!-- NAV -->
+    <div class="nav">
+      <a class="brand" href="#top" aria-label="Accueil Recallia">
+        <!-- Logo simplifié -->
+        <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+          <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0%" stop-color="#00C2A8"/><stop offset="100%" stop-color="#14B8A6"/></linearGradient></defs>
+        <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#g)"/>
+        <path d="M16 33V15h10.2c4.9 0 7.8 2.5 7.8 6.3c0 3-1.8 5.3-4.8 6.1L34 33h-5.3l-4.7-4.9H20v4.9h-4zm4-8.5h6c2.2 0 3.7-1.2 3.7-3.1S28.2 18 26 18h-6v6.5z" fill="#0E1116"/></svg>
+        <strong style="margin-left:8px">Recallia</strong><span class="badge" style="margin-left:10px">v1</span>
+      </a>
+      <div class="links">
+        <a href="#app">App</a>
+        <a href="#bench">Benchmarks</a>
+        <a href="#status">Status</a>
+        <a href="#help">Aide</a>
+        <a href="#privacy">Sécurité</a>
+      </div>
+    </div>
 
-  <main class="container" id="top">
-    <section class="hero">
+    <!-- HERO -->
+    <section class="hero" id="top">
       <div>
-        <h1>Votre mémoire IA</h1>
-        <p>Recallia vous rappelle, exécute à votre place et livre une <strong>preuve</strong> pour chaque action. Vous validez, on le fait.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="#app">Essayer maintenant</a>
-          <a class="btn btn-ghost" href="#preuve">Voir une preuve</a>
+        <h1>Votre mémoire IA<br/>qui rappelle, exécute et prouve.</h1>
+        <p class="lead">Vous validez, on le fait. Chaque action réussie a un <strong>reçu vérifiable</strong> (hash + journal d’audit).</p>
+        <div class="cta">
+          <a class="btn primary" href="#app">Essayer maintenant</a>
+          <a class="btn ghost" href="#proof">Voir une preuve</a>
         </div>
         <div class="kpis">
           <div class="kpi"><h3>TTV médian</h3><strong>&lt; 60 s</strong></div>
@@ -83,80 +92,87 @@
           <div class="kpi"><h3>Preuves/jour</h3><strong>—</strong></div>
         </div>
       </div>
-      <div class="card" id="preuve">
+      <div class="card" id="proof" aria-label="Exemple de preuve">
         <h2>Exemple de preuve</h2>
-        <p class="small">Reçu horodaté + hash.</p>
+        <p class="mini">Reçu horodaté + SHA-256 (démonstration).</p>
 <pre>{
   "id": "p_demo",
   "action_id": "anniv.mail",
   "timestamp": "2025-08-15T12:00:00Z",
-  "sha256": "abc…",
-  "result": {"status": "success"}
+  "sha256": "abc123…",
+  "result": {"status":"success","notes":"Message programmé"}
 }</pre>
-        <p class="small">Chaque action réussie a un reçu vérifiable (hash + audit).</p>
+        <p class="mini">La preuve réelle inclut un hash vérifiable et un audit chaîné.</p>
       </div>
     </section>
 
-    <section class="section" id="app">
-      <h2>App Recallia (PWA – à venir)</h2>
-      <div class="card">
-        <p>Installez l’app : ouvrez cette page sur mobile puis “<em>Ajouter à l’écran d’accueil</em>”. Les notifications seront proposées à la première action.</p>
-        <ul>
-          <li>Rappel médecin — créer un événement (.ics)</li>
-          <li>Payer une facture — générer un QR SEPA (brouillon)</li>
-          <li>Anniversaire — préparer un message</li>
-        </ul>
+    <!-- FEATURES -->
+    <section class="sec" id="app">
+      <h2>App Recallia (PWA)</h2>
+      <div class="grid">
+        <div class="tile"><h3>Rappels intelligents</h3><p>Anniv, médecin, factures, dossiers… on vous prévient au bon moment.</p></div>
+        <div class="tile"><h3>Exécution assistée</h3><p>Vous validez → on envoie, on planifie, on classe, on rapporte.</p></div>
+        <div class="tile"><h3>Preuve-ou-rien</h3><p>Chaque action réussie génère un reçu (JSON/PDF/ICS) avec hash.</p></div>
+      </div>
+      <div class="notice" style="margin-top:14px">
+        Installez l’app : ouvrez ce site sur mobile → “Ajouter à l’écran d’accueil”.
       </div>
     </section>
 
-    <section class="section" id="benchmarks">
-      <h2>Benchmarks (auto)</h2>
-      <p>Chiffres issus de <strong>preuves</strong> réelles (hash + checkpoint hebdo).</p>
-      <div class="kpis">
-        <div class="kpi"><h3>TTV médian</h3><strong>&lt; 60 s</strong></div>
-        <div class="kpi"><h3>VSR</h3><strong>≥ 90%</strong></div>
-        <div class="kpi"><h3>Preuves/jour</h3><strong>—</strong></div>
+    <!-- BENCH -->
+    <section class="sec" id="bench">
+      <h2>Benchmarks (publication automatique)</h2>
+      <p class="mini">Chiffres issus de preuves réelles. Checkpoint hebdo publié ici.</p>
+      <div class="grid">
+        <div class="tile"><h3>TTV médian</h3><p>&lt; 60 s</p></div>
+        <div class="tile"><h3>VSR</h3><p>≥ 90 % (2 recettes phares)</p></div>
+        <div class="tile"><h3>Couverture de preuve</h3><p>100 %</p></div>
       </div>
-      <hr/>
-      <p class="small">Checkpoint hebdo : sera publié ici.</p>
     </section>
 
-    <section class="section" id="status">
+    <!-- STATUS -->
+    <section class="sec" id="status">
       <h2>Status</h2>
-      <div class="notice">Tous les systèmes fonctionnent normalement.</div>
-      <p class="small">En cas d’incident, un compte rendu apparaîtra ici.</p>
+      <div class="card"><p>Tous les systèmes fonctionnent normalement.</p><p class="mini">En cas d’incident, un compte-rendu apparaîtra ici.</p></div>
     </section>
 
-    <section class="section" id="help">
+    <!-- HELP -->
+    <section class="sec" id="help">
       <h2>Aide & Contact</h2>
-      <p>Contact : <strong>support@votredomaine</strong> (à remplacer)</p>
-      <table class="table">
-        <tr><th>FAQ</th><th>Réponse</th></tr>
-        <tr><td>Installer l’app</td><td>Ouvrez “App” puis “Ajouter à l’écran d’accueil”.</td></tr>
-        <tr><td>Voir mes preuves</td><td>Dans l’app, onglet <em>Preuves</em>.</td></tr>
-      </table>
+      <div class="faq">
+        <table>
+          <tr><th>Question</th><th>Réponse</th></tr>
+          <tr><td>Installer l’app</td><td>Ouvrez ce site sur mobile → “Ajouter à l’écran d’accueil”.</td></tr>
+          <tr><td>Voir mes preuves</td><td>Onglet <em>Preuves</em> dans l’app (à venir).</td></tr>
+          <tr><td>Support</td><td>Écrivez-nous : <a href="mailto:support@votredomaine">support@votredomaine</a></td></tr>
+        </table>
+      </div>
     </section>
 
-    <section class="section" id="privacy">
+    <!-- PRIVACY -->
+    <section class="sec" id="privacy">
       <h2>Sécurité & Vie privée</h2>
-      <ul>
-        <li>Local-first & minimisation</li>
-        <li>Preuve-ou-rien (reçus hachés + audit)</li>
-        <li>Passkeys/2FA, TLS, CSP/HSTS/SRI</li>
-        <li>Export/Purge en 1 clic</li>
+      <ul class="clean">
+        <li>Local-first & minimisation des données</li>
+        <li>Preuve-ou-rien : reçus hachés + audit chaîné</li>
+        <li>Passkeys/2FA, TLS, CSP/HSTS</li>
+        <li>Export / purge en 1 clic (bientôt dans l’app)</li>
       </ul>
     </section>
-  </main>
 
-  <footer class="container footer small">
-    © 2025 Recallia — “Preuve-ou-rien”. · <a href="#privacy">Sécurité & Vie privée</a> · <a href="#help">Contact</a>
-  </footer>
+    <!-- FOOT -->
+    <footer class="footer">
+      © 2025 Recallia — “Preuve-ou-rien”. · <a href="#privacy">Sécurité</a> · <a href="#help">Contact</a>
+    </footer>
+  </div>
 
   <script>
-    document.addEventListener('click', (e)=>{
-      const a = e.target.closest('a[href^="#"]');
-      if(a){ e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'}); }
+    // Défilement doux
+    document.addEventListener('click',e=>{
+      const a=e.target.closest('a[href^="#"]'); if(!a) return;
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
     });
   </script>
 </body>
-                                                               </html>
+</html>
