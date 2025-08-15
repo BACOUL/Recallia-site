@@ -453,5 +453,47 @@
   }
 })();
       </script>
+  <!-- Correctif Recallia – PWA + bouton Installer -->
+<script>
+(function () {
+  // 1) Enregistrer le Service Worker (fichier sw.js à la racine)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(console.warn);
+  }
+
+  // 2) Bannière d'installation PWA
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const bar = document.getElementById('pwaInstall');
+    if (bar) bar.style.display = 'flex';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    const bar = document.getElementById('pwaInstall');
+    if (bar) bar.remove();
+  });
+
+  // 3) Action bouton
+  window.recalliaInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+  };
+})();
+</script>
+
+<!-- Bandeau Install (masqué tant que le navigateur n’est pas prêt) -->
+<div id="pwaInstall" style="
+  display:none; position:fixed; left:12px; right:12px; bottom:12px; z-index:9999;
+  background:#0E1116; border:1px solid #233246; border-radius:14px; padding:10px 12px;
+  gap:10px; align-items:center; justify-content:space-between; box-shadow:0 10px 24px rgba(0,0,0,.35);">
+  <span style="color:#cfd8dc">Installez l’app Recallia</span>
+  <button onclick="recalliaInstall()" style="
+    background:#00C2A8; color:#00141B; border:0; padding:10px 14px; border-radius:10px;
+    font-weight:700; cursor:pointer;">Installer</button>
+</div>
 </body>
   </html>
