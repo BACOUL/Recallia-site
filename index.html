@@ -413,6 +413,113 @@ if('serviceWorker' in navigator){
   })();
 })();
 </script>
-<!-- /fin bloc unique -->
+<!-- Recallia • Correctif installation (Android/Samsung/Chrome) -->
+<style>
+  .rec-install{position:fixed;left:12px;bottom:12px;z-index:9999;max-width:380px;
+    background:#0c1421;border:1px solid #1b2432;color:#e5edf5;border-radius:14px;
+    padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35);font:14px Inter,system-ui;display:none}
+  .rec-install .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .rec-install .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:0;
+    background:#00C2A8;color:#0E1116;font-weight:700;text-decoration:none}
+  .rec-install .ghost{background:#111c2b;color:#cbd5e1;border:1px solid #2b3645}
+  .rec-install .mini{color:#9aa4b2;font-size:12px;margin-top:6px}
+  .rec-install .err{color:#ef4444}
+  .rec-install .ok{color:#22c55e}
+</style>
+<div id="rec-install" class="rec-install" role="dialog" aria-label="Installer Recallia">
+  <div id="rec-text">Installez Recallia pour un accès rapide (hors navigateur).</div>
+  <div class="row">
+    <button id="rec-install-btn" class="btn" style="display:none">Installer Recallia</button>
+    <button id="rec-howto" class="ghost">Comment installer</button>
+  </div>
+  <div id="rec-diag" class="mini"></div>
+</div>
+<script>
+(function(){
+  const BASE = location.pathname.includes('/Recallia-site/') ? '/Recallia-site/' : '/';
+
+  // 1) S'assurer (sans écraser) que manifest + SW sont pris en compte
+  if(!document.querySelector('link[rel="manifest"]')){
+    const l=document.createElement('link'); l.rel='manifest'; l.href=BASE+'manifest.webmanifest';
+    document.head.appendChild(l);
+  }
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register(BASE+'sw.js').catch(()=>{});
+  }
+
+  const box = document.getElementById('rec-install');
+  const btn = document.getElementById('rec-install-btn');
+  const txt = document.getElementById('rec-text');
+  const diag = document.getElementById('rec-diag');
+
+  // Masquer si déjà installé (standalone)
+  const installed = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if (installed) return;
+
+  // Plateforme
+  const ua = navigator.userAgent.toLowerCase();
+  const isAndroid = /android/.test(ua);
+  const isSamsung = /samsungbrowser/.test(ua);
+  const isChrome = /chrome/.test(ua) && !isSamsung;
+
+  // 2) Diagnostic rapide (manifest, icônes, SW)
+  (async ()=>{
+    let hasManifest = !!document.querySelector('link[rel="manifest"]');
+    let iconsOK = false;
+    try{
+      const r = await fetch(BASE+'manifest.webmanifest', {cache:'no-store'});
+      if(r.ok){ const m = await r.json(); const icons = (m.icons||[]).map(i=>i.sizes);
+        iconsOK = icons.includes('192x192') && icons.includes('512x512');
+      }
+    }catch(_){}
+    let sw = false; if('serviceWorker' in navigator){
+      try{ sw = (await navigator.serviceWorker.getRegistrations()).length>0; }catch(_){}
+    }
+    diag.innerHTML = 
+      `Manifest: <b class="${hasManifest?'ok':'err'}">${hasManifest?'OK':'KO'}</b> · `+
+      `Icônes: <b class="${iconsOK?'ok':'err'}">${iconsOK?'OK':'KO (192 & 512)'}</b> · `+
+      `SW: <b class="${sw?'ok':'err'}">${sw?'OK':'KO'}</b>`;
+
+    // 3) Affichage du panneau + stratégies par navigateur
+    box.style.display = 'block';
+
+    // Chrome/Android → bouton via beforeinstallprompt
+    let deferred;
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault(); deferred = e;
+      if(isAndroid) btn.style.display='inline-flex';
+    });
+
+    // Fallback si l'événement n'arrive pas (Samsung Internet, refus récent, etc.)
+    setTimeout(()=>{
+      if(!deferred){
+        if(isSamsung){
+          txt.innerHTML = "Sur Samsung Internet : menu <b>≡</b> → <b>Ajouter page à</b> → <b>Écran d’accueil</b>.";
+        } else if(isChrome && isAndroid){
+          txt.innerHTML = "Sur Chrome Android : menu <b>⋮</b> → <b>Installer l’application</b>.";
+        } else {
+          txt.innerHTML = "Ouvrez le menu du navigateur → <b>Installer l’application</b> / <b>Ajouter à l’écran d’accueil</b>.";
+        }
+      }
+    }, 1500);
+
+    // Clic bouton (quand dispo)
+    btn?.addEventListener('click', async ()=>{
+      if(!deferred) return;
+      deferred.prompt(); await deferred.userChoice; deferred = null; box.style.display='none';
+    });
+
+    // Bouton "Comment installer" (guide léger)
+    document.getElementById('rec-howto').addEventListener('click', ()=>{
+      alert(
+        isSamsung ? "Samsung Internet : ≡ → Ajouter page à → Écran d’accueil"
+        : isChrome && isAndroid ? "Chrome Android : ⋮ → Installer l’application"
+        : "Menu navigateur → Installer l’application / Ajouter à l’écran d’accueil"
+      );
+    });
+  })();
+})();
+</script>
+<!-- /Correctif installation --><!-- /fin bloc unique -->
 </body>
 </html>
