@@ -174,5 +174,142 @@
       document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
     });
   </script>
+  <!-- === Assistant Recallia (démo locale) =================================== -->
+<style>
+  .rec-fab{position:fixed;right:18px;bottom:18px;border:0;border-radius:999px;
+    padding:14px 16px;background:linear-gradient(180deg,#00C2A8,#14B8A6);color:#052e2b;
+    font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:9999}
+  .rec-panel{position:fixed;right:18px;bottom:82px;width:min(92vw,380px);
+    background:#0c1421;border:1px solid #1b2432;border-radius:16px;overflow:hidden;
+    box-shadow:0 14px 40px rgba(0,0,0,.45);display:none;z-index:9999}
+  .rec-head{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 12px;background:#0a101b;border-bottom:1px solid #1b2432}
+  .rec-head strong{font-family:Sora,Inter,sans-serif}
+  .rec-body{max-height:54vh;overflow:auto;padding:10px}
+  .rec-msg{background:#0f1623;border:1px solid #1b2432;border-radius:12px;padding:10px;margin:8px 0}
+  .rec-me{background:#102033;border-color:#24405a}
+  .rec-input{display:flex;gap:8px;padding:10px;border-top:1px solid #1b2432;background:#0a101b}
+  .rec-input input{flex:1;border:1px solid #1b2432;background:#0c1421;color:#e5edf5;border-radius:10px;padding:10px}
+  .rec-input button{border:1px solid #2b3645;background:#111c2b;color:#fff;border-radius:10px;padding:10px 12px}
+  .rec-chip{display:inline-block;border:1px solid #2b3645;border-radius:999px;padding:6px 10px;margin:6px 6px 0 0;
+    font-size:12px;color:#cbd5e1;cursor:pointer}
+</style>
+
+<button class="rec-fab" id="recFab">Assistant</button>
+<div class="rec-panel" id="recPanel" role="dialog" aria-label="Assistant Recallia">
+  <div class="rec-head">
+    <strong>Assistant Recallia</strong>
+    <button id="recClose" title="Fermer" style="background:none;border:0;color:#9aa4b2;font-size:18px">✕</button>
+  </div>
+  <div class="rec-body" id="recBody">
+    <div class="rec-msg">
+      Bonjour 👋 Je peux déjà : <span class="rec-chip">rappel médecin demain 10h</span>
+      <span class="rec-chip">anniversaire Marie 20/08</span>
+      <span class="rec-chip">payer facture 123 (brouillon)</span>
+      <span class="rec-chip">liste courses: lait, riz</span>
+    </div>
+  </div>
+  <div class="rec-input">
+    <input id="recInput" placeholder="Demande-moi une action… (ex: rappel médecin mardi 9h)"/>
+    <button id="recSend">Envoyer</button>
+  </div>
+</div>
+
+<script>
+(async function(){
+  const $ = s => document.querySelector(s);
+  const fab = $('#recFab'), panel = $('#recPanel'), body = $('#recBody'),
+        input = $('#recInput'), send = $('#recSend'), closeBtn = $('#recClose');
+
+  const toHex = buf => [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  async function sha256(txt){ return toHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt))); }
+  function addMsg(html, me=false){
+    const m = document.createElement('div'); m.className='rec-msg'+(me?' rec-me':''); m.innerHTML = html;
+    body.appendChild(m); body.scrollTop = body.scrollHeight;
+  }
+  function storeProof(p){
+    const k='recallia_proofs'; const arr = JSON.parse(localStorage.getItem(k)||'[]'); arr.unshift(p);
+    localStorage.setItem(k, JSON.stringify(arr.slice(0,50)));
+  }
+  function dtstamp(d){ return d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z' }
+
+  async function proof(kind, title, result){
+    const p = { id:'p_'+Date.now(), action_id:kind, title, kind,
+      timestamp:new Date().toISOString(), level:'N1', costs:{eur:0,sec:5}, result };
+    p.sha256 = await sha256(JSON.stringify(p));
+    storeProof(p);
+    addMsg(`<b>Preuve générée</b><br><pre>${JSON.stringify(p,null,2)}</pre>`);
+  }
+
+  function icsRdv(summary, start){
+    const end = new Date(start.getTime()+45*60000);
+    const ICS = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Recallia//FR
+BEGIN:VEVENT
+UID:${Date.now()}@recallia
+DTSTAMP:${dtstamp(new Date())}
+DTSTART:${dtstamp(start)}
+DTEND:${dtstamp(end)}
+SUMMARY:${summary}
+END:VEVENT
+END:VCALENDAR`;
+    const url = URL.createObjectURL(new Blob([ICS],{type:'text/calendar'}));
+    return {ICS,url};
+  }
+
+  async function handle(cmd){
+    const t = cmd.toLowerCase();
+
+    // Rappel médecin
+    if(t.includes('rappel') && (t.includes('medecin') || t.includes('médecin'))){
+      const hMatch = /(\d{1,2})h/.exec(t); const h = hMatch ? parseInt(hMatch[1],10) : 10;
+      const when = new Date(Date.now()+24*3600*1000); when.setHours(h,0,0,0);
+      const {url} = icsRdv('Rendez-vous médecin', when);
+      addMsg(`✅ Rappel créé. <a href="${url}" download="rappel-medecin.ics">Télécharger l’événement (.ics)</a>`);
+      await proof('rdv.medecin','Rappel médecin', {status:'success', notes:`ICS ${when.toLocaleString()}`});
+      return;
+    }
+
+    // Anniversaire
+    if(t.includes('anniversaire')){
+      await proof('anniv.msg','Préparer message anniversaire', {status:'success', notes:'Brouillon prêt (SMS/Email)'});
+      addMsg('🎉 Brouillon de message d’anniversaire préparé (démo).');
+      return;
+    }
+
+    // Payer facture (brouillon)
+    if(t.includes('payer') || t.includes('facture')){
+      await proof('bill.pay.draft','Paiement facture (brouillon)', {status:'success', notes:'Préparation SEPA/QR (non exécuté)'});
+      addMsg('💳 Brouillon de paiement créé (pas d’envoi réel en démo).');
+      return;
+    }
+
+    // Liste de courses
+    if(t.includes('courses') || t.includes('course')){
+      const items = (t.split(':')[1]||'').trim() || 'lait, riz';
+      await proof('groceries.list','Liste de courses', {status:'success', items:items.split(',').map(s=>s.trim())});
+      addMsg('🧺 Liste notée : '+items);
+      return;
+    }
+
+    // Aide par défaut
+    addMsg(`Je peux (démo) :<br>• <em>rappel médecin demain 10h</em><br>• <em>anniversaire Marie 20/08</em><br>• <em>payer facture 123</em> (brouillon)<br>• <em>liste courses: lait, riz</em>`);
+  }
+
+  // UI
+  fab.onclick = ()=>{ panel.style.display = 'block'; input.focus(); };
+  closeBtn.onclick = ()=> panel.style.display = 'none';
+  send.onclick = async ()=>{ const v=input.value.trim(); if(!v) return; addMsg(v, true); input.value=''; await handle(v); };
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); send.click(); } });
+
+  // Chips rapides
+  panel.addEventListener('click', e=>{
+    const chip = e.target.closest('.rec-chip'); if(!chip) return;
+    input.value = chip.textContent; send.click();
+  });
+})();
+</script>
+<!-- === /Assistant Recallia (démo locale) ================================== -->
 </body>
 </html>
