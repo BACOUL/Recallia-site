@@ -323,5 +323,10 @@ END:VCALENDAR`;
   bad.textContent = `Manifest: ${hasManifest?'OK':'KO'} · SW: ${swCap?(swReg?'OK':'non enregistré'):'non supporté'}`;
 })();
 </script>
+  <script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(console.error);
+}
+  </script>
 </body>
 </html>
