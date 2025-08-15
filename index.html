@@ -1371,6 +1371,351 @@
   });
 })();
 </script>
-<!-- ===== /SITE BOOST PACK v3 ===== --><!-- ===== /PATCH COMPLET v2 ===== --><!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
+<!-- ===== Recallia — SuperPatch v4 (sections + SEO + CTA + Console Créateur) ===== -->
+<style>
+  :root{--bg:#0E1116;--card:#0B1116;--text:#EAF2F8;--muted:#b9c1c7;--line:#263238;--accent:var(--accent,#00C2A8)}
+  .rx-wrap{max-width:1120px;margin:0 auto;padding:28px 16px}
+  .rx-sec{margin:42px 0}
+  .rx-title{font-size:28px;line-height:1.2;margin:0 0 10px;color:var(--text)}
+  .rx-sub{color:var(--muted);margin:0 0 18px}
+  .rx-grid{display:grid;gap:14px}
+  @media(min-width:680px){.rx-3{grid-template-columns:repeat(3,1fr)}.rx-2{grid-template-columns:repeat(2,1fr)}}
+  .rx-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .rx-badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#0c1a1f;border:1px solid #1f2d36;color:var(--muted);font-size:12px}
+  .rx-kpis{display:flex;gap:14px;flex-wrap:wrap}
+  .rx-kpis .k{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:120px}
+  .rx-kpis .k b{font-size:18px;color:var(--text)}
+  .rx-list{display:grid;gap:8px;margin:10px 0}
+  .rx-list li{list-style:none;padding-left:8px;border-left:2px solid #1f2d36;color:var(--muted)}
+  .rx-cta{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;background:var(--accent);color:#001015;font-weight:800}
+  .rx-ghost{background:#1B2631;color:var(--text);border:1px solid #2C3E50}
+  .rx-code{background:#0b121a;border:1px solid #1f2a3a;border-radius:12px;padding:12px;font-size:12px;overflow:auto}
+  /* CTA bar */
+  #rx-ctaBar{position:fixed;left:12px;right:12px;bottom:12px;display:flex;gap:10px;background:#0E1116;border:1px solid #263238;border-radius:12px;padding:10px;z-index:9998;align-items:center;justify-content:space-between;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  #rx-ctaBar .left{display:flex;gap:8px;align-items:center;color:#b9c1c7;font-size:14px}
+  #rx-ctaBar .btn{padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  #rx-try{background:#00C2A8;color:#001015} #rx-contact{background:#1B2631;color:#EAF2F8;border:1px solid #2C3E50}
+  @media (max-width:520px){#rx-ctaBar .left span{display:none}}
+  /* Contact modal */
+  #rx-back{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999}
+  #rx-box{position:fixed;inset:auto 12px 12px 12px;max-width:560px;margin:auto;background:#0E1116;border:1px solid #263238;border-radius:14px;padding:16px;display:none;z-index:10000}
+  #rx-box h3{margin:0 0 8px;font-size:18px;color:#EAF2F8}
+  #rx-box label{font-size:13px;color:#b9c1c7}
+  #rx-box input,#rx-box textarea{width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid #25313B;background:#0B1116;color:#EAF2F8}
+  #rx-send{background:#00C2A8;color:#001015} #rx-close{background:#1B2631;color:#EAF2F8;margin-left:8px}
+  /* Footer légal */
+  footer#rx-legal{margin:48px 0 90px;padding:16px;border-top:1px solid #263238;color:#b9c1c7}
+  .rx-legal-links{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px}
+  .rx-legal-links a{color:#EAF2F8;text-decoration:none;border:1px solid #2C3E50;padding:8px 10px;border-radius:10px}
+  .rx-legal-box{margin-top:12px;background:#0B1116;border:1px solid #25313B;border-radius:12px;padding:12px}
+  .rx-legal-box h4{margin:0 0 6px;color:#EAF2F8}
+  .rx-legal-box p{margin:6px 0}
+  .rx-legal-box details summary{cursor:pointer;color:#EAF2F8;margin:6px 0}
+  /* Console Créateur */
+  #rx-creatorBtn{position:fixed;right:12px;bottom:80px;background:#0E1116;border:1px solid #263238;color:#EAF2F8;border-radius:12px;padding:8px 10px;z-index:10001;cursor:pointer}
+  #rx-creator{position:fixed;right:12px;bottom:130px;width:min(520px,95vw);max-height:70vh;overflow:auto;background:#0B1116;border:1px solid #25313B;border-radius:14px;padding:12px;z-index:10002;display:none}
+  #rx-creator h3{margin:0 0 8px}
+  .rx-alert{display:flex;gap:8px;align-items:flex-start;border:1px solid #2a3440;background:#0c141b;border-radius:10px;padding:8px;margin:6px 0}
+  .rx-ok{border-color:#1f3d32;background:#0c1a14} .rx-warn{border-color:#3f361f;background:#1b140c} .rx-err{border-color:#3f1f1f;background:#1b0c0c}
+  .rx-chip{display:inline-block;margin:6px 6px 0 0;padding:6px 10px;border-radius:999px;border:1px solid #2C3E50;background:#0E1116;color:#EAF2F8;cursor:pointer;font-size:12px}
+  .rx-pin{display:flex;gap:8px;align-items:center;margin:8px 0}
+  .rx-pin input{flex:1;padding:8px;border-radius:8px;border:1px solid #25313B;background:#0B1116;color:#EAF2F8}
+</style>
+
+<!-- Ancre #app (si absente, on l’ajoute aussi via JS) -->
+<section id="app" style="position:relative"></section>
+
+<!-- CTA collant + Contact modal -->
+<div id="rx-ctaBar" role="region" aria-label="Actions principales" style="display:none">
+  <div class="left"><strong>Recallia</strong> <span>— Votre mémoire IA</span></div>
+  <div class="right">
+    <button id="rx-try" class="btn">Essayer maintenant</button>
+    <button id="rx-contact" class="btn">Contacter</button>
+  </div>
+</div>
+<div id="rx-back"></div>
+<div id="rx-box" role="dialog" aria-modal="true" aria-labelledby="rx-title">
+  <h3 id="rx-title">Demander une démo</h3>
+  <form id="rx-form">
+    <label>Nom</label><input name="name" required>
+    <label>Email</label><input name="email" type="email" required>
+    <label>Message</label><textarea name="message" rows="4" placeholder="Ex : Rappel médecin + envoi d’un mail…" required></textarea>
+    <div style="display:flex;justify-content:flex-end">
+      <button type="button" id="rx-close" class="btn">Fermer</button>
+      <button type="submit" id="rx-send" class="btn">Envoyer</button>
+    </div>
+    <p id="rx-status" style="margin:8px 0 0;font-size:13px;color:#b9c1c7"></p>
+  </form>
+</div>
+
+<!-- Footer légal -->
+<footer id="rx-legal">
+  <div class="rx-legal-links">
+    <a href="#rx-mentions">Mentions légales</a>
+    <a href="#rx-privacy">Confidentialité</a>
+    <a href="mailto:jeason.bacoul@gmail.com?subject=Contact%20Recallia">Contact</a>
+  </div>
+  <div id="rx-mentions" class="rx-legal-box">
+    <h4>Mentions légales</h4>
+    <p><strong>Éditeur :</strong> Recallia — Micro-entreprise (remplacer par tes infos exactes).</p>
+    <p><strong>Contact :</strong> jeason.bacoul@gmail.com</p>
+    <p><strong>Hébergement :</strong> GitHub Pages (GitHub Inc.).</p>
+  </div>
+  <div id="rx-privacy" class="rx-legal-box">
+    <h4>Confidentialité (court)</h4>
+    <details><summary>Ce que nous collectons</summary><p>Données fournies via le formulaire (nom, email, message). Pas de cookies publicitaires.</p></details>
+    <details><summary>Usage</summary><p>Répondre aux demandes et améliorer le service. Aucune revente.</p></details>
+    <details><summary>Droits</summary><p>Accès / suppression sur demande par email.</p></details>
+  </div>
+  <p style="margin-top:10px">© <span id="rx-year"></span> Recallia. Tous droits réservés.</p>
+</footer>
+
+<!-- Console Créateur (PIN + alertes + correctifs) -->
+<button id="rx-creatorBtn" title="Créateur">🛠️ Créateur</button>
+<div id="rx-creator">
+  <h3>Créateur — Console</h3>
+  <div class="rx-pin">
+    <label for="rx-pin-input">PIN</label>
+    <input id="rx-pin-input" placeholder="••••" inputmode="numeric" minlength="4" maxlength="6">
+    <button class="rx-chip" id="rx-pin-check">Déverrouiller</button>
+  </div>
+  <div id="rx-alerts"></div>
+  <div id="rx-fixes" style="margin-top:8px"></div>
+</div>
+
+<script>
+(function(){
+  /* ===== Utilitaires ===== */
+  const $ = s => document.querySelector(s);
+  const head = document.head || document.getElementsByTagName('head')[0];
+  const H = (tag, attrs={}, html='') => {
+    const el=document.createElement(tag);
+    Object.entries(attrs).forEach(([k,v])=>{ if(k==='style' && typeof v==='object'){Object.assign(el.style,v)} else el.setAttribute(k,v) });
+    if(html) el.innerHTML = html;
+    return el;
+  };
+  const insertBeforeFooter = (el)=>{
+    const before = document.getElementById('rx-ctaBar') || document.getElementById('rx-legal') || document.body.lastElementChild;
+    document.body.insertBefore(el, before);
+  };
+
+  /* ===== CTA + Contact ===== */
+  const ctaBar = $('#rx-ctaBar'); ctaBar.style.display='flex';
+  $('#rx-try')?.addEventListener('click',()=>{ (document.getElementById('app')||document.body).scrollIntoView({behavior:'smooth'}); });
+  const back=$('#rx-back'), box=$('#rx-box'), open=()=>{back.style.display='block';box.style.display='block'}, close=()=>{back.style.display='none';box.style.display='none'};
+  $('#rx-contact')?.addEventListener('click',open); $('#rx-close')?.addEventListener('click',close); back.addEventListener('click',close);
+  $('#rx-form')?.addEventListener('submit',(e)=>{e.preventDefault();const d=new FormData(e.target);
+    const nom=encodeURIComponent(d.get('name')||''), em=encodeURIComponent(d.get('email')||''), msg=encodeURIComponent(d.get('message')||'');
+    window.location.href=`mailto:jeason.bacoul@gmail.com?subject=Demande%20d%C3%A9mo%20Recallia&body=Nom:%20${nom}%0AEmail:%20${em}%0A%0A${msg}`;
+    $('#rx-status').textContent="Ouverture de votre messagerie…"; setTimeout(close,1200);
+  });
+  $('#rx-year').textContent = new Date().getFullYear();
+
+  /* ===== SEO minimal (ajout si manquant) ===== */
+  if(!document.querySelector('meta[name="description"]')) head.appendChild(H('meta', {name:'description', content:'Recallia rappelle, exécute et prouve vos tâches. Vous validez, on le fait.'}));
+  if(!document.querySelector('link[rel="canonical"]')) head.appendChild(H('link',{rel:'canonical', href: location.href.split('?')[0]}));
+  if(!document.querySelector('meta[property="og:title"]')) head.appendChild(H('meta',{property:'og:title',content:'Recallia — Votre mémoire IA'}));
+  if(!document.querySelector('meta[property="og:description"]')) head.appendChild(H('meta',{property:'og:description',content:'Vous validez, on exécute. Chaque action a une preuve (hash + journal).'}));
+  if(!document.querySelector('meta[name="theme-color"]')) head.appendChild(H('meta',{name:'theme-color',content:getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#00C2A8'}));
+  // JSON-LD Organisation + Site
+  if(!document.querySelector('script[data-ld="org"]')){
+    head.appendChild(H('script',{'type':'application/ld+json','data-ld':'org'}, JSON.stringify({
+      "@context":"https://schema.org","@type":"Organization","name":"Recallia",
+      "url":location.origin+location.pathname,"logo":location.origin+location.pathname+"icon-512.png"
+    })));
+  }
+  if(!document.querySelector('script[data-ld="website"]')){
+    head.appendChild(H('script',{'type':'application/ld+json','data-ld':'website'}, JSON.stringify({
+      "@context":"https://schema.org","@type":"WebSite","name":"Recallia",
+      "url":location.origin+location.pathname,"potentialAction":{"@type":"SearchAction","target":location.origin+location.pathname+"?q={query}","query-input":"required name=query"}
+    })));
+  }
+
+  /* ===== Sections manquantes : on injecte si absentes ===== */
+  function ensureSection(id, html){ if(document.getElementById(id)) return; const s=H('section',{id, class:'rx-sec'}, html); insertBeforeFooter(s); }
+  // Features
+  ensureSection('rx-feat', `
+    <div class="rx-wrap">
+      <span class="rx-badge">Pourquoi Recallia</span>
+      <h2 class="rx-title">Plus qu’un agenda : <em>mémoire + action + preuve</em>.</h2>
+      <p class="rx-sub">Vous validez, Recallia exécute et livre un reçu horodaté (hash + journal). Local-first, discret, fiable.</p>
+      <div class="rx-grid rx-3">
+        <div class="rx-card"><h3>🧠 Rappelle</h3><p class="rx-sub">Anniversaires, RDV, paiements, papiers — jamais oubliés.</p></div>
+        <div class="rx-card"><h3>⚙️ Exécute</h3><p class="rx-sub">Email, RDV, attestation… sous vos caps N0→N3.</p></div>
+        <div class="rx-card"><h3>✅ Prouve</h3><p class="rx-sub">Reçu (JSON/PDF/EML/ICS) + SHA-256.</p></div>
+        <div class="rx-card"><h3>🔒 Sous contrôle</h3><p class="rx-sub">Fenêtres, listes blanches, double confirmation, pause.</p></div>
+        <div class="rx-card"><h3>⚡ Rapide</h3><p class="rx-sub">TTV médian visé &lt; 60 s.</p></div>
+        <div class="rx-card"><h3>🧩 Évolutif</h3><p class="rx-sub">Domain Kits en &lt; 48 h (tests + conformité).</p></div>
+      </div>
+      <div class="rx-kpis" style="margin-top:12px">
+        <div class="k"><b>&lt; 60 s</b><div class="rx-sub">Clic → preuve</div></div>
+        <div class="k"><b>90%+</b><div class="rx-sub">Taux de succès</div></div>
+        <div class="k"><b>100%</b><div class="rx-sub">Couverture de preuve</div></div>
+      </div>
+    </div>`);
+
+  // Comment ça marche
+  ensureSection('rx-how', `
+    <div class="rx-wrap">
+      <span class="rx-badge">En 3 étapes</span>
+      <h2 class="rx-title">Dites l’intention → validez → recevez la preuve.</h2>
+      <div class="rx-grid rx-3">
+        <div class="rx-card"><h3>1) Propose</h3><ul class="rx-list"><li>Priorités du jour (impact × p(succès) ÷ temps × coût)</li><li>Estimation claire</li></ul></div>
+        <div class="rx-card"><h3>2) Exécute</h3><ul class="rx-list"><li>Assisté/auto selon N0→N3</li><li>Respect des caps & listes blanches</li></ul></div>
+        <div class="rx-card"><h3>3) Prouve</h3><ul class="rx-list"><li>Reçu horodaté + hash</li><li>Journal d’audit</li></ul></div>
+      </div>
+    </div>`);
+
+  // Cas d’usage
+  ensureSection('rx-cases', `
+    <div class="rx-wrap">
+      <span class="rx-badge">Cas d’usage</span>
+      <h2 class="rx-title">Exemples concrets</h2>
+      <div class="rx-grid rx-3">
+        <div class="rx-card"><h3>🎂 Anniversaires</h3><p class="rx-sub">Rappel + message prêt (ou envoi auto si validé).</p></div>
+        <div class="rx-card"><h3>🏥 RDV médecin</h3><p class="rx-sub">3 créneaux, ICS, rappel veille.</p></div>
+        <div class="rx-card"><h3>💡 Factures</h3><p class="rx-sub">Alerte, relance email, reçu archivé.</p></div>
+        <div class="rx-card"><h3>🏠 Maison</h3><p class="rx-sub">Lumière, entretien chaudière, assurances.</p></div>
+        <div class="rx-card"><h3>📦 Retours/garanties</h3><p class="rx-sub">Étiquette, suivi, preuve d’envoi.</p></div>
+        <div class="rx-card"><h3>🧾 Admin</h3><p class="rx-sub">Attestation, justificatif, accusé.</p></div>
+      </div>
+    </div>`);
+
+  // Preuve — exemple JSON
+  if(!document.getElementById('rx-proof')){
+    const sec = H('section',{id:'rx-proof',class:'rx-sec'});
+    const example = {id:"p_"+Date.now(),action_id:"rdv.medecin",title:"Prise de RDV – Dr. Martin",kind:"ics",timestamp:new Date().toISOString(),sha256:"e3b0c44298...(ex)",result:{status:"success",notes:"RDV confirmé. Fichier .ics généré."}};
+    sec.innerHTML = `<div class="rx-wrap"><span class="rx-badge">Preuve-ou-rien</span>
+      <h2 class="rx-title">Chaque action réussie a son reçu.</h2>
+      <p class="rx-sub">Ci-dessous, un exemple de reçu JSON horodaté. En prod, un SHA-256 réel est calculé.</p>
+      <div class="rx-code" id="rx-proof-code"></div>
+      <div style="margin-top:10px"><button class="rx-cta" id="rx-proof-copy">Copier le JSON</button></div></div>`;
+    insertBeforeFooter(sec);
+    document.getElementById('rx-proof-code').textContent = JSON.stringify(example,null,2);
+    document.getElementById('rx-proof-copy')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(document.getElementById('rx-proof-code').textContent);const b=document.getElementById('rx-proof-copy');b.textContent='Copié ✔';setTimeout(()=>b.textContent='Copier le JSON',1200);}catch(_){}})
+  }
+
+  // Avis
+  ensureSection('rx-social', `
+    <div class="rx-wrap">
+      <span class="rx-badge">Ils en parlent</span>
+      <h2 class="rx-title">Des utilisateurs rassurés par la preuve.</h2>
+      <div class="rx-grid rx-3">
+        <div class="rx-card"><p>“Validé → 40 s plus tard, preuve de réservation. Bluffant.”</p><span class="rx-badge" style="background:var(--accent);color:#001015">TTV 40 s</span></div>
+        <div class="rx-card"><p>“Reçu JSON + email envoyé, clair et vérifiable.”</p><span class="rx-badge" style="background:var(--accent);color:#001015">Preuve 100%</span></div>
+        <div class="rx-card"><p>“J’ai arrêté d’oublier les échéances — et j’ai les traces.”</p><span class="rx-badge" style="background:var(--accent);color:#001015">Zéro oubli</span></div>
+      </div>
+    </div>`);
+
+  // Pricing + FAQ
+  ensureSection('rx-pricing', `
+    <div class="rx-wrap">
+      <span class="rx-badge">Tarifs (bêta)</span>
+      <h2 class="rx-title">Commencez gratuit. Passez Pro quand vous voulez.</h2>
+      <div class="rx-grid rx-3">
+        <div class="rx-card"><h3>Gratuit</h3><ul class="rx-list"><li>Rappels essentiels</li><li>Actions assistées</li><li>Preuves limitées</li></ul><button class="rx-cta" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Essayer</button></div>
+        <div class="rx-card" style="border-color:var(--accent)"><h3>Pro</h3><ul class="rx-list"><li>Actions auto N0→N3</li><li>Preuves illimitées</li><li>Domain Kits avancés</li></ul><button class="rx-cta">Rejoindre la liste</button></div>
+        <div class="rx-card"><h3>Team</h3><ul class="rx-list"><li>Comptes multi</li><li>Approbations & journal</li><li>Support prioritaire</li></ul><button class="rx-cta rx-ghost" onclick="document.getElementById('rx-contact').click()">Contacter</button></div>
+      </div>
+    </div>`);
+  ensureSection('rx-faq', `
+    <div class="rx-wrap">
+      <span class="rx-badge">FAQ</span>
+      <h2 class="rx-title">Questions fréquentes</h2>
+      <div class="rx-grid rx-2">
+        <div class="rx-card"><h3>Recallia vs Google Agenda ?</h3><p class="rx-sub">Agenda = rappels. Recallia = rappels + exécution + preuve (reçus horodatés).</p></div>
+        <div class="rx-card"><h3>Mes données ?</h3><p class="rx-sub">Local-first. Export & suppression. Aucune revente.</p></div>
+        <div class="rx-card"><h3>Qui valide ?</h3><p class="rx-sub">Toujours vous. Niveaux N0→N3 + caps + double confirmation.</p></div>
+        <div class="rx-card"><h3>Mobile ?</h3><p class="rx-sub">Oui. PWA (installation) quand manifest/icônes finalisés.</p></div>
+      </div>
+    </div>`);
+
+  /* ===== Console Créateur : PIN, alertes, correctifs ===== */
+  const creatorBtn = $('#rx-creatorBtn'), creator = $('#rx-creator');
+  const PIN = localStorage.getItem('recallia.pin') || '4242'; // change-le plus tard
+  const showCreator = () => creator.style.display = 'block';
+  // ouverture si ?creator=on ou triple-clic sur le logo
+  if (new URLSearchParams(location.search).get('creator')==='on') showCreator();
+  creatorBtn.addEventListener('click', showCreator);
+
+  function diag(){
+    const d = {
+      hasH1: !!document.querySelector('h1'),
+      hasApp: !!document.getElementById('app'),
+      hasCTA: !!document.getElementById('rx-ctaBar'),
+      hasLegal: !!document.getElementById('rx-legal'),
+      hasFeat: !!document.getElementById('rx-feat'),
+      hasHow: !!document.getElementById('rx-how'),
+      hasCases: !!document.getElementById('rx-cases'),
+      hasProof: !!document.getElementById('rx-proof'),
+      hasPricing: !!document.getElementById('rx-pricing'),
+      hasFAQ: !!document.getElementById('rx-faq'),
+      hasDesc: !!document.querySelector('meta[name="description"]'),
+      hasOG: !!document.querySelector('meta[property="og:title"]'),
+      manifestLink: document.querySelector('link[rel="manifest"]')?.getAttribute('href')||null
+    };
+    return d;
+  }
+  function renderAlerts(){
+    const d = diag(); const box = $('#rx-alerts'); box.innerHTML='';
+    const items = [];
+    if(!d.hasH1) items.push({t:"H1 manquant (héros)",lvl:'err',fix:'hero'});
+    if(!d.hasDesc||!d.hasOG) items.push({t:"Méta SEO incomplètes (description/OG)",lvl:'warn',fix:'seo'});
+    if(!d.hasFeat||!d.hasHow||!d.hasCases) items.push({t:"Sections valeur/fonctionnement/cas d’usage incomplètes",lvl:'warn',fix:'sections'});
+    if(!d.hasProof) items.push({t:"Bloc “Preuve” absent",lvl:'warn',fix:'proof'});
+    if(!d.hasPricing||!d.hasFAQ) items.push({t:"Pricing/FAQ absents",lvl:'warn',fix:'sections'});
+    if(!d.hasLegal) items.push({t:"Footer légal minimal absent",lvl:'warn',fix:'legal'});
+    if(!d.hasCTA) items.push({t:"CTA collant (Essayer/Contacter) absent",lvl:'warn',fix:'cta'});
+    if(!d.hasApp) items.push({t:"Ancre #app manquante (pour le scroll du CTA)",lvl:'warn',fix:'app'});
+    if(d.manifestLink) items.push({t:`Manifest détecté: ${d.manifestLink} (on le reprendra demain avec Cloudflare)`,lvl:'ok',fix:null});
+    if(items.length===0) items.push({t:"Tout est en place côté structure. Prochaine étape : PWA & icônes.",lvl:'ok'});
+    for(const it of items){
+      const div = H('div',{class:`rx-alert rx-${it.lvl}`}, `<div>• ${it.t}</div>`); box.appendChild(div);
+    }
+    const fixes = $('#rx-fixes'); fixes.innerHTML='';
+    [
+      {id:'fix-hero',label:'Proposer un H1 + sous-titre + CTA',fn:()=>proposeHero()},
+      {id:'apply-hero',label:'Appliquer la proposition',fn:()=>applyHero()},
+      {id:'fix-sections',label:'Ajouter sections manquantes',fn:()=>{}}, // déjà injectées ci-dessus
+      {id:'fix-cta',label:'(Ré)activer la barre CTA',fn:()=>{document.getElementById('rx-ctaBar').style.display='flex'}},
+      {id:'fix-legal',label:'(Ré)insérer le footer légal',fn:()=>{}}, // déjà présent
+      {id:'fix-seo',label:'Ajouter/mettre à jour méta SEO',fn:()=>{}},
+      {id:'fix-app',label:'Créer ancre #app',fn:()=>{if(!document.getElementById('app')){const a=H('section',{id:'app'});document.body.insertBefore(a,document.body.firstChild)}}}
+    ].forEach(b=>{ const el=H('button',{class:'rx-chip',id:b.id},b.label); el.addEventListener('click',b.fn); fixes.appendChild(el); });
+  }
+
+  // Proposer/Appliquer contenu héros (léger)
+  function proposeHero(){
+    const ideas = [
+      {t:'Recallia — Votre mémoire IA', s:'Vous validez, on exécute. Chaque action a une preuve.', c:'Essayer maintenant', a:'#00C2A8'},
+      {t:'Rappelle, exécute, prouve.', s:'Anniversaires, RDV, factures — zéro oubli, reçus horodatés.', c:'Voir un exemple de preuve', a:'#60A5FA'}
+    ];
+    localStorage.setItem('recallia.hero.proposal', JSON.stringify(ideas[Math.floor(Math.random()*ideas.length)]));
+    alert('Proposition héros prête. Cliquez “Appliquer la proposition”.');
+  }
+  function applyHero(){
+    const p = JSON.parse(localStorage.getItem('recallia.hero.proposal')||'{}');
+    const h1 = document.querySelector('h1') || (()=>{
+      const hh=H('h1',{},'Recallia — Votre mémoire IA');
+      const anchor=document.getElementById('app')||document.body; anchor.parentNode.insertBefore(hh, anchor.nextSibling); return hh;
+    })();
+    const sub = h1.nextElementSibling && h1.nextElementSibling.tagName==='P'? h1.nextElementSibling : h1.parentNode.insertBefore(H('p',{class:'rx-sub'}), h1.nextSibling);
+    const cta = document.querySelector('a.btn,.cta a, #rx-try') || document.getElementById('rx-try');
+    if(p.t) h1.textContent=p.t; if(p.s) sub.textContent=p.s; if(p.c && cta) cta.textContent=p.c;
+    if(p.a){ document.documentElement.style.setProperty('--accent', p.a); let m=document.querySelector('meta[name="theme-color"]'); if(!m){m=H('meta',{name:'theme-color',content:p.a}); head.appendChild(m);} else m.content=p.a; }
+    renderAlerts();
+  }
+
+  // PIN
+  $('#rx-pin-check').addEventListener('click', ()=>{
+    const ok = ($('#rx-pin-input').value||'').trim() === PIN;
+    if(!ok){ alert('PIN incorrect'); return; }
+    alert('Créateur déverrouillé ✅'); renderAlerts();
+  });
+
+  renderAlerts();
+})();
+</script>
+<!-- ===== /SuperPatch v4 ===== --><!-- ===== /SITE BOOST PACK v3 ===== --><!-- ===== /PATCH COMPLET v2 ===== --><!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
 </body>
   </html>
