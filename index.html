@@ -685,6 +685,196 @@
   window.addEventListener('beforeunload', saveSiteState);
 })();
 </script>
-<!-- ===== /Correctif global ===== -->
+<!-- ===== Recallia – Assist v2 (panneau d'aide + vérif + mini-patch) ===== -->
+<style>
+  #assistFab{position:fixed;right:12px;bottom:12px;z-index:9998;background:#00C2A8;color:#00141B;border:0;border-radius:999px;padding:10px 14px;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.35);cursor:pointer}
+  #assistPanel{position:fixed;right:12px;bottom:62px;z-index:9999;width:min(440px,calc(100% - 24px));background:#0E1116;color:#E8F1F2;border:1px solid #233246;border-radius:14px;padding:12px;display:none}
+  #assistPanel h3{margin:0 0 6px}
+  #assistPanel .row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  #assistPanel button{background:#1a2330;color:#E8F1F2;border:1px solid #2a394b;border-radius:10px;padding:8px 12px;cursor:pointer}
+  #assistPanel button.primary{background:#00C2A8;color:#00141B;border:0}
+  #assistPanel pre{max-height:160px;overflow:auto;background:#0b121a;border:1px solid #1f2a3a;border-radius:10px;padding:10px;margin:8px 0;font-size:12px}
+  #assistPanel textarea{width:100%;height:120px;background:#0b121a;border:1px solid #1f2a3a;border-radius:10px;color:#E8F1F2;padding:8px;font-size:12px}
+  .ok{color:#1bd5a6}.warn{color:#ffbe55}.err{color:#ff6b6b}
+</style>
+
+<button id="assistFab">🛠️ Aide</button>
+<div id="assistPanel" role="dialog" aria-label="Assistance Recallia">
+  <h3>Assistance Recallia</h3>
+  <div class="row">
+    <button id="btnCheck" class="primary">Vérifier le site</button>
+    <button id="btnCopyDiag">Copier diagnostic</button>
+    <button id="btnWire">Forcer branchement Créateur</button>
+  </div>
+  <pre id="assistLog" aria-live="polite">Prêt. Clique “Vérifier le site”.</pre>
+
+  <div style="margin-top:6px;font-size:13px;color:#9fb0bb">Mini-patch (coller un bout d’HTML/CSS/JS)</div>
+  <textarea id="assistPatch" placeholder="Ex. &lt;style&gt;h1{letter-spacing:.5px}&lt;/style&gt; ou &lt;script&gt;alert('ok')&lt;/script&gt;"></textarea>
+  <div class="row">
+    <button id="btnAppend" class="primary">Insérer avant &lt;/body&gt;</button>
+    <button id="btnReplace">Remplacer contenu…</button>
+    <input id="assistSelector" placeholder="CSS sélecteur (ex: #heroTitle)" style="flex:1;background:#0b121a;border:1px solid #1f2a3a;border-radius:10px;color:#E8F1F2;padding:8px" />
+  </div>
+</div>
+
+<script>
+(function(){
+  const $=s=>document.querySelector(s);
+  const logEl = $('#assistLog');
+  const log = (t,cls)=>{ logEl.textContent = (logEl.textContent? logEl.textContent+'\n':'') + (cls?`[${cls.toUpperCase()}] `:'') + t; if(cls){ logEl.className = cls; } };
+
+  // Toggle panneau
+  $('#assistFab').onclick = ()=>{ const p=$('#assistPanel'); p.style.display = p.style.display==='none'?'block':'none'; };
+
+  // Vérifications
+  async function check(){
+    logEl.textContent = '';
+    const res = { url: location.href, time: new Date().toISOString(), checks:{} };
+
+    // 1) Manifest
+    const manifestHref = (document.querySelector('link[rel="manifest"]')?.getAttribute('href')) || 'manifest.webmanifest';
+    res.checks.manifestHref = manifestHref;
+    try{
+      const r = await fetch(manifestHref, {cache:'no-store'});
+      res.checks.manifestStatus = r.status;
+      res.checks.manifestOk = r.ok;
+      res.checks.manifestText = await r.text();
+      log(`Manifest: ${manifestHref} → ${r.status}`, r.ok?'ok':'err');
+    }catch(e){ log('Manifest: échec de chargement', 'err'); }
+
+    // 2) Service Worker
+    if('serviceWorker' in navigator){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      res.checks.swCount = regs.length;
+      log(`Service Worker: ${regs.length>0?'registré ✔':'absent'}`, regs.length>0?'ok':'warn');
+    }else{
+      log('Service Worker: non supporté', 'warn');
+    }
+
+    // 3) Icônes
+    const icons = ['icon-192.png','icon-512.png','icône-192.png','icône-512.png'];
+    res.checks.icons = {};
+    for (const i of icons){
+      try{
+        const r = await fetch(i, {method:'HEAD', cache:'no-store'});
+        res.checks.icons[i] = r.ok ? r.status : '404';
+        if(r.ok) log(`Icône OK: ${i}`, 'ok');
+      }catch(_){}
+    }
+
+    // 4) Ancre #app
+    const app = document.getElementById('app') || Array.from(document.querySelectorAll('h2')).find(h=>/app|pwa/i.test(h.textContent||''))?.parentElement;
+    res.checks.appAnchor = !!app;
+    log(`Section #app ${app?'présente ✔':'absente'}`, app?'ok':'warn');
+
+    // 5) Créateur (boutons)
+    const creator = document.getElementById('creator') || document.querySelector('[data-creator]');
+    const btnApply = creator && (creator.querySelector('#apply,[data-action="apply"]') || Array.from(creator.querySelectorAll('button')).find(b=>/appliq/i.test(b.textContent||'')));
+    const btnPropose = creator && (creator.querySelector('#propose,[data-action="propose"]') || Array.from(creator.querySelectorAll('button')).find(b=>/propos/i.test(b.textContent||'')));
+    const btnSave = creator && (creator.querySelector('#save,[data-action="save"]') || Array.from(creator.querySelectorAll('button')).find(b=>/sauveg|save/i.test(b.textContent||'')));
+    res.checks.creator = { present: !!creator, apply: !!btnApply, propose: !!btnPropose, save: !!btnSave };
+    log(`Créateur: ${creator?'présent':'absent'} / Apply:${!!btnApply} Propose:${!!btnPropose} Save:${!!btnSave}`, creator?'ok':'warn');
+
+    // 6) Bouton “Installer” (bannière potentielle)
+    res.checks.installBanner = !!document.getElementById('pwaInstall');
+    log(`Bannière install: ${res.checks.installBanner?'présente':'absente'}`, res.checks.installBanner?'ok':'warn');
+
+    // Sauvegarde snapshot pour copier
+    window.__recalliaDiag = res;
+  }
+
+  // Copier diagnostic
+  $('#btnCopyDiag').onclick = async ()=>{
+    try{
+      await navigator.clipboard.writeText(JSON.stringify(window.__recalliaDiag || {note:'run check() first'}, null, 2));
+      log('Diagnostic copié. Colle-le dans le chat.','ok');
+    }catch(e){ log('Impossible de copier (autorise le presse-papier).','warn'); }
+  };
+
+  // Forcer branchement Créateur sur le héro
+  $('#btnWire').onclick = ()=>{
+    const heroTitle = document.getElementById('heroTitle') || document.querySelector('h1');
+    const heroSub   = document.getElementById('heroSub')   || (heroTitle? heroTitle.nextElementSibling : null);
+    const heroCTA   = document.getElementById('heroCta')   || document.querySelector('a.btn,.cta a,nav a.btn');
+
+    const creator = document.getElementById('creator') || document.querySelector('[data-creator]');
+    if(!creator){ log('Créateur introuvable.','err'); return; }
+
+    const inputs = creator.querySelectorAll('input,textarea');
+    const applyBtn = creator.querySelector('#apply,[data-action="apply"]') || Array.from(creator.querySelectorAll('button')).find(b=>/appliq/i.test(b.textContent||''));
+    const proposeBtn = creator.querySelector('#propose,[data-action="propose"]') || Array.from(creator.querySelectorAll('button')).find(b=>/propos/i.test(b.textContent||''));
+    const saveBtn = creator.querySelector('#save,[data-action="save"]') || Array.from(creator.querySelectorAll('button')).find(b=>/sauveg|save/i.test(b.textContent||''));
+
+    function setAccent(hex){
+      if(!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test((hex||'').trim())) return;
+      document.documentElement.style.setProperty('--accent', hex.trim());
+      const m = document.querySelector('meta[name="theme-color"]') || (()=>{const x=document.createElement('meta');x.name='theme-color';document.head.appendChild(x);return x;})();
+      m.content = hex.trim();
+    }
+
+    proposeBtn && (proposeBtn.onclick = ()=>{
+      const ideas = [
+        {t:'Votre mémoire IA — encore plus simple.', s:'Vous validez, on exécute. Reçus horodatés (hash + audit).', c:'Essayer maintenant', a:'#00C2A8'},
+        {t:'Rappelle, exécute, prouve.', s:'Anniversaires, RDV, factures — preuve par défaut.', c:'Voir une preuve', a:'#60A5FA'},
+        {t:'Ne rien oublier. Jamais.', s:'Priorités du jour → action → reçu.', c:'Démarrer', a:'#22D3EE'}
+      ];
+      const i = ideas[Math.floor(Math.random()*ideas.length)];
+      inputs[0] && (inputs[0].value = i.t);
+      inputs[1] && (inputs[1].value = i.s);
+      inputs[2] && (inputs[2].value = i.c);
+      inputs[3] && (inputs[3].value = i.a);
+      log('Propositions prêtes (remplies dans le formulaire).','ok');
+    });
+
+    applyBtn && (applyBtn.onclick = ()=>{
+      const title  = inputs[0]?.value?.trim();
+      const sub    = inputs[1]?.value?.trim();
+      const cta    = inputs[2]?.value?.trim();
+      const accent = inputs[3]?.value?.trim();
+
+      if(title && heroTitle) heroTitle.textContent = title;
+      if(sub && heroSub && heroSub.tagName==='P') heroSub.textContent = sub;
+      if(cta && heroCTA) heroCTA.textContent = cta;
+      if(accent) setAccent(accent);
+
+      log('Modifs appliquées au héro (non sauvegardées).','ok');
+    });
+
+    saveBtn && (saveBtn.onclick = ()=>{
+      const state = {
+        title: heroTitle?.textContent||'',
+        sub: heroSub?.textContent||'',
+        cta: heroCTA?.textContent||'',
+        accent: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
+      };
+      localStorage.setItem('recallia.site', JSON.stringify(state));
+      log('Sauvegardé localement (localStorage).','ok');
+    });
+
+    log('Branchement du Créateur effectué.','ok');
+  };
+
+  // Vérifier
+  $('#btnCheck').onclick = check;
+
+  // Mini-patchs
+  $('#btnAppend').onclick = ()=>{
+    const html = $('#assistPatch').value;
+    if(!html.trim()) return log('Rien à insérer.','warn');
+    document.body.insertAdjacentHTML('beforeend', html);
+    log('Patch inséré avant </body>.','ok');
+  };
+  $('#btnReplace').onclick = ()=>{
+    const sel = $('#assistSelector').value.trim();
+    const html = $('#assistPatch').value;
+    if(!sel){ return log('Sélecteur requis.','warn'); }
+    const el = document.querySelector(sel);
+    if(!el){ return log('Élément non trouvé: '+sel,'err'); }
+    el.innerHTML = html;
+    log('Contenu remplacé pour '+sel,'ok');
+  };
+})();
+</script>
+<!-- ===== /Assist v2 ===== --><!-- ===== /Correctif global ===== -->
 </body>
   </html>
