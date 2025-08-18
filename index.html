@@ -1,61 +1,56 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recallia – Votre assistant IA</title>
 
-  <!-- Styles (assure-toi que ce fichier existe bien à /actifs/css/styles.css) -->
-  <link rel="stylesheet" href="actifs/css/styles.css" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/styles.css">
 
-  <!-- Manifest (on réglera les icônes ensuite) -->
-  <link rel="manifest" href="site.webmanifest" />
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="site.webmanifest">
 
-  <!-- Couleurs navigateur -->
-  <meta name="theme-color" content="#0C1116" />
-  <meta name="description" content="Recallia anticipe, propose et exécute pour vous — au quotidien. Sécurisé • Privé • Personnalisé." />
+  <!-- Couleur du thème navigateur -->
+  <meta name="theme-color" content="#0C1116">
 </head>
 <body>
+  <!-- HEADER -->
   <header class="site-header">
     <div class="container header-inner">
-      <!-- Logo texte pour l’instant (on mettra l’image quand prête) -->
-      <a class="brand" href="/">RECALLIA</a>
-
-      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">☰</button>
-      <nav id="site-nav" class="site-nav" aria-label="Navigation principale">
-        <a href="/">Accueil</a>
+      <a class="brand" href="#">RECALLIA</a>
+      <button class="nav-toggle" aria-controls="site-nav" aria-expanded="false">☰</button>
+      <nav id="site-nav" class="site-nav">
+        <a href="#accueil">Accueil</a>
         <a href="#fonctionnalites">Fonctionnalités</a>
         <a href="#application">Application</a>
         <a href="#apropos">À propos</a>
         <a href="#contact">Contact</a>
-        <a href="?creator=on">Espace créateur</a>
+        <a href="#createur">Espace créateur</a>
       </nav>
     </div>
   </header>
 
+  <!-- ACCUEIL -->
   <main>
-    <!-- Héros -->
-    <section class="hero">
+    <section id="accueil" class="hero">
       <div class="container hero-inner">
         <h1>Votre assistant IA</h1>
-        <p class="lead">
-          Recallia anticipe, propose et exécute pour vous — au quotidien.
-        </p>
+        <p class="lead">Recallia anticipe, propose et exécute pour vous — au quotidien.</p>
         <div class="cta-row">
-          <a class="btn btn-primary" href="#inscription">Commencer</a>
+          <a class="btn btn-primary" href="#application">Commencer</a>
           <a class="btn btn-link" href="#fonctionnalites">Découvrir</a>
         </div>
-
         <ul class="benefits">
           <li>Sécurisé</li>
           <li>Privé</li>
           <li>Personnalisé</li>
-          <li>Multi‑domaines</li>
+          <li>Multi-domaines</li>
         </ul>
       </div>
     </section>
 
-    <!-- Fonctionnalités -->
+    <!-- FONCTIONNALITÉS -->
     <section id="fonctionnalites" class="section">
       <div class="container">
         <h2>Fonctionnalités</h2>
@@ -66,10 +61,12 @@
             <h3>Administratif intelligent</h3>
             <p>“Je dois refaire ma carte d’identité.” Recallia vérifie les prérequis, prépare les documents, propose les créneaux, et préremplit le dossier.</p>
           </article>
+
           <article class="card">
             <h3>Agenda proactif</h3>
-            <p>Rappels, réservations, et coordination automatique avec vos contraintes.</p>
+            <p>Rappels, réservations et coordination automatique avec vos contraintes.</p>
           </article>
+
           <article class="card">
             <h3>Vie perso & famille</h3>
             <p>Crèche, école, santé, transports… Recallia anticipe et vous propose les meilleures options.</p>
@@ -78,53 +75,55 @@
       </div>
     </section>
 
-    <!-- Application -->
-    <section id="application" class="section alt">
+    <!-- APPLICATION -->
+    <section id="application" class="section">
       <div class="container">
         <h2>Application</h2>
-        <ul class="list">
-          <li>Interface simple et non intrusive</li>
-          <li>Personnalisation avancée</li>
-          <li>Confidentialité et sécurité</li>
-        </ul>
+        <p>Disponible prochainement sur mobile et web, avec une expérience simple et intuitive.</p>
       </div>
     </section>
 
-    <!-- À propos -->
+    <!-- À PROPOS -->
     <section id="apropos" class="section">
       <div class="container">
         <h2>À propos</h2>
-        <p>Recallia : un assistant IA proactif, simple, humain — toujours un coup d’avance.</p>
+        <p>Recallia est né pour rendre l’IA utile et concrète dans votre quotidien.</p>
       </div>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" class="section alt">
+    <!-- CONTACT -->
+    <section id="contact" class="section">
       <div class="container">
         <h2>Contact</h2>
-        <p>Une question ? Besoin d’aide ?</p>
-        <a class="btn btn-primary" href="mailto:contact@exemple.com">Écrire</a>
+        <p>Besoin d’informations ? Écrivez-nous !</p>
+        <a href="mailto:contact@recallia.com" class="btn btn-primary">Envoyer un mail</a>
+      </div>
+    </section>
+
+    <!-- ESPACE CRÉATEUR -->
+    <section id="createur" class="section">
+      <div class="container">
+        <h2>Espace créateur</h2>
+        <p>Un espace dédié pour les contributeurs et les partenaires.</p>
       </div>
     </section>
   </main>
 
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="container">
-      <small>© <span id="year"></span> Recallia</small>
+      © 2025 Recallia – Tous droits réservés.
     </div>
   </footer>
 
+  <!-- Script pour menu mobile -->
   <script>
-    // année dynamique
-    document.getElementById('year').textContent = new Date().getFullYear();
-    // menu mobile
-    const toggle = document.querySelector('.nav-toggle');
-    const nav = document.getElementById('site-nav');
-    if (toggle) {
-      toggle.addEventListener('click', () => {
-        const open = toggle.getAttribute('aria-expanded') === 'true';
-        toggle.setAttribute('aria-expanded', String(!open));
+    const btn = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('.site-nav');
+    if (btn && nav) {
+      btn.addEventListener('click', () => {
         nav.classList.toggle('open');
+        btn.setAttribute('aria-expanded', nav.classList.contains('open'));
       });
     }
   </script>
