@@ -3,45 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recallia – Votre assistant IA</title>
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/styles.css">
-
-  <!-- Manifest PWA -->
+  <title>Recallia - Votre assistant IA</title>
+  <link rel="stylesheet" href="actifs/css/styles.css">
   <link rel="manifest" href="site.webmanifest">
-
-  <!-- Couleur du thème navigateur -->
-  <meta name="theme-color" content="#0C1116">
 </head>
 <body>
-  <!-- HEADER -->
   <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="#">RECALLIA</a>
-      <button class="nav-toggle" aria-controls="site-nav" aria-expanded="false">☰</button>
-      <nav id="site-nav" class="site-nav">
-        <a href="#accueil">Accueil</a>
-        <a href="#fonctionnalites">Fonctionnalités</a>
-        <a href="#application">Application</a>
-        <a href="#apropos">À propos</a>
-        <a href="#contact">Contact</a>
-        <a href="#createur">Espace créateur</a>
+    <div class="container">
+      <h1 class="logo">RECALLIA</h1>
+      <nav class="site-nav">
+        <button class="menu-toggle">☰</button>
+        <ul>
+          <li><a href="#accueil">Accueil</a></li>
+          <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+          <li><a href="#application">Application</a></li>
+          <li><a href="#apropos">À propos</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#createur">Espace créateur</a></li>
+        </ul>
       </nav>
     </div>
   </header>
 
-  <!-- ACCUEIL -->
   <main>
+    <!-- Section accueil -->
     <section id="accueil" class="hero">
-      <div class="container hero-inner">
-        <h1>Votre assistant IA</h1>
-        <p class="lead">Recallia anticipe, propose et exécute pour vous — au quotidien.</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="#application">Commencer</a>
-          <a class="btn btn-link" href="#fonctionnalites">Découvrir</a>
-        </div>
-        <ul class="benefits">
+      <div class="container">
+        <h2>Votre assistant IA</h2>
+        <p>Recallia anticipe, propose et exécute pour vous — au quotidien.</p>
+        <a href="#fonctionnalites" class="btn">Commencer</a>
+        <a href="#application" class="btn secondary">Découvrir</a>
+        <ul>
           <li>Sécurisé</li>
           <li>Privé</li>
           <li>Personnalisé</li>
@@ -50,82 +42,66 @@
       </div>
     </section>
 
-    <!-- FONCTIONNALITÉS -->
-    <section id="fonctionnalites" class="section">
+    <!-- Section fonctionnalités -->
+    <section id="fonctionnalites" class="features">
       <div class="container">
         <h2>Fonctionnalités</h2>
         <p>Des scénarios concrets qui simplifient la vie.</p>
 
-        <div class="feature-grid">
-          <article class="card">
-            <h3>Administratif intelligent</h3>
-            <p>“Je dois refaire ma carte d’identité.” Recallia vérifie les prérequis, prépare les documents, propose les créneaux, et préremplit le dossier.</p>
-          </article>
+        <article>
+          <h3>Administratif intelligent</h3>
+          <p>“Je dois refaire ma carte d’identité.” Recallia vérifie les prérequis, prépare les documents, propose les créneaux, et préremplit le dossier.</p>
+        </article>
 
-          <article class="card">
-            <h3>Agenda proactif</h3>
-            <p>Rappels, réservations et coordination automatique avec vos contraintes.</p>
-          </article>
+        <article>
+          <h3>Agenda proactif</h3>
+          <p>Rappels, réservations, et coordination automatique avec vos contraintes.</p>
+        </article>
 
-          <article class="card">
-            <h3>Vie perso & famille</h3>
-            <p>Crèche, école, santé, transports… Recallia anticipe et vous propose les meilleures options.</p>
-          </article>
-        </div>
+        <article>
+          <h3>Vie perso & famille</h3>
+          <p>Crèche, école, santé, transports... Recallia anticipe et vous propose les meilleures options.</p>
+        </article>
       </div>
     </section>
 
-    <!-- APPLICATION -->
-    <section id="application" class="section">
+    <!-- Section application -->
+    <section id="application" class="app">
       <div class="container">
-        <h2>Application</h2>
-        <p>Disponible prochainement sur mobile et web, avec une expérience simple et intuitive.</p>
+        <h2>L’application Recallia</h2>
+        <p>Disponible bientôt sur toutes les plateformes.</p>
       </div>
     </section>
 
-    <!-- À PROPOS -->
-    <section id="apropos" class="section">
+    <!-- Section à propos -->
+    <section id="apropos" class="about">
       <div class="container">
         <h2>À propos</h2>
-        <p>Recallia est né pour rendre l’IA utile et concrète dans votre quotidien.</p>
+        <p>Recallia est conçue pour vous simplifier la vie grâce à une IA éthique, sécurisée et respectueuse de votre vie privée.</p>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="section">
+    <!-- Section contact -->
+    <section id="contact" class="contact">
       <div class="container">
         <h2>Contact</h2>
-        <p>Besoin d’informations ? Écrivez-nous !</p>
-        <a href="mailto:contact@recallia.com" class="btn btn-primary">Envoyer un mail</a>
+        <p>Une question ? Écrivez-nous : <a href="mailto:contact@recallia.com">contact@recallia.com</a></p>
       </div>
     </section>
 
-    <!-- ESPACE CRÉATEUR -->
-    <section id="createur" class="section">
+    <!-- Section espace créateur -->
+    <section id="createur" class="creator">
       <div class="container">
         <h2>Espace créateur</h2>
-        <p>Un espace dédié pour les contributeurs et les partenaires.</p>
+        <p>Accès réservé.</p>
       </div>
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="container">
-      © 2025 Recallia – Tous droits réservés.
+      <p>&copy; 2025 Recallia. Tous droits réservés.</p>
     </div>
   </footer>
-
-  <!-- Script pour menu mobile -->
-  <script>
-    const btn = document.querySelector('.nav-toggle');
-    const nav = document.querySelector('.site-nav');
-    if (btn && nav) {
-      btn.addEventListener('click', () => {
-        nav.classList.toggle('open');
-        btn.setAttribute('aria-expanded', nav.classList.contains('open'));
-      });
-    }
-  </script>
 </body>
 </html>
