@@ -1,285 +1,200 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <link rel="manifest" href="site.webmanifest">
-  <!-- SEO de base -->
-<meta name="description" content="Recallia — Votre assistant IA qui anticipe, propose et exécute, avec preuves et confidentialité.">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://bacoul.github.io/Recallia-site/">
-
-<!-- OpenGraph / Partage -->
-<meta property="og:title" content="Recallia — Votre assistant IA">
-<meta property="og:description" content="Anticipe, propose et exécute pour vous. Preuves. Confidentialité.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://bacoul.github.io/Recallia-site/">
-<meta property="og:image" content="assets/og/hero.jpg">
-
-<!-- PWA -->
-<link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#111827">
-
-<!-- Icônes -->
-<link rel="icon" href="icons/icon-32.png" sizes="32x32">
-<link rel="icon" href="icons/icon-192.png" sizes="192x192">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-
-<!-- Fonts (Inter + Space Grotesk) -->
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Recallia — Votre assistant IA</title>
-  <meta name="description" content="Recallia, votre assistant IA : anticipe, propose et exécute. Gagnez du temps au quotidien avec un compagnon proactif et sécurisé." />
-  <meta name="theme-color" content="#0C1116" />
+  <meta name="description" content="Recallia anticipe, propose et exécute pour vous au quotidien. Un assistant IA proactif, sécurisé et personnalisé." />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/styles.css" />
-
-  <!-- PWA -->
-  <link rel="manifest" href="manifeste.webmanifest" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-192.png" />
-  <link rel="apple-touch-icon" href="assets/img/icon-192.png" />
-
-  <!-- Open Graph -->
+  <!-- SEO / Open Graph -->
   <meta property="og:title" content="Recallia — Votre assistant IA" />
-  <meta property="og:description" content="Un assistant IA qui anticipe, propose et exécute pour vous." />
-  <meta property="og:image" content="assets/img/og-cover.png" />
+  <meta property="og:description" content="Assistant IA proactif : gain de temps, anticipation, confidentialité." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bacoul.github.io/Recallia-site/" />
+  <meta property="og:image" content="https://bacoul.github.io/Recallia-site/assets/img/og-cover.jpg" />
 
-  <noscript>
-    <style>
-      .needs-js{display:none !important}
-      .noscript-warning{background:#1f2937;color:#fff;padding:12px;text-align:center}
-    </style>
-    <div class="noscript-warning">Pour profiter pleinement de Recallia, activez JavaScript.</div>
-  </noscript>
+  <!-- Manifest & thème -->
+  <link rel="manifest" href="site.webmanifest" />
+  <meta name="theme-color" content="#0C1116" />
+
+  <!-- Favicon (optionnel si encore non prêt) -->
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
+
+  <!-- CSS principal -->
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
-
-  <!-- Barre d’accessibilité -->
   <a class="skip-link" href="#contenu">Aller au contenu</a>
 
-  <!-- Header / Nav -->
+  <!-- En-tête / Navigation -->
   <header class="site-header">
-    <div class="container row between center">
-      <a href="/" class="logo row center">
-        <img src="assets/img/logo.svg" width="40" height="40" alt="Logo Recallia" />
-        <span class="brand">RECALLIA</span>
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Accueil Recallia">
+        <img src="assets/img/logo.svg" alt="Logo Recallia" class="brand-logo" />
+        <span class="brand-name">RECALLIA</span>
       </a>
 
-      <button class="menu-toggle needs-js" aria-controls="nav" aria-expanded="false">
-        <span class="sr-only">Ouvrir le menu</span>
-        ☰
-      </button>
+      <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="site-nav">☰</button>
 
-      <nav id="nav" class="nav">
+      <nav id="site-nav" class="site-nav" aria-label="Navigation principale">
         <ul>
-          <li><a href="#accueil">Accueil</a></li>
-          <li><a href="#fonctionnalites">Fonctionnalités</a></li>
-          <li><a href="#application">Application</a></li>
-          <li><a href="#a-propos">À propos</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <!-- Lien créateur : n’apparaît que si ?createur=on -->
-          <li class="link-createur" hidden><a href="createur.html">Espace créateur</a></li>
+          <li><a href="index.html" aria-current="page">Accueil</a></li>
+          <li><a href="fonctionnalites.html">Fonctionnalités</a></li>
+          <li><a href="application.html">Application</a></li>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <!-- L'espace créateur est réservé (non visible aux utilisateurs) ; lien laissé ici pour toi -->
+          <li class="only-owner"><a href="createur.html">Espace créateur</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
+  <!-- Héro -->
   <main id="contenu">
-
-    <!-- Hero -->
-    <section id="accueil" class="hero">
-      <div class="container center column">
-        <img class="hero-mark" src="assets/img/logo.svg" alt="Symbole Recallia" width="96" height="96" />
+    <section class="hero">
+      <div class="container hero-inner">
+        <img src="assets/img/symbole.png" alt="Symbole Recallia" class="hero-symbol" />
         <h1>Votre assistant IA</h1>
-        <p class="lead">Recallia anticipe, propose et exécute pour vous — au quotidien.</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="espace-utilisateur.html">Commencer</a>
-          <a class="btn btn-ghost" href="#fonctionnalites">Découvrir</a>
+        <p class="lead">
+          Recallia anticipe, propose et exécute pour vous — au quotidien.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="application.html">Commencer</a>
+          <a class="btn btn-ghost" href="fonctionnalites.html">Découvrir</a>
         </div>
-        <p class="micro">Sécurisé • Privé • Personnalisé</p>
-      </div>
-    </section>
-
-    <!-- Bande de preuves -->
-    <section class="proof-bar">
-      <div class="container row wrap center">
-        <div class="pill">Gain de temps</div>
-        <div class="pill">Anticipation proactive</div>
-        <div class="pill">Confidentialité</div>
-        <div class="pill">Multi-domaines</div>
-      </div>
-    </section>
-
-    <!-- Fonctionnalités -->
-    <section id="fonctionnalites" class="section">
-      <div class="container">
-        <h2>Fonctionnalités</h2>
-        <p class="section-sub">Des scénarios concrets qui simplifient la vie.</p>
-
-        <div class="grid features">
-          <article class="card">
-            <h3>Administratif intelligent</h3>
-            <p>“Je dois refaire ma carte d’identité.” Recallia vérifie les prérequis, prépare les documents, vous donne les créneaux, et préremplit le dossier.</p>
-          </article>
-
-          <article class="card">
-            <h3>Santé & rendez-vous</h3>
-            <p>Rappels, ordonnances et suivis. Il synchronise vos disponibilités et réserve si vous validez.</p>
-          </article>
-
-          <article class="card">
-            <h3>Famille & scolarité</h3>
-            <p>Anticipation de la rentrée, listes, démarches périscolaires, inscriptions — tout est orchestré.</p>
-          </article>
-
-          <article class="card">
-            <h3>Finance & paiements</h3>
-            <p>Alertes d’échéances, archivage de factures, préremplissage. Intégrations Stripe/Banques (avec votre accord).</p>
-          </article>
-
-          <article class="card">
-            <h3>Vie quotidienne</h3>
-            <p>Anniversaires, cadeaux, réservations — suggestions et actions en un clic.</p>
-          </article>
-
-          <article class="card">
-            <h3>Proactivité évolutive</h3>
-            <p>Recallia apprend vos préférences et propose avant même que vous ne demandiez.</p>
-          </article>
-        </div>
-
-        <div class="center">
-          <a class="btn btn-secondary" href="fonctionnalites.html">Voir tout</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Application -->
-    <section id="application" class="section alt">
-      <div class="container">
-        <h2>L’application</h2>
-        <p class="section-sub">Interface simple, discrète, et 100% personnalisable.</p>
-
-        <div class="grid app-showcase">
-          <div class="card">
-            <h3>Tableau de bord</h3>
-            <p>Rappels, suggestions, tâches en cours. Tout en un coup d’œil.</p>
-          </div>
-          <div class="card">
-            <h3>Commandes naturelles</h3>
-            <p>Texte ou voix : “Prépare la carte d’identité”, “Réserve une crèche”, “Rappelle-moi de…”</p>
-          </div>
-          <div class="card">
-            <h3>Contrôles fins</h3>
-            <p>Vous choisissez ce que Recallia peut faire seul, demander, ou ne pas faire.</p>
-          </div>
-          <div class="card">
-            <h3>Sécurité & vie privée</h3>
-            <p>Chiffrement, consentement explicite, coffre de documents, transparence des actions.</p>
-          </div>
-        </div>
-
-        <div class="center">
-          <a class="btn btn-primary" href="application.html">Découvrir l’app</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- À propos -->
-    <section id="a-propos" class="section">
-      <div class="container narrow">
-        <h2>À propos</h2>
-        <p>
-          Recallia est un assistant IA proactif, pensé pour <strong>anticiper</strong> vos besoins,
-          <strong>proposer</strong> des solutions et <strong>exécuter</strong> avec votre accord.
-          Notre ADN : simplicité, efficacité, et respect absolu de votre vie privée.
+        <p class="pillars">
+          <strong>Sécurisé</strong> • <strong>Privé</strong> • <strong>Personnalisé</strong>
         </p>
       </div>
     </section>
 
-    <!-- CTA principal -->
-    <section class="cta section alt">
-      <div class="container center">
-        <h2>Prêt à gagner du temps&nbsp;?</h2>
-        <p class="section-sub">Créez votre espace, définissez vos préférences, et laissez Recallia travailler pour vous.</p>
-        <a class="btn btn-primary btn-lg" href="espace-utilisateur.html">Créer mon compte</a>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="section">
-      <div class="container">
-        <h2>Contact & support</h2>
-        <div class="grid contact-grid">
-          <form class="card" action="https://formspree.io/f/your-id" method="POST">
-            <label>Votre e-mail
-              <input type="email" name="email" required placeholder="vous@exemple.com" />
-            </label>
-            <label>Votre message
-              <textarea name="message" rows="5" required placeholder="Comment pouvons-nous aider ?"></textarea>
-            </label>
-            <button class="btn btn-secondary" type="submit">Envoyer</button>
-          </form>
-          <div class="card">
-            <h3>FAQ rapide</h3>
-            <ul class="faq">
-              <li><strong>Mes données sont-elles privées&nbsp;?</strong> Oui, par design.</li>
-              <li><strong>Puis-je tout contrôler&nbsp;?</strong> Oui, niveau d’autonomie réglable.</li>
-              <li><strong>Mobile & Web&nbsp;?</strong> Oui, PWA + app native prévue.</li>
-            </ul>
-            <a class="btn btn-ghost" href="contact.html">Plus d’aide</a>
-          </div>
+    <!-- Bénéfices rapides -->
+    <section class="benefits">
+      <div class="container grid-3">
+        <div class="card">
+          <h3>Gain de temps</h3>
+          <p>Recallia prépare et exécute les tâches récurrentes pour vous.</p>
+        </div>
+        <div class="card">
+          <h3>Anticipation proactive</h3>
+          <p>Détecte les besoins et propose la meilleure action, au bon moment.</p>
+        </div>
+        <div class="card">
+          <h3>Confidentialité</h3>
+          <p>Vos données restent privées et chiffrées. Vous gardez le contrôle.</p>
         </div>
       </div>
     </section>
 
+    <!-- Fonctionnalités phares (aperçu) -->
+    <section class="features-preview">
+      <div class="container">
+        <h2>Fonctionnalités</h2>
+        <p class="section-lead">
+          Des scénarios concrets qui simplifient la vie.
+        </p>
+
+        <div class="grid-3">
+          <article class="feature">
+            <h3>Administratif intelligent</h3>
+            <p>« Je dois refaire ma carte d’identité. » Recallia vérifie les prérequis, prépare les documents, propose des créneaux et préremplit le dossier.</p>
+          </article>
+
+          <article class="feature">
+            <h3>Vie personnelle</h3>
+            <p>Rappels familiaux, organisation d’événements, préparation rentrée scolaire, suivi de santé…</p>
+          </article>
+
+          <article class="feature">
+            <h3>Pro & quotidien</h3>
+            <p>Planification, tâches, notes et compte-rendus. Routines automatisées et suggestions utiles.</p>
+          </article>
+        </div>
+
+        <div class="features-cta">
+          <a class="btn btn-secondary" href="fonctionnalites.html">Voir toutes les fonctionnalités</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bloc confiance -->
+    <section class="trust">
+      <div class="container">
+        <h2>Pourquoi Recallia ?</h2>
+        <ul class="trust-list">
+          <li>Assistant IA proactif, jamais intrusif</li>
+          <li>Configuration simple, recommandations intelligentes</li>
+          <li>Respect de la vie privée par conception</li>
+        </ul>
+      </div>
+    </section>
   </main>
 
-  <!-- Footer -->
+  <!-- Pied de page -->
   <footer class="site-footer">
-    <div class="container row between wrap">
+    <div class="container footer-inner">
       <p>© <span id="year"></span> Recallia. Tous droits réservés.</p>
-      <nav class="footer-nav">
+      <nav class="footer-nav" aria-label="Liens de pied de page">
+        <a href="a-propos.html">À propos</a>
+        <a href="contact.html">Contact</a>
         <a href="politique-confidentialite.html">Confidentialité</a>
-        <a href="conditions.html">Conditions</a>
-        <a href="#contact">Support</a>
       </nav>
     </div>
   </footer>
 
-  <!-- JS minimal -->
+  <!-- Bouton d'installation PWA (affiché dynamiquement) -->
+  <button id="installAppBtn" style="display:none;position:fixed;right:16px;bottom:16px;z-index:9999;padding:12px 18px;border-radius:9999px;border:1px solid #334155;background:#0EA5E9;color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(14,165,233,.35)">Installer l’app</button>
+
+  <noscript>Activez JavaScript pour utiliser Recallia au mieux.</noscript>
+
+  <!-- JS : nav mobile + année + SW + install -->
   <script>
     // Année dynamique
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Menu mobile
-    const toggle = document.querySelector('.menu-toggle');
-    const nav = document.getElementById('nav');
+    // Toggle menu mobile
+    const toggle = document.querySelector('.nav-toggle');
+    const nav = document.getElementById('site-nav');
     if (toggle && nav) {
       toggle.addEventListener('click', () => {
-        const expanded = toggle.getAttribute('aria-expanded') === 'true';
-        toggle.setAttribute('aria-expanded', String(!expanded));
+        const open = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!open));
         nav.classList.toggle('open');
       });
     }
 
-    // Lien "Espace créateur" visible seulement si ?createur=on
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('createur') === 'on' || params.get('creator') === 'on') {
-      const link = document.querySelector('.link-createur');
-      if (link) link.hidden = false;
+    // Enregistrement du Service Worker (compat GitHub Pages sous /Recallia-site/)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swUrl = '/Recallia-site/sw.js';
+        navigator.serviceWorker.register(swUrl)
+          .then(r => console.log('SW enregistré :', r.scope))
+          .catch(err => console.error('SW erreur :', err));
+      });
+    }
+
+    // Installation PWA
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installAppBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBtn) installBtn.style.display = 'inline-block';
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Choix installation :', outcome);
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      });
     }
   </script>
-
-  <!-- Script principal (si besoin) -->
-  <script src="assets/js/main.js" defer></script>
 </body>
-                               </html>
+  </html>
