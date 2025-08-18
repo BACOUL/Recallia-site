@@ -2,33 +2,26 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Recallia — Votre assistant IA</title>
-  <meta name="description" content="Recallia anticipe, propose, exécute et prouve. Votre assistant IA pour la vie quotidienne, l’administratif, la santé et les finances — simple, sûr et proactif." />
+  <meta name="description" content="Recallia anticipe, propose, exécute et prouve. Assistant IA proactif pour votre quotidien, simple, sûr et prouvé." />
   <meta name="theme-color" content="#0E1116" />
 
-  <!-- Open Graph / Twitter -->
+  <!-- Open Graph -->
   <meta property="og:title" content="Recallia — Votre assistant IA" />
-  <meta property="og:description" content="Anticipe, propose, exécute et prouve. Simple, sûr et proactif." />
+  <meta property="og:description" content="Gagnez du temps : papiers, santé, finances, quotidien. Vous validez, Recallia fait — avec preuve." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bacoul.github.io/Recallia-site/" />
-  <meta property="og:image" content="https://bacoul.github.io/Recallia-site/og-image.png" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="og-image.png" />
 
-  <!-- JSON-LD Organisation -->
+  <!-- JSON-LD -->
   <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"Organization",
-    "name":"Recallia",
-    "url":"https://bacoul.github.io/Recallia-site/",
-    "logo":"https://bacoul.github.io/Recallia-site/og-image.png",
-    "sameAs":[]
-  }
+  {"@context":"https://schema.org","@type":"Organization","name":"Recallia","url":"https://bacoul.github.io/Recallia-site/","logo":"og-image.png"}
   </script>
 
-  <!-- PWA (assume que /site.webmanifest existe déjà) -->
-  <link rel="manifest" href="site.webmanifest" crossorigin="use-credentials" />
+  <!-- PWA -->
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="icon" href="favicon.ico" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,323 +29,330 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
 
   <style>
+    /* ===== Design System (validé) ===== */
     :root{
-      --bg:#0E1116;         /* fond profond */
-      --panel:#151a22;      /* cartes */
-      --text:#e7edf2;       /* texte principal */
-      --muted:#a7b0b8;      /* texte secondaire */
-      --brand:#00C2A8;      /* accent Recallia (validé) */
-      --line:#232a35;
-      --ok:#18c964;
-      --warn:#ffb020;
-      --err:#ff5d5d;
-      --radius:16px;
-      --shadow:0 8px 30px rgba(0,0,0,.35);
-      --pad:clamp(16px,3vw,28px);
-      --wrap:1100px;
+      --bg:#0E1116; --bg2:#0b0f14;
+      --panel:#121821; --panel2:#161d28;
+      --line:#1f2835; --line2:#243246;
+      --text:#e7edf2; --muted:#a7b0b8;
+      --brand:#00C2A8; --brand-2:#38e6d2;
+      --ok:#18c964; --warn:#ffb020; --err:#ff5d5d;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:16px; --radius-lg:22px;
+      --wrap:1140px; --pad:clamp(16px,3vw,28px);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;background:linear-gradient(180deg,#0B0E13 0%, #0E1116 40%, #0E1116 100%);
-      color:var(--text); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      margin:0;background:
+        radial-gradient(1200px 800px at 20% -10%,rgba(0,194,168,.10),transparent 60%),
+        radial-gradient(1000px 600px at 90% 10%,rgba(56,230,210,.06),transparent 60%),
+        linear-gradient(180deg,#0A0D11 0%, #0E1116 60%, #0E1116 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
     a{color:var(--brand);text-decoration:none}
     a:hover{text-decoration:underline}
     .wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--pad)}
+    .center{text-align:center}
+    .muted{color:var(--muted)}
+    .small{font-size:.92rem}
+
+    /* Header */
     header.nav{
-      position:sticky; top:0; backdrop-filter:saturate(180%) blur(10px);
-      background:rgba(14,17,22,.6); border-bottom:1px solid var(--line); z-index:20;
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:saturate(160%) blur(10px);
+      background:rgba(10,13,17,.55);border-bottom:1px solid var(--line);
     }
     .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
     .brand{display:flex;gap:10px;align-items:center}
     .brand-badge{
-      width:34px;height:34px;border-radius:9px;background:radial-gradient(120% 120% at 10% 10%, #37ffe8 0%, #00C2A8 50%, #007a93 100%);
-      box-shadow:0 4px 14px rgba(0,194,168,.4), inset 0 0 10px rgba(255,255,255,.08);
+      width:34px;height:34px;border-radius:9px;
+      background:radial-gradient(120% 120% at 10% 10%, #37ffe8 0%, #00C2A8 50%, #007a93 100%);
+      box-shadow:0 6px 18px rgba(0,194,168,.35), inset 0 0 10px rgba(255,255,255,.06);
     }
     .brand-name{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;letter-spacing:.2px}
-    .nav-links a{margin-left:16px;font-weight:600;color:var(--text);opacity:.9}
+    .nav-links a{margin-left:18px;color:var(--text);opacity:.92;font-weight:600}
     .nav-links a.cta{
-      background:var(--brand); color:#061113; padding:10px 14px; border-radius:12px; box-shadow:0 6px 18px rgba(0,194,168,.3);
+      background:var(--brand);color:#071314;border:0;
+      padding:10px 14px;border-radius:12px;box-shadow:0 8px 20px rgba(0,194,168,.3);
     }
 
     /* Hero */
-    .hero{padding:56px 0 28px;border-bottom:1px solid var(--line)}
-    .kicker{display:inline-flex;gap:8px;align-items:center;color:var(--muted);font-weight:600;font-size:.92rem}
+    .hero{padding:64px 0 14px;border-bottom:1px solid var(--line)}
+    .kicker{display:inline-flex;gap:8px;align-items:center;color:var(--muted);font-weight:600}
     .kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);box-shadow:0 0 10px rgba(0,194,168,.7)}
-    h1{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;font-size:clamp(28px,5vw,48px);line-height:1.05;margin:14px 0 10px}
-    .tagline{font-size:1.1rem;color:var(--muted)}
-    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 6px}
+    h1{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;font-size:clamp(30px,5vw,52px);line-height:1.06;margin:12px 0 8px}
+    .tagline{font-size:1.12rem;color:var(--muted);max-width:48ch}
+
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 8px}
     .btn{
-      display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);
-      padding:12px 16px;border-radius:14px;font-weight:700;box-shadow:var(--shadow);transition:.2s;
+      display:inline-flex;align-items:center;gap:10px;
+      border:1px solid var(--line);background:var(--panel);color:var(--text);
+      padding:12px 16px;border-radius:14px;font-weight:700;box-shadow:var(--shadow);
+      transition:transform .15s ease, box-shadow .15s ease, background .2s ease;
     }
     .btn.primary{background:var(--brand);color:#061113;border-color:transparent}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.45)}
-    .mini{font-size:.9rem;color:var(--muted)}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(0,0,0,.45)}
+
+    /* Trust strip */
+    .trust{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;align-items:center;color:var(--muted)}
+    .trust .chip{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--panel);
+      padding:8px 12px;border-radius:999px;font-size:.92rem}
+
+    /* Grid & cards */
     .grid{display:grid;gap:16px}
     .cards{grid-template-columns:repeat(12,1fr)}
     .card{
-      grid-column:span 6; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);
+      grid-column:span 6;background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);
+      border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)
     }
-    @media (max-width:860px){ .card{grid-column:1/-1} }
+    @media (max-width:860px){.card{grid-column:1/-1}}
 
-    /* Section titres */
-    .section{padding:36px 0;border-bottom:1px solid var(--line)}
-    .section h2{
-      font-family:"Space Grotesk",Inter,sans-serif; font-size:clamp(22px,3.8vw,32px); margin:0 0 12px;
-    }
-    .muted{color:var(--muted)}
+    /* Sections */
+    .section{padding:40px 0;border-bottom:1px solid var(--line)}
+    .section h2{font-family:"Space Grotesk",Inter,sans-serif;font-size:clamp(22px,3.8vw,34px);margin:0 0 10px}
 
-    /* Q&A Assistant */
+    /* 3 étapes */
+    .steps{grid-template-columns:repeat(3,1fr)}
+    @media (max-width:860px){.steps{grid-template-columns:1fr}}
+    .step{background:linear-gradient(180deg,#101722 0%, #0f141c 100%);
+      border:1px solid var(--line2);border-radius:var(--radius);padding:18px}
+    .step .num{width:28px;height:28px;border-radius:999px;background:var(--brand);color:#072623;
+      display:inline-grid;place-items:center;font-weight:800;margin-right:8px}
+
+    /* Q&A */
     .qa{
       display:grid;gap:12px;background:linear-gradient(180deg,#0f141b 0%, #121821 100%);
-      border:1px solid var(--line); border-radius:var(--radius); padding:16px;
+      border:1px solid var(--line2);border-radius:var(--radius-lg);padding:18px
     }
-    .qa input, .qa textarea{
-      width:100%; background:#0b0f15; color:var(--text); border:1px solid #1b2230; border-radius:12px; padding:12px 14px; font:inherit;
+    .qa input,.qa textarea{
+      width:100%;background:#0b0f15;color:var(--text);
+      border:1px solid #1b2230;border-radius:12px;padding:12px 14px;font:inherit
     }
     .qa-actions{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{display:inline-flex;align-items:center;gap:8px; padding:8px 10px; border-radius:999px; border:1px solid var(--line); background:#0c121a; color:var(--muted); font-size:.92rem; cursor:pointer}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid var(--line);
+      background:#0c121a;color:var(--muted);font-size:.92rem;cursor:pointer}
     .suggest{display:grid;gap:10px}
-    .suggest .s-line{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px dashed #2a3444;border-radius:12px}
-    .suggest .s-line .apply{font-weight:700;color:var(--brand);cursor:pointer}
-    .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:.85rem;border:1px solid var(--line);background:#0c121a;color:var(--muted)}
-    .ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)}
-    .list{display:grid;gap:10px}
-    .list li{display:flex;align-items:center;gap:10px}
-    .dot-ok{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px rgba(24,201,100,.65)}
-    .dot-warn{width:8px;height:8px;border-radius:50%;background:var(--warn)}
-    .dot-err{width:8px;height:8px;border-radius:50%;background:var(--err)}
+    .s-line{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px dashed #2a3444;border-radius:12px}
+    .apply{font-weight:700;color:var(--brand);cursor:pointer}
+
+    /* Features grid */
+    .fgrid{grid-template-columns:repeat(4,1fr)}
+    @media (max-width:1024px){.fgrid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.fgrid{grid-template-columns:1fr}}
+    .fi{background:linear-gradient(180deg,#0f141c,#0e141b);border:1px solid var(--line);border-radius:16px;padding:16px}
+    .fi .ico{font-size:22px;margin-right:8px}
+
+    /* Témoignages */
+    .testi{grid-template-columns:repeat(3,1fr)}
+    @media (max-width:960px){.testi{grid-template-columns:1fr}}
+    .quote{background:linear-gradient(180deg,#111926,#0f1520);border:1px solid var(--line2);border-radius:16px;padding:16px}
+    .quote strong{display:block;margin-top:8px}
 
     footer{padding:30px 0;color:var(--muted)}
-    .center{text-align:center}
-    .small{font-size:.92rem}
   </style>
 </head>
 <body>
-  <header class="nav">
-    <div class="wrap nav-inner">
-      <div class="brand">
-        <div class="brand-badge" aria-hidden="true"></div>
-        <div class="brand-name">Recallia</div>
-      </div>
-      <nav class="nav-links" aria-label="Navigation principale">
-        <a href="#fonctionnalites">Fonctionnalités</a>
-        <a href="#application">Application</a>
-        <a href="#contact">Contact</a>
-        <a class="cta" href="#demarrer">Demander un accès</a>
-      </nav>
+<header class="nav" aria-label="En-tête">
+  <div class="wrap nav-inner">
+    <div class="brand">
+      <div class="brand-badge" aria-hidden="true"></div>
+      <div class="brand-name">Recallia</div>
     </div>
-  </header>
+    <nav class="nav-links" aria-label="Navigation principale">
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#comment-ca-marche">Comment ça marche</a>
+      <a href="#assistant">Poser une question</a>
+      <a href="#contact">Contact</a>
+      <a class="cta" href="#demarrer">Demander un accès</a>
+    </nav>
+  </div>
+</header>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="wrap">
-        <div class="kicker"><span class="dot" aria-hidden="true"></span> Votre assistant IA</div>
-        <h1>Recallia anticipe, propose, exécute… et <span style="color:var(--brand)">prouve</span>.</h1>
-        <p class="tagline">Gagnez du temps sur tout : papiers, santé, finances, quotidien. Vous validez, Recallia s’occupe du reste.</p>
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="kicker"><span class="dot" aria-hidden="true"></span> Votre assistant IA</div>
+      <h1>Anticipe, propose, exécute… et <span style="color:var(--brand)">prouve</span>.</h1>
+      <p class="tagline">Vous validez, Recallia s’occupe du reste — papiers, santé, finances, quotidien. Preuve horodatée pour chaque action.</p>
 
-        <div class="cta-row" id="demarrer">
-          <a href="#assistant" class="btn primary">Poser une question</a>
-          <a href="#fonctionnalites" class="btn">Découvrir les fonctionnalités</a>
-        </div>
-        <p class="mini">Preuve-ou-rien : reçu horodaté pour chaque action réussie.</p>
-
-        <!-- Micro "preuve" statique (exemple visuel) -->
-        <div class="cards grid" style="margin-top:18px">
-          <div class="card" aria-label="Exemple de preuve">
-            <strong>Exemple de reçu — “Rendez-vous médecin confirmé”</strong>
-            <ul class="list" style="margin:10px 0 0;padding:0;list-style:none">
-              <li><span class="dot-ok"></span><span>Statut : <b>succès</b> — 14:42</span></li>
-              <li><span class="dot-ok"></span><span>Preuve : ICS + email de confirmation (hash SHA-256)</span></li>
-              <li><span class="dot-ok"></span><span>TTR : 37 s — coût : 0 €</span></li>
-            </ul>
-          </div>
-        </div>
+      <div class="cta-row" id="demarrer">
+        <a class="btn primary" href="#assistant">Poser une question</a>
+        <a class="btn" href="#fonctionnalites">Voir tout ce que Recallia fait</a>
       </div>
-    </section>
 
-    <!-- ASSISTANT Q&A -->
-    <section class="section" id="assistant">
-      <div class="wrap">
-        <h2>Poser une question à Recallia</h2>
-        <p class="muted">Demandez n’importe quoi : “Refaire ma carte d’identité”, “Préparer l’anniversaire de ma sœur”, “Payer ma facture électricité”, “Dois-je changer ma chaudière ?”…</p>
+      <div class="trust" aria-label="Éléments de confiance">
+        <div class="chip">🔒 Preuve‑ou‑rien • hash + audit</div>
+        <div class="chip">🕒 TTR visé &lt; 60 s</div>
+        <div class="chip">⚙️ Niveaux N0→N3 + caps</div>
+        <div class="chip">📱 PWA installable</div>
+      </div>
 
-        <div class="qa" role="form" aria-label="Assistant Q&A">
-          <input id="qa-input" placeholder="Ex : Je veux refaire ma carte d’identité. Que faut-il et peux-tu préparer le dossier ?" aria-label="Votre question" />
-          <div class="qa-actions">
-            <button class="pill" type="button" data-sample="Refaire ma carte d’identité">Refaire ma carte d’identité</button>
-            <button class="pill" type="button" data-sample="Prendre un rendez-vous médecin demain">Prendre un rendez-vous médecin</button>
-            <button class="pill" type="button" data-sample="Payer facture EDF de juillet">Payer facture EDF</button>
-            <button class="pill" type="button" data-sample="Courses pour le week-end">Courses week-end</button>
-          </div>
-          <div id="qa-suggest" class="suggest" aria-live="polite"></div>
-          <div class="mini muted">⚠️ Démonstration locale : les réponses sont simulées côté navigateur (aucun envoi de données).</div>
+      <!-- Mini reçu d’exemple -->
+      <div class="grid cards" style="margin-top:18px">
+        <div class="card" aria-label="Exemple de preuve">
+          <strong>Reçu • Rendez‑vous confirmé</strong>
+          <ul style="margin:10px 0 0; padding-left:18px; color:var(--muted)">
+            <li>Preuve : ICS + email (SHA‑256)</li>
+            <li>Statut : succès • 14:42</li>
+            <li>Temps total : 37 s • coût : 0 €</li>
+          </ul>
         </div>
       </div>
-    </section>
-
-    <!-- FONCTIONNALITÉS -->
-    <section class="section" id="fonctionnalites">
-      <div class="wrap">
-        <h2>Fonctionnalités clés</h2>
-        <p class="muted">Vie quotidienne, administratif, santé, finances : Recallia <em>anticipe</em> ce qui compte, <em>propose</em> des actions, <em>exécute</em> sous vos règles, et <em>prouve</em> chaque résultat.</p>
-
-        <div class="grid cards">
-          <div class="card">
-            <strong>Administratif</strong>
-            <ul class="list" style="margin:10px 0 0;padding:0;list-style:none">
-              <li>• Renouveler carte d’identité / passeport</li>
-              <li>• Résilier / renégocier abonnements</li>
-              <li>• RDV préfecture / mairie (preuve ICS & email)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <strong>Santé</strong>
-            <ul class="list" style="margin:10px 0 0;padding:0;list-style:none">
-              <li>• Rappels ordonnances & bilans</li>
-              <li>• Prise de rendez-vous (médecin, labo)</li>
-              <li>• Dossier médical (local-first)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <strong>Finances</strong>
-            <ul class="list" style="margin:10px 0 0;padding:0;list-style:none">
-              <li>• Payer factures (preuve de paiement)</li>
-              <li>• Suivi abonnements & économies</li>
-              <li>• Alertes échéances / impayés</li>
-            </ul>
-          </div>
-          <div class="card">
-            <strong>Quotidien & familles</strong>
-            <ul class="list" style="margin:10px 0 0;padding:0;list-style:none">
-              <li>• Anniversaires, événements, invitations</li>
-              <li>• Listes de courses intelligentes</li>
-              <li>• Rentrée scolaire / activités enfants</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- APPLICATION -->
-    <section class="section" id="application">
-      <div class="wrap">
-        <h2>Application simple & non intrusive</h2>
-        <p class="muted">Un tableau de bord clair, des notifications utiles (jamais envahissantes), et des “Action Cards” classées par impact.</p>
-
-        <div class="grid cards">
-          <div class="card">
-            <span class="badge"><span class="dot-ok"></span>Anticipation</span>
-            <p style="margin:10px 0 0">Recallia détecte les besoins (ex. pièce expirant) et prépare la démarche.</p>
-          </div>
-          <div class="card">
-            <span class="badge"><span class="dot-ok"></span>Exécution assistée</span>
-            <p style="margin:10px 0 0">Vous validez → Recallia agit sous vos caps (temps/€/risque) avec double confirmation si sensible.</p>
-          </div>
-          <div class="card">
-            <span class="badge"><span class="dot-ok"></span>Preuve-ou-rien</span>
-            <p style="margin:10px 0 0">Chaque succès fournit un reçu horodaté (PDF/ICS/EML + hash) et un journal d’audit.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="section" id="contact">
-      <div class="wrap">
-        <h2>Contact</h2>
-        <p class="muted">Une question ? Dites-nous ce dont vous avez besoin.</p>
-        <form class="grid" style="gap:12px;max-width:680px" onsubmit="alert('Merci ! (démo locale)'); return false;">
-          <input name="name" placeholder="Votre nom" required />
-          <input name="email" type="email" placeholder="Votre email" required />
-          <textarea name="msg" rows="4" placeholder="Votre message"></textarea>
-          <button class="btn primary" type="submit">Envoyer</button>
-        </form>
-        <p class="mini muted">En version prod : envoi vers une boîte dédiée + anti-spam + accusé automatique.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap center small">
-      © <span id="y"></span> Recallia — “Votre assistant IA”. • Confidentialité • Mentions légales
     </div>
-  </footer>
+  </section>
 
-  <script>
-    // Année footer
-    document.getElementById('y').textContent = new Date().getFullYear();
+  <!-- FONCTIONNALITÉS -->
+  <section class="section" id="fonctionnalites">
+    <div class="wrap">
+      <h2>Fonctionnalités clés</h2>
+      <p class="muted">Vie quotidienne, administratif, santé, finances — Recallia <em>anticipe</em> vos besoins, <em>propose</em> des actions classées, <em>exécute</em> sous vos règles et <em>prouve</em> chaque succès.</p>
 
-    // Assistant Q&A (simulation locale, aucun envoi)
-    const qaInput = document.getElementById('qa-input');
-    const qaBox = document.getElementById('qa-suggest');
-    document.querySelectorAll('.pill').forEach(p=>{
-      p.addEventListener('click', ()=>{ qaInput.value = p.dataset.sample; propose(); });
-    });
-    qaInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); propose(); } });
+      <div class="grid fgrid" style="margin-top:12px">
+        <div class="fi"><div><span class="ico">🗂️</span><strong>Administratif</strong></div><p class="muted">CNI/passeport, rendez‑vous mairie, résiliation/renégociation, dossiers ANTS — avec reçus.</p></div>
+        <div class="fi"><div><span class="ico">🩺</span><strong>Santé</strong></div><p class="muted">Rappels d’ordonnances, prise de RDV, calendrier ICS, dossier local‑first.</p></div>
+        <div class="fi"><div><span class="ico">💸</span><strong>Finances</strong></div><p class="muted">Payer factures, suivre abonnements, alertes d’échéances, preuves de paiement.</p></div>
+        <div class="fi"><div><span class="ico">🏠</span><strong>Quotidien & famille</strong></div><p class="muted">Anniversaires, listes de courses, rentrée scolaire, invitations.</p></div>
+      </div>
+    </div>
+  </section>
 
-    function propose(){
-      const q = (qaInput.value||'').trim().toLowerCase();
-      if(!q){ qaBox.innerHTML=''; return; }
+  <!-- COMMENT ÇA MARCHE -->
+  <section class="section" id="comment-ca-marche">
+    <div class="wrap">
+      <h2>Comment ça marche</h2>
+      <div class="grid steps" style="margin-top:12px">
+        <div class="step"><span class="num">1</span><strong>Mesurer</strong><p class="muted">Recallia identifie le besoin (email, calendrier, fichier) et l’explique simplement.</p></div>
+        <div class="step"><span class="num">2</span><strong>Proposer</strong><p class="muted">1–3 actions classées (impact × probabilité ÷ temps × coût, risque).</p></div>
+        <div class="step"><span class="num">3</span><strong>Exécuter & prouver</strong><p class="muted">Vous validez → exécution sous caps. Un reçu horodaté est enregistré.</p></div>
+      </div>
+    </div>
+  </section>
 
-      // Routage ultra-simple par mots-clés (démo)
-      let out = [];
-      if(q.includes('carte') && q.includes('identit')){
-        out.push(row('Préparer le dossier CNI', [
-          'Lister automatiquement les pièces (photo conforme, justificatif domicile, ancien titre si dispo)',
-          'Créer le compte ANTS (ou vérifier l’existant) et pré-remplir la pré-demande',
-          'Proposer 3 créneaux mairie proches + ajouter au calendrier'
-        ], 'Appliquer', ()=>confirmBox('Dossier CNI prêt. J’ajoute les pièces trouvées dans vos documents et je propose 3 créneaux.')));
-      }
-      if(q.includes('rendez') || q.includes('rdv') || q.includes('médec')){
-        out.push(row('Prendre un rendez-vous médecin', [
-          'Chercher 3 créneaux demain/matin autour de vous',
-          'Créer l’évènement calendrier (ICS) après confirmation',
-          'Envoyer un rappel 2 h avant + préparer l’ordonnance'
-        ], 'Planifier', ()=>confirmBox('Recherche de créneaux en cours (démo). Un ICS sera généré à validation.')));
-      }
-      if(q.includes('facture') || q.includes('payer') || q.includes('edf') || q.includes('électricité')){
-        out.push(row('Payer la facture électricité', [
-          'Extraire le montant & l’échéance depuis la facture',
-          'Proposer SEPA / CB selon vos préférences',
-          'Générer et sauvegarder le reçu (hash + audit)'
-        ], 'Payer maintenant', ()=>confirmBox('Paiement simulé (démo). Reçu horodaté disponible.')));
-      }
-      if(q.includes('courses') || q.includes('course')){
-        out.push(row('Préparer les courses du week-end', [
-          'Générer une liste intelligente (menus simples, 2 jours)',
-          'Ajouter ce qu’il manque selon vos stocks habituels',
-          'Proposer drive/livraison (slot samedi matin)'
-        ], 'Générer la liste', ()=>confirmBox('Liste générée (démo). Prête pour un drive/livraison.')));
-      }
-      if(out.length===0){
-        out.push(row('Suggestion générale', [
-          'Clarifier l’objectif (lieu, date, contrainte)',
-          'Proposer 2–3 plans d’action classés (impact, temps, coût)',
-          'Exécuter sous vos caps et fournir la preuve'
-        ], 'Proposer un plan', ()=>confirmBox('Plan généré (démo). Choisissez une option pour exécution.')));
-      }
-      qaBox.innerHTML = '';
-      out.forEach(el=>qaBox.appendChild(el));
+  <!-- ASSISTANT Q&A -->
+  <section class="section" id="assistant">
+    <div class="wrap">
+      <h2>Posez une question à votre assistant</h2>
+      <p class="muted">Exemples : « Refaire ma carte d’identité » • « Prendre un rendez‑vous médecin » • « Payer ma facture EDF » • « Préparer les courses du week‑end »</p>
+
+      <div class="qa" role="form" aria-label="Assistant Q&A (démo locale)">
+        <input id="qa-input" placeholder="Ex : Je veux refaire ma carte d’identité. Peux‑tu préparer le dossier ?" aria-label="Votre question" />
+        <div class="qa-actions">
+          <button class="pill" type="button" data-sample="Refaire ma carte d’identité">CNI / Passeport</button>
+          <button class="pill" type="button" data-sample="Prendre un rendez-vous médecin demain matin">RDV médecin</button>
+          <button class="pill" type="button" data-sample="Payer facture EDF de juillet">Payer EDF</button>
+          <button class="pill" type="button" data-sample="Préparer les courses pour samedi">Courses</button>
+        </div>
+        <div id="qa-suggest" class="suggest" aria-live="polite"></div>
+        <p class="small muted">Démo côté navigateur : aucune donnée envoyée. En production : preuve‑ou‑rien (reçus). </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TÉMOIGNAGES -->
+  <section class="section" id="temoignages">
+    <div class="wrap">
+      <h2>Ils gagnent du temps, tous les jours</h2>
+      <div class="grid testi" style="margin-top:12px">
+        <div class="quote">“J’ai refait ma carte d’identité sans stress, Recallia a préparé toutes les pièces et réservé la mairie.”<strong>— Sarah, Lyon</strong></div>
+        <div class="quote">“Mes factures sont payées à l’heure, et j’ai une preuve à chaque fois. Zéro oubli.”<strong>— Mehdi, Lille</strong></div>
+        <div class="quote">“Prise de RDV, rappels et reçus dans le calendrier — hyper clair.”<strong>— Clara, Nantes</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="section">
+    <div class="wrap center">
+      <h2>Prêt à déléguer… avec preuve ?</h2>
+      <p class="muted">Vous validez. Recallia fait. Et prouve.</p>
+      <a class="btn primary" href="#contact">Demander un accès</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <h2>Contact</h2>
+      <p class="muted">Dites‑nous votre besoin, on vous répond rapidement.</p>
+      <form class="grid" style="gap:12px;max-width:680px" onsubmit="alert('Merci ! (démo locale)'); return false;">
+        <input name="name" placeholder="Votre nom" required />
+        <input name="email" type="email" placeholder="Votre email" required />
+        <textarea name="msg" rows="4" placeholder="Votre message"></textarea>
+        <button class="btn primary" type="submit">Envoyer</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap center small">© <span id="y"></span> Recallia — “Votre assistant IA” • <a href="#">Confidentialité</a> • <a href="#">Mentions légales</a></div>
+</footer>
+
+<script>
+  // Année
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  // Q&A local (démo)
+  const qaInput = document.getElementById('qa-input');
+  const qaBox = document.getElementById('qa-suggest');
+  document.querySelectorAll('.pill').forEach(p=>p.addEventListener('click',()=>{ qaInput.value=p.dataset.sample; propose(); }));
+  qaInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); propose(); } });
+
+  function propose(){
+    const q=(qaInput.value||'').trim().toLowerCase(); qaBox.innerHTML='';
+    if(!q) return;
+
+    const blocks=[];
+    const row=(title, bullets, cta, act)=> {
+      const line=document.createElement('div'); line.className='s-line';
+      const left=document.createElement('div');
+      left.innerHTML='<b>'+title+'</b><ul style="margin:6px 0 0 16px;padding:0;list-style:disc;color:var(--muted)">'+bullets.map(b=>'<li>'+b+'</li>').join('')+'</ul>';
+      const right=document.createElement('div'); right.className='apply'; right.textContent=cta; right.addEventListener('click',act);
+      line.append(left,right); return line;
+    };
+    const ok=(m)=>alert(m+'\n\n(Preuve‑ou‑rien : en prod, reçu horodaté)');
+
+    if(q.includes('carte') && q.includes('identit')){
+      blocks.push(row('Préparer le dossier CNI',[
+        'Lister automatiquement les pièces (photo conforme, justificatif domicile, ancien titre)',
+        'Créer/vérifier compte ANTS et pré‑demande',
+        'Proposer 3 créneaux mairie + ajout calendrier (ICS)'
+      ],'Appliquer',()=>ok('Dossier CNI prêt (démo).')));
     }
-
-    function row(title, bullets, cta, onApply){
-      const line = document.createElement('div'); line.className='s-line';
-      const left = document.createElement('div');
-      left.innerHTML = '<b>'+title+'</b><ul style="margin:6px 0 0 16px;padding:0;list-style:disc;color:var(--muted)">'+
-        bullets.map(b=>'<li>'+b+'</li>').join('')+'</ul>';
-      const right = document.createElement('div'); right.className='apply'; right.textContent = cta;
-      right.addEventListener('click', onApply);
-      line.append(left, right);
-      return line;
+    if(q.includes('rendez')||q.includes('rdv')||q.includes('médec')){
+      blocks.push(row('Prendre un rendez‑vous médecin',[
+        'Chercher 3 créneaux proches & compatibles',
+        'Créer l’évènement ICS après validation',
+        'Rappel 2 h avant + check documents'
+      ],'Planifier',()=>ok('Créneaux proposés (démo).')));
     }
-    function confirmBox(msg){
-      alert(msg + '\n\n(Preuve-ou-rien : en production, un reçu horodaté serait créé)');
+    if(q.includes('facture')||q.includes('payer')||q.includes('edf')||q.includes('électricité')){
+      blocks.push(row('Payer la facture électricité',[
+        'Extraire montant/échéance (OCR)',
+        'Proposer SEPA/CB selon préférences',
+        'Générer reçu + hash + audit'
+      ],'Payer maintenant',()=>ok('Paiement simulé (démo).')));
     }
-  </script>
+    if(q.includes('course')||q.includes('courses')){
+      blocks.push(row('Préparer les courses du week‑end',[
+        'Liste intelligente (menus simples 2 jours)',
+        'Compléter selon stocks habituels',
+        'Proposer drive/livraison (samedi matin)'
+      ],'Générer la liste',()=>ok('Liste générée (démo).')));
+    }
+    if(blocks.length===0){
+      blocks.push(row('Suggestion',[
+        'Clarifier objectif (lieu/date/contrainte)',
+        '2–3 plans d’action classés (impact, temps, coût)',
+        'Exécution sous caps + reçu horodaté'
+      ],'Proposer un plan',()=>ok('Plan proposé (démo).')));
+    }
+    blocks.forEach(b=>qaBox.appendChild(b));
+  }
+</script>
 </body>
 </html>
