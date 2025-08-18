@@ -313,5 +313,33 @@
       // Pour l’instant on ne fait rien, pour rester discret.
     }
   </script>
+  <!-- PATCH RECALLIA (à coller juste avant </body>) -->
+<section class="section" style="padding:34px 20px; text-align:center">
+  <div style="max-width:1180px; margin:0 auto">
+    <p style="color:#94A3B8; margin:0 0 10px">Prêt à gagner du temps dès aujourd’hui ?</p>
+    <a href="application.html" style="display:inline-block; padding:14px 18px; border-radius:12px; font-weight:700; background:#00C2A8; color:#07121A; border:1px solid rgba(0,0,0,.15); box-shadow:0 6px 18px rgba(0,0,0,.25)">Ouvrir l’app</a>
+    <button id="installBtn" style="display:none; margin-left:10px; padding:14px 18px; border-radius:12px; font-weight:700; background:rgba(255,255,255,.06); color:#E6EDF5; border:1px solid rgba(255,255,255,.12)">Installer l’app</button>
+  </div>
+</section>
+
+<script>
+(function(){
+  // Bouton "Installer l’app" si manifest + SW présents
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); deferredPrompt = e;
+    const btn = document.getElementById('installBtn');
+    if(btn){
+      btn.style.display='inline-block';
+      btn.onclick = async () => { btn.disabled = true; await deferredPrompt.prompt(); deferredPrompt = null; };
+    }
+  });
+  // Sécurise le lien vers l’espace créateur avec PIN si présent dans la page
+  document.querySelectorAll('a[href*="creator"]').forEach(a=>{
+    if(!a.href.includes('pin=')) a.href = a.href + (a.href.includes('?')?'&':'?') + 'pin=XXXX';
+  });
+})();
+</script>
+<!-- /PATCH RECALLIA -->
 </body>
   </html>
