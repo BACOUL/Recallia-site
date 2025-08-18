@@ -1,144 +1,434 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Recallia – Votre assistant IA</title>
-  <meta name="description" content="Recallia anticipe, propose et exécute pour vous — au quotidien. Sécurisé, privé et personnalisé." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Recallia — Votre assistant IA</title>
+  <meta name="description" content="Recallia, votre assistant IA du quotidien : anticipe, propose, exécute et prouve. Simple, sûr, personnalisable." />
 
-  <!-- Open Graph / SEO de base -->
-  <meta property="og:title" content="Recallia – Votre assistant IA" />
-  <meta property="og:description" content="Un assistant IA proactif : il anticipe, propose et exécute pour vous." />
-  <meta property="og:type" content="website" />
-
-  <!-- Manifest PWA (tes fichiers .png 192/512 viendront plus tard) -->
-  <link rel="manifest" href="site.webmanifest" />
-
-  <!-- Favicon (placeholder, on branchera plus tard) -->
-  <link rel="icon" href="assets/img/favicon.ico" />
-
-  <!-- Typo & styles -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link href="assets/css/styles.css" rel="stylesheet" />
+  <!-- Palette (modifiable facilement) -->
+  <meta name="theme-color" content="#0b1220" />
   <style>
-    /* Ajustements minimum si assets/css/styles.css ne charge pas encore */
     :root{
-      --bg:#0C1116; --fg:#FFFFFF; --muted:#9BA4AF;
-      --card:#0F172A; --border:#1F2937; --accent:#00C2C7;
-      --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.35);
-      --font:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;
+      --bg:#0b1220;         /* fond principal (très sombre mais lisible) */
+      --panel:#0f172a;      /* panneaux */
+      --text:#e5eef9;       /* texte clair */
+      --muted:#94a3b8;      /* texte secondaire */
+      --primary:#2563eb;    /* bleu principal (CTA) */
+      --primary-2:#1e40af;  /* bleu foncé (hover) */
+      --accent:#22d3ee;     /* accent (détails) */
+      --ok:#22c55e;         /* vert validation */
+      --warn:#f59e0b;       /* orange avertissement */
+      --err:#ef4444;        /* rouge erreur */
+      --card:#111a2e;       /* cartes */
+      --border:#1f2a44;
+      --maxw:1100px;
+      --radius:16px;
+      --shadow:0 10px 35px rgba(0,0,0,.35), 0 2px 10px rgba(0,0,0,.25);
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.6}
+    /* Typo : Space Grotesk (titres), Inter (texte). Utilise systèmes si offline */
+    @font-face{font-family:Inter;src:local("Inter");font-display:swap;}
+    @font-face{font-family:"Space Grotesk";src:local("Space Grotesk");font-display:swap;}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.5 Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
     a{color:var(--accent);text-decoration:none}
-    .wrap{max-width:1100px;margin:0 auto;padding:24px}
-    header{position:sticky;top:0;background:rgba(12,17,22,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);z-index:10}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.08em}
-    .brand img{width:32px;height:32px;border-radius:50%}
-    .menu{display:flex;gap:18px;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:999px;background:var(--accent);color:#021018;font-weight:600;box-shadow:var(--shadow)}
-    .btn.secondary{background:transparent;color:var(--fg);border:1px solid var(--border)}
-    .hero{display:grid;gap:18px;padding:64px 0}
-    .hero h1{font-size:clamp(32px,5vw,48px);line-height:1.1;margin:0}
-    .hero p{color:var(--muted);max-width:60ch;margin:0}
-    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-    .badges{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);margin-top:8px}
-    .section{padding:48px 0;border-top:1px solid var(--border)}
-    .grid{display:grid;gap:18px}
-    @media(min-width:900px){.grid.cols-3{grid-template-columns:repeat(3,1fr)}}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-    h2{font-size:clamp(22px,3.4vw,30px);margin:0 0 10px}
-    h3{font-size:18px;margin:0 0 8px}
-    footer{border-top:1px solid var(--border);color:var(--muted)}
-    /* Lien “Espace créateur” masqué par défaut */
-    .creator-link{display:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(11,18,32,.95),rgba(11,18,32,.75));backdrop-filter:blur(7px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2px}
+    .brand .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--primary),#60a5fa);display:inline-block;box-shadow:0 4px 12px rgba(37,99,235,.35)}
+    .nav a{color:var(--text);opacity:.9;margin:0 10px}
+    .nav a:hover{opacity:1}
+    .cta{background:var(--primary);color:white;padding:10px 16px;border-radius:12px;border:1px solid #1b3ea6;box-shadow:0 8px 24px rgba(37,99,235,.35)}
+    .cta:hover{background:var(--primary-2)}
+    main section{scroll-margin-top:90px}
+
+    /* Hero */
+    .hero{padding:64px 0;background:
+      radial-gradient(1000px 500px at 70% -10%,rgba(34,211,238,.15),transparent 60%),
+      radial-gradient(1200px 600px at -10% -20%,rgba(37,99,235,.18),transparent 55%)}
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
+    h1{font:800 44px/1.1 "Space Grotesk",Inter,system-ui,sans-serif;margin:0 0 16px}
+    .hero p{color:var(--muted);margin:0 0 24px}
+    .hero .actions{display:flex;gap:12px;flex-wrap:wrap}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .mock{padding:18px}
+    .badge{display:inline-flex;gap:8px;align-items:center;background:#10203a;border:1px solid #1c355a;color:#a7c3ff;padding:6px 10px;border-radius:999px;font-size:13px}
+
+    /* Sections génériques */
+    .section{padding:56px 0}
+    .section h2{font:700 32px/1.2 "Space Grotesk",Inter,sans-serif;margin:0 0 12px}
+    .section p.lead{color:var(--muted);margin:0 0 24px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+
+    .feature{padding:18px}
+    .feature h3{margin:0 0 6px;font:700 18px/1.3 Inter,system-ui,sans-serif}
+    .kpi{display:flex;gap:10px;align-items:center}
+    .kpi .dot{width:10px;height:10px;border-radius:999px;background:var(--ok)}
+    .list{margin:0;padding-left:18px;color:var(--muted)}
+
+    /* How it works */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .step{padding:18px}
+    .step .num{width:34px;height:34px;border-radius:10px;background:#0e1b33;border:1px solid #1d2d53;display:flex;align-items:center;justify-content:center;font-weight:700;color:#a9c1ff;margin-bottom:10px}
+
+    /* Créateur (panneau flottant) */
+    .creator-toggle{position:fixed;right:20px;bottom:20px;z-index:80;display:none}
+    .creator{position:fixed;inset:auto 16px 16px auto;max-width:min(560px,95vw);background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);display:none;flex-direction:column;color:var(--text);z-index:90}
+    .creator header{position:sticky;top:0;background:transparent;border-bottom:1px solid var(--border);padding:12px 14px}
+    .creator .content{padding:14px;display:grid;gap:12px;max-height:70vh;overflow:auto}
+    .creator .row{display:flex;gap:8px}
+    .creator input, .creator textarea, .creator select{
+      width:100%;background:#0e1b33;border:1px solid #243554;color:var(--text);
+      border-radius:12px;padding:10px 12px;outline:none
+    }
+    .pill{padding:6px 10px;border:1px solid #27406c;border-radius:999px;background:#0f2446;color:#b7d0ff;font-size:12px}
+    .muted{color:var(--muted)}
+    .btn{background:#183366;border:1px solid #284a8f;color:#dbe7ff;padding:10px 14px;border-radius:12px}
+    .btn:hover{filter:brightness(1.05)}
+    .btn.primary{background:var(--primary);border-color:#1b3ea6;color:#fff}
+    .btn.warn{background:#442a0a;border-color:#7a4d12;color:#ffd9a1}
+    .row.split{display:grid;grid-template-columns:1fr auto;align-items:center}
+
+    /* FAQ & Contact */
+    details{background:#0f1b2f;border:1px solid #233457;border-radius:14px;padding:10px 12px}
+    summary{cursor:pointer;font-weight:600}
+    form .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    form .row.full{grid-template-columns:1fr}
+    form button{margin-top:6px}
+
+    footer{border-top:1px solid var(--border);background:linear-gradient(180deg,rgba(15,23,42,.4),rgba(15,23,42,.8));padding:26px 0;color:var(--muted)}
+    @media (max-width:980px){
+      .hero-grid,.grid-3,.grid-2,.steps{grid-template-columns:1fr}
+    }
   </style>
+
+  <!-- Manifest PWA (icônes placeholders pour l’instant) -->
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="icon" href="favicon.ico">
 </head>
 <body>
+
+  <!-- NAV -->
   <header>
     <div class="wrap nav">
-      <a class="brand" href="/">
-        <!-- Remplacer par ton logo plus tard -->
-        <img src="assets/img/logo-32.png" alt="Logo Recallia" />
-        <span>RECALLIA</span>
-      </a>
-      <nav class="menu" aria-label="Navigation principale">
-        <a href="/">Accueil</a>
-        <a href="fonctionnalites.html">Fonctionnalités</a>
-        <a href="application.html">Application</a>
-        <a href="a-propos.html">À propos</a>
-        <a href="contact.html" class="btn secondary">Contact</a>
-        <a href="createur.html" class="creator-link">Espace créateur</a>
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Recallia</span>
+      </div>
+      <nav>
+        <a href="#accueil">Accueil</a>
+        <a href="#fonctionnalites">Fonctionnalités</a>
+        <a href="#application">Application</a>
+        <a href="#apropos">À propos</a>
+        <a href="#contact">Contact</a>
+        <a id="creatorLink" href="?creator=on">Espace créateur</a>
       </nav>
+      <a class="cta" href="#commencer">Commencer</a>
     </div>
   </header>
 
   <main>
     <!-- HERO -->
-    <section class="wrap hero" id="accueil">
-      <h1>Votre assistant IA</h1>
-      <p>
-        Recallia anticipe, propose et exécute pour vous — au quotidien.
-        Un compagnon discret, sécurisé et personnalisé qui vous fait gagner du temps.
-      </p>
-      <div class="badges">
-        <span>• Sécurisé</span>
-        <span>• Privé</span>
-        <span>• Personnalisé</span>
-        <span>• Multi-domaines</span>
-      </div>
-      <div class="cta">
-        <a class="btn" href="application.html">Commencer</a>
-        <a class="btn secondary" href="fonctionnalites.html">Découvrir</a>
+    <section id="accueil" class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="badge">Assistant IA • Anticipation • Preuves réelles</span>
+          <h1>Votre assistant IA<br/>qui anticipe, exécute et <em>prouve</em>.</h1>
+          <p>Recallia simplifie votre quotidien : il propose, agit sous votre contrôle et fournit un reçu de preuve pour chaque action réussie.</p>
+          <div class="actions">
+            <a class="cta" href="#commencer">Commencer</a>
+            <a class="btn" href="#fonctionnalites">Découvrir</a>
+          </div>
+          <div style="margin-top:14px" class="kpi">
+            <span class="dot"></span><small class="muted">TTV médian &lt; 60s • VSR ≥ 90% • Couverture de preuve 100%</small>
+          </div>
+        </div>
+        <div class="card mock">
+          <div class="muted" style="margin-bottom:8px">Aperçu</div>
+          <div class="card" style="padding:14px">
+            <div class="row split">
+              <strong>Propositions du jour</strong>
+              <span class="pill">Niveau N1</span>
+            </div>
+            <ul class="list">
+              <li>Renouveler la carte d’identité — pièces prêtes ✅</li>
+              <li>Rappel RDV médecin demain 9:30 — navigation &amp; .ics ✔︎</li>
+              <li>Anniversaire de Sarah — message &amp; cadeau proposés 🎁</li>
+            </ul>
+            <div class="row" style="gap:10px;margin-top:10px">
+              <button class="btn primary">Lancer</button>
+              <button class="btn">Voir la preuve</button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- APERÇU FONCTIONNALITÉS (teaser, le détail est sur la page dédiée) -->
+    <!-- COMMENT ÇA MARCHE -->
+    <section id="commencer" class="section">
+      <div class="wrap">
+        <h2>Comment ça marche</h2>
+        <p class="lead">3 étapes simples : Recallia mesure, propose, exécute sous vos règles… et livre une preuve.</p>
+        <div class="steps">
+          <div class="card step"><div class="num">1</div><strong>Mesurer</strong><p class="muted">Rassemble les signaux utiles (calendrier, emails, fichiers — toujours sous votre contrôle).</p></div>
+          <div class="card step"><div class="num">2</div><strong>Proposer</strong><p class="muted">Affiche 1–3 actions classées par impact/temps/coût/risque. Vous validez.</p></div>
+          <div class="card step"><div class="num">3</div><strong>Exécuter &amp; prouver</strong><p class="muted">Exécute l’action, génère un reçu (PDF/EML/ICS) haché + journal d’audit.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FONCTIONNALITÉS -->
+    <section id="fonctionnalites" class="section">
+      <div class="wrap">
+        <h2>Fonctionnalités clés</h2>
+        <p class="lead">Vie quotidienne, administratif, famille, santé, pro… et ça s’enrichit selon votre profil.</p>
+        <div class="grid-3">
+          <div class="card feature">
+            <h3>Carte d’identité • Dossier prêt</h3>
+            <p class="muted">Recallia prépare vos justificatifs, remplit le formulaire et planifie le RDV si besoin — reçu à l’appui.</p>
+          </div>
+          <div class="card feature">
+            <h3>Agenda proactif</h3>
+            <p class="muted">Invite, .ics, trajets, rappels jour J — propose d’envoyer un message si vous êtes en retard.</p>
+          </div>
+          <div class="card feature">
+            <h3>Famille &amp; vie perso</h3>
+            <p class="muted">Anniversaires, activités, papier école, crèche, santé — suggestions adaptées et preuves centralisées.</p>
+          </div>
+          <div class="card feature">
+            <h3>Paiements &amp; factures</h3>
+            <p class="muted">Rappels, relances, QR SEPA ; preuve horodatée dès l’exécution.</p>
+          </div>
+          <div class="card feature">
+            <h3>Courses &amp; logistique</h3>
+            <p class="muted">Listes auto, budgets, alternatives — propose la meilleure option selon vos critères.</p>
+          </div>
+          <div class="card feature">
+            <h3>Automatisation maîtrisée</h3>
+            <p class="muted">Niveaux N0→N3 + caps (€/temps/risque), fenêtres horaires, listes blanches, kill-switch.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPLICATION -->
+    <section id="application" class="section">
+      <div class="wrap">
+        <h2>L’application Recallia</h2>
+        <p class="lead">Discrète, personnalisée, jamais envahissante. Vous gardez la main.</p>
+        <div class="grid-2">
+          <div class="card feature">
+            <h3>Interface simple</h3>
+            <p class="muted">Une liste claire d’actions du jour. Tout est explicable, modifiable, annulable.</p>
+            <ul class="list">
+              <li>Propositions triées par impact</li>
+              <li>Validation en 1 clic</li>
+              <li>Preuves visibles &amp; exportables</li>
+            </ul>
+          </div>
+          <div class="card feature">
+            <h3>Sécurité &amp; confidentialité</h3>
+            <p class="muted">Local-first quand c’est possible, chiffrement, minimisation, export &amp; purge à la demande.</p>
+            <ul class="list">
+              <li>Preuve-ou-rien (receipts hachés)</li>
+              <li>Journal d’audit append-only</li>
+              <li>Contrôles d’autonomie &amp; caps</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- À PROPOS -->
+    <section id="apropos" class="section">
+      <div class="wrap">
+        <h2>Pourquoi Recallia ?</h2>
+        <p class="lead">Un assistant qui anticipe comme un majordome moderne : propose, exécute, prouve.</p>
+        <div class="grid-3">
+          <div class="card feature"><h3>Proactif</h3><p class="muted">Toujours un coup d’avance grâce aux signaux utiles (avec consentement).</p></div>
+          <div class="card feature"><h3>Fiable</h3><p class="muted">Chaque action réussie s’accompagne d’une preuve vérifiable.</p></div>
+          <div class="card feature"><h3>Personnalisé</h3><p class="muted">Votre Recallia s’adapte à votre vie et à vos préférences.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
     <section class="section">
       <div class="wrap">
-        <h2>Fonctionnalités</h2>
-        <p style="color:var(--muted);margin:0 0 16px">
-          Des scénarios concrets qui simplifient la vie. Le détail complet est sur la page
-          <a href="fonctionnalites.html">Fonctionnalités</a>.
-        </p>
+        <h2>Questions fréquentes</h2>
+        <details><summary>Est-ce que Recallia remplace mon agenda ?</summary><p class="muted">Il le complète : rappel, planification, preuves. Vous gardez vos outils.</p></details>
+        <details><summary>Est-ce sécurisé ?</summary><p class="muted">Oui : chiffrement, minimisation, export/purge, garde-fous d’autonomie et journal d’audit.</p></details>
+      </div>
+    </section>
 
-        <div class="grid cols-3">
-          <article class="card">
-            <h3>Administratif intelligent</h3>
-            <p>“Je dois refaire ma carte d’identité.” Recallia vérifie les prérequis, prépare les documents, propose les créneaux et préremplit le dossier.</p>
-          </article>
-          <article class="card">
-            <h3>Agenda proactif</h3>
-            <p>Rappels, réservations et coordination automatique selon vos contraintes — sans sollicitation inutile.</p>
-          </article>
-          <article class="card">
-            <h3>Vie perso & famille</h3>
-            <p>Crèche, école, santé, transports… Recallia anticipe et vous propose les meilleures options au bon moment.</p>
-          </article>
-        </div>
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <div class="wrap">
+        <h2>Contact</h2>
+        <p class="lead">Une question ? Un partenariat ? On vous répond vite.</p>
+        <form class="card" style="padding:14px" onsubmit="event.preventDefault();alert('Message envoyé (démo)');this.reset();">
+          <div class="row">
+            <input required placeholder="Votre nom">
+            <input required type="email" placeholder="Votre email">
+          </div>
+          <div class="row full">
+            <textarea required rows="4" placeholder="Votre message"></textarea>
+          </div>
+          <button class="btn primary" type="submit">Envoyer</button>
+        </form>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="wrap" style="padding:24px 0;">
-      <small>© <span id="y"></span> Recallia — Tous droits réservés.</small>
-    </div>
+    <div class="wrap">© Recallia — Tous droits réservés.</div>
   </footer>
 
+  <!-- Bouton flottant d’accès créateur (s’affiche seulement avec ?creator=on) -->
+  <button id="creatorFab" class="creator-toggle btn">Créateur</button>
+
+  <!-- Panneau Créateur (accès PIN + propositions) -->
+  <aside id="creatorPanel" class="creator card" role="dialog" aria-modal="true" aria-labelledby="cTitle">
+    <header class="row split">
+      <strong id="cTitle">Espace créateur (privé)</strong>
+      <button class="btn" id="cClose">Fermer</button>
+    </header>
+    <div class="content">
+      <div id="pinGate">
+        <p class="muted">Saisissez le PIN pour accéder aux outils (démo locale).</p>
+        <div class="row">
+          <input id="pinInput" type="password" placeholder="PIN">
+          <button id="pinBtn" class="btn">Entrer</button>
+        </div>
+        <small class="muted">Astuce : on peut changer le PIN côté code (const CREATOR_PIN).</small>
+      </div>
+
+      <div id="creatorBody" style="display:none">
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <span class="pill">Audit</span><span class="pill">SEO</span><span class="pill">PWA</span><span class="pill">UX</span><span class="pill">Sécurité</span>
+        </div>
+
+        <div class="card" style="padding:12px">
+          <strong>Propositions (auto)</strong>
+          <ul class="list" id="proposals">
+            <!-- rempli par JS -->
+          </ul>
+          <div class="row" style="gap:8px;margin-top:8px">
+            <button class="btn" id="copyPlan">Copier le plan d’actions</button>
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px">
+          <strong>Notes créateur</strong>
+          <textarea id="creatorNotes" rows="4" placeholder="Notes rapides…"></textarea>
+          <div class="row" style="gap:8px;margin-top:8px">
+            <button class="btn primary" id="saveNotes">Sauver (local)</button>
+            <span id="saveStatus" class="muted"></span>
+          </div>
+        </div>
+
+        <small class="muted">Ce panneau est visible uniquement avec <code>?creator=on</code>. Rien n’est envoyé côté serveur (démo).</small>
+      </div>
+    </div>
+  </aside>
+
   <script>
-    // Afficher "Espace créateur" uniquement si ?creator=on
-    (function(){
-      const params = new URLSearchParams(location.search);
-      if (params.get('creator') === 'on') {
-        const link = document.querySelector('.creator-link');
-        if (link) link.style.display = 'inline';
+    // ------- Paramètres créateur (démo locale) -------
+    const CREATOR_PIN = "8426"; // <— change-le si tu veux
+
+    // Utilities URL
+    const qs = new URLSearchParams(location.search);
+    const isCreator = qs.get("creator")==="on";
+
+    // Créateur UI elems
+    const fab = document.getElementById('creatorFab');
+    const panel = document.getElementById('creatorPanel');
+    const pinGate = document.getElementById('pinGate');
+    const pinInput = document.getElementById('pinInput');
+    const pinBtn = document.getElementById('pinBtn');
+    const cClose = document.getElementById('cClose');
+    const creatorBody = document.getElementById('creatorBody');
+    const proposalsUl = document.getElementById('proposals');
+    const copyPlan = document.getElementById('copyPlan');
+    const notes = document.getElementById('creatorNotes');
+    const saveNotes = document.getElementById('saveNotes');
+    const saveStatus = document.getElementById('saveStatus');
+
+    // Afficher FAB si ?creator=on
+    if(isCreator){ fab.style.display='inline-flex'; }
+
+    // Ouvrir / fermer le panneau
+    fab.addEventListener('click', ()=>{ panel.style.display='flex'; });
+    document.getElementById('creatorLink')?.addEventListener('click', (e)=>{
+      // permet d’ouvrir directement si on est déjà en mode ?creator=on
+      if(isCreator){ e.preventDefault(); panel.style.display='flex'; }
+    });
+    cClose.addEventListener('click', ()=> panel.style.display='none');
+
+    // Auth PIN
+    pinBtn.addEventListener('click', ()=>{
+      if(pinInput.value===CREATOR_PIN){
+        pinGate.style.display='none';
+        creatorBody.style.display='block';
+        loadCreator();
+      }else{
+        alert("PIN incorrect");
       }
-      // année dynamique
-      document.getElementById('y').textContent = new Date().getFullYear();
-    })();
+    });
+
+    // Charger propositions & notes
+    function loadCreator(){
+      // Propositions auto (démo) basées sur l’audit précédent
+      const ideas = [
+        "Relier les CTA 'Commencer' → section 'Comment ça marche'.",
+        "Ajouter la section 'Preuve-ou-rien' (receipts, audit).",
+        "Compléter 'Fonctionnalités' (6–9 cartes, aujourd’hui 6).",
+        "Créer 'Sécurité & confidentialité' en page Application.",
+        "Brancher le manifest PWA (icônes 192/512 quand prêtes).",
+        "FAQ enrichie (≥ 6 entrées).",
+        "Formulaire Contact : ajouter messages succès/erreur.",
+        "Préparer pages dédiées (si besoin) : /fonctionnalites, /application, /apropos."
+      ];
+      proposalsUl.innerHTML = ideas.map(t=>`<li>${t}</li>`).join("");
+
+      // Notes locales
+      const memo = localStorage.getItem('recallia_creator_notes')||"";
+      notes.value = memo;
+    }
+
+    copyPlan.addEventListener('click', ()=>{
+      const txt = [...proposalsUl.querySelectorAll('li')].map(li=>`• ${li.textContent}`).join('\n');
+      navigator.clipboard.writeText(txt).then(()=>alert("Plan copié !"));
+    });
+
+    saveNotes.addEventListener('click', ()=>{
+      localStorage.setItem('recallia_creator_notes', notes.value||"");
+      saveStatus.textContent = "Sauvegardé.";
+      setTimeout(()=> saveStatus.textContent="", 1500);
+    });
+
+    // ------- PWA (placeholder install) -------
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e)=>{
+      e.preventDefault(); deferredPrompt = e;
+      // Ici tu peux afficher un bouton "Installer l’app"
+      // Exemple: document.querySelector('#installBtn').style.display='inline-flex'
+    });
+    // Exemple d’install programmatique (si tu ajoutes un bouton plus tard) :
+    // installBtn.onclick = async ()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); deferredPrompt=null; };
+
+    // Smooth scroll pour les ancres
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const id = a.getAttribute('href');
+        if(id && id.length>1){
+          const el = document.querySelector(id);
+          if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+        }
+      });
+    });
   </script>
 </body>
-</html>
+  </html>
