@@ -1,124 +1,374 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Recallia — Votre assistant IA</title>
-  <meta name="description" content="Recallia anticipe, propose et exécute pour vous — au quotidien. Sécurisé, privé et personnalisé.">
-  <link rel="manifest" href="site.webmanifest">
-  <meta name="theme-color" content="#0C1116">
+  <meta name="description" content="Recallia, votre assistant IA du quotidien : anticipe, propose, exécute et prouve — simplement et en toute confidentialité." />
+  <meta name="theme-color" content="#00C2A8" />
 
-  <!-- Identité & Branding -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="assets/css/styles.css" rel="stylesheet">
+  <!-- PWA manifest (optionnel pour l’instant, tu l’as déjà créé) -->
+  <link rel="manifest" href="site.webmanifest" />
+
+  <!-- Icônes (tu les ajouteras plus tard, pas bloquant)
+  <link rel="icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  -->
+
+  <!-- Fonts (D1 validé) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Sécurise le rendu Domaine 1 même si le CSS externe tarde */
     :root{
-      --bg:#0C1116; --fg:#FFFFFF; --muted:#9BA4AF;
-      --card:#0F172A; --border:#1F2937;
-      --accent:#00C2C7; --accent-2:#1F2937;
-      --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.35);
-      --font:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      /* Palette D1 */
+      --brand:#00C2A8;
+      --brand-700:#00A18F;
+      --bg:#0B0F14;
+      --surface:#111827;
+      --card:#0F1621;
+      --text:#E6F7F4;
+      --muted:#94A3B8;
+      --ring: rgba(0,194,168,0.25);
+      --shadow: 0 24px 60px rgba(0,194,168,0.18);
+      --radius:16px;
+      --maxw:1152px;
     }
+
+    /* Reset + base */
+    *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;background:radial-gradient(1200px 600px at 50% 0%,rgba(0,194,199,.08),transparent 60%) , var(--bg);
-         color:var(--fg);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.55}
-    a{color:var(--fg);text-decoration:none}
-    .nav{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:16px 20px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .brand img{width:36px;height:36px;border-radius:999px;box-shadow:0 6px 18px rgba(0,194,199,.35)}
-    .brand span{font-weight:700;letter-spacing:.06em}
-    .menu{display:flex;gap:18px;font-weight:500;color:#E5E7EB}
-    .menu a{opacity:.9}
-    .menu a:hover{opacity:1}
-    .container{max-width:1100px;margin:0 auto;padding:32px 20px}
-    .hero{display:grid;gap:18px;justify-items:start;padding:56px 0 28px 0}
-    .eyebrow{color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-    h1{font-size:clamp(36px,6vw,56px);line-height:1.05;margin:6px 0}
-    .subtitle{font-size:clamp(16px,2.5vw,20px);color:#D1D5DB;max-width:760px}
-    .cta-row{display:flex;gap:14px;margin-top:18px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 22px;border-radius:999px;font-weight:600}
-    .btn-primary{background:linear-gradient(180deg,#00C2C7,#0097A1);box-shadow:0 10px 26px rgba(0,194,199,.35)}
-    .btn-primary:hover{filter:brightness(1.05)}
-    .btn-ghost{border:1px solid var(--border);background:#0F172A}
-    .badges{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;color:#C8D0D8}
-    .badge{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);background:rgba(255,255,255,.02);padding:8px 12px;border-radius:999px}
-    .section{padding:44px 0;border-top:1px solid var(--border)}
-    .section h2{font-size:28px;margin:0 0 6px 0}
-    .section p.lead{color:#D1D5DB;margin:0 0 18px 0}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.00));border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-    .card h3{margin:0 0 6px 0}
-    footer{border-top:1px solid var(--border);margin-top:44px}
-    .foot{max-width:1100px;margin:auto;padding:22px 20px;color:#9BA4AF;font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1300px 600px at 70% -10%, rgba(0,194,168,.12), transparent 60%),
+        linear-gradient(180deg, #0C1117 0%, var(--bg) 45%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{max-width:var(--maxw);margin-inline:auto;padding:0 20px}
+
+    /* Accessibilité */
+    .skip{position:absolute;left:-9999px;top:auto}
+    .skip:focus{left:16px;top:16px;background:#fff;color:#000;padding:10px 14px;border-radius:10px;z-index:1000}
+
+    /* Nav */
+    .nav{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:saturate(160%) blur(10px);
+      background:linear-gradient(180deg, rgba(17,24,39,0.8), rgba(17,24,39,0.45));
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-mark{
+      width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+      background: radial-gradient(circle at 30% 30%, #4BFFF0, var(--brand) 55%, #0ABFA7 85%);
+      color:#032C27;font-weight:800;box-shadow:var(--shadow)
+    }
+    .brand img{width:36px;height:36px;object-fit:contain;display:none}
+    .brand-name{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;letter-spacing:.2px}
+    .brand-tag{color:var(--muted);margin-left:8px}
+    .nav-links{display:flex;gap:14px;flex-wrap:wrap}
+    .btn{padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.03);font-weight:600;letter-spacing:.2px;transition:.25s ease}
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,0.06)}
+    .btn-primary{border:0;background:linear-gradient(135deg, var(--brand), #42E9D6 80%);color:#052823;box-shadow:var(--shadow)}
+    .btn-ghost{background:transparent;border-color:rgba(255,255,255,0.14)}
+
+    /* Hero (D1) */
+    .hero{padding:56px 0 30px}
+    .kicker{
+      display:inline-flex;align-items:center;gap:10px;margin-inline:auto;
+      border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);
+      padding:8px 12px;border-radius:999px;color:var(--muted);font-weight:600
+    }
+    .kdot{width:8px;height:8px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px var(--ring)}
+    h1{
+      margin:12px 0 10px;text-align:center;
+      font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;letter-spacing:.2px;
+      font-size: clamp(2.2rem, 4vw, 3.1rem); line-height:1.05;
+    }
+    .subtitle{max-width:70ch;margin:0 auto 20px;text-align:center;color:var(--muted);font-size:1.05rem;line-height:1.6}
+    .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+
+    /* Hero visual */
+    .hero-visual{margin-top:26px}
+    .hero-card{
+      border:1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:var(--radius);padding:20px;overflow:hidden;position:relative;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+    }
+    .glow{position:absolute;inset:-30%;background: radial-gradient(650px 300px at 75% 0%, rgba(0,194,168,0.18), transparent 65%);pointer-events:none}
+    .chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+    .chip{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);font-weight:600}
+    .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--brand)}
+    .muted{color:var(--muted);font-weight:500}
+
+    /* Sections (D2) */
+    section{padding:36px 0;border-top:1px solid rgba(255,255,255,0.06)}
+    .title{font-family:"Space Grotesk",Inter,sans-serif;font-size:1.8rem;text-align:center;margin:0 0 6px}
+    .sub{color:var(--muted);text-align:center;max-width:80ch;margin:0 auto 18px}
+
+    /* Grilles */
+    .grid{display:grid;gap:14px}
+    .grid.features{grid-template-columns:repeat(3,1fr)}
+    @media (max-width: 960px){ .grid.features{grid-template-columns:1fr 1fr} }
+    @media (max-width: 640px){ .grid.features{grid-template-columns:1fr} }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:var(--radius); padding:16px;
+    }
+    .card h3{margin:0 0 6px;font-size:1.05rem}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.04);
+      padding:6px 10px;border-radius:999px;color:var(--muted);font-weight:600;font-size:.9rem
+    }
+    .badge .b{width:8px;height:8px;border-radius:50%;background:var(--brand)}
+
+    /* App Aperçu */
+    .app-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:center}
+    @media (max-width: 960px){ .app-wrap{grid-template-columns:1fr;gap:16px} }
+    .phone{
+      width:min(380px, 90%);aspect-ratio:9/19;border-radius:28px;margin:0 auto;
+      background:linear-gradient(180deg, #0E1520, #0B1018);
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      position:relative; overflow:hidden;
+    }
+    .statusbar{height:18px;background:rgba(255,255,255,0.04)}
+    .screen{padding:14px}
+    .tile{
+      border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px;margin-bottom:10px;
+      background:rgba(255,255,255,0.02)
+    }
+    .tile strong{display:block;margin-bottom:4px}
+    .tiny{font-size:.95rem;color:var(--muted)}
+
+    /* Accessibilité */
+    .a11y-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:900px;margin:0 auto}
+    @media (max-width: 720px){ .a11y-list{grid-template-columns:1fr} }
+    .ok{color:#22C55E}
+    .warn{color:#FBBF24}
+
+    /* Footer */
+    footer{padding:28px 0;color:var(--muted);font-size:.95rem}
+  </style>
+
+  <!-- Respect “réduire les animations” -->
+  <style>
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    }
   </style>
 </head>
 <body>
+  <a class="skip" href="#contenu">Aller au contenu</a>
 
   <!-- NAV -->
-  <header class="nav">
-    <a href="./" class="brand">
-      <!-- Logo (image simple pour l’instant) -->
-      <img src="assets/img/logo.svg" alt="Recallia">
-      <span>RECALLIA</span>
-    </a>
-    <nav class="menu" aria-label="Navigation principale">
-      <a href="./index.html">Accueil</a>
-      <a href="./fonctionnalites.html">Fonctionnalités</a>
-      <a href="./application.html">Application</a>
-      <a href="./a-propos.html">À propos</a>
-      <a href="./contact.html">Contact</a>
-    </nav>
+  <header class="nav" aria-label="Barre de navigation">
+    <div class="container nav-inner">
+      <div class="brand" aria-label="Recallia">
+        <span class="brand-mark" id="logo-fallback" aria-hidden="true">R!</span>
+        <img id="brand-logo" src="recallia-logo.svg" alt="Recallia — logo">
+        <span class="brand-name">Recallia</span>
+        <span class="brand-tag">Votre assistant IA</span>
+      </div>
+      <nav class="nav-links" aria-label="Liens principaux">
+        <a class="btn btn-ghost" href="#fonctionnalites">Fonctionnalités</a>
+        <a class="btn btn-ghost" href="#application">Application</a>
+        <a class="btn btn-ghost" href="#accessibilite">Accessibilité</a>
+        <a class="btn btn-primary" href="#contact">Nous contacter</a>
+      </nav>
+    </div>
   </header>
 
-  <!-- HERO -->
-  <main class="container">
-    <section class="hero" aria-labelledby="titre-hero">
-      <div class="eyebrow">Votre assistant IA</div>
-      <h1 id="titre-hero">Recallia anticipe, propose et exécute pour vous — au quotidien.</h1>
-      <p class="subtitle">Sécurisé • Privé • Personnalisé. Un assistant proactif qui apprend de vous et vous fait gagner un temps précieux.</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="./application.html">Commencer</a>
-        <a class="btn btn-ghost" href="./fonctionnalites.html">Découvrir</a>
+  <!-- HERO (D1) -->
+  <main id="contenu" class="hero">
+    <div class="container">
+      <div class="kicker"><span class="kdot"></span> Assistant du quotidien</div>
+      <h1>Votre assistant IA qui anticipe, propose, exécute<br>et <em>prouve</em>.</h1>
+      <p class="subtitle">
+        Recallia détecte ce qui compte, suggère la meilleure action, l’exécute sous votre contrôle (N0→N3, caps),
+        et fournit une preuve vérifiable (reçu haché + journal d’audit).
+      </p>
+      <div class="cta-row" role="group" aria-label="Appels à l’action">
+        <a class="btn btn-primary" href="#fonctionnalites">Découvrir</a>
+        <a class="btn" href="#application">Voir l’application</a>
       </div>
-      <div class="badges" aria-label="Bénéfices clés">
-        <span class="badge">Gain de temps</span>
-        <span class="badge">Anticipation proactive</span>
-        <span class="badge">Confidentialité</span>
-        <span class="badge">Multi-domaines</span>
-      </div>
-    </section>
 
-    <!-- APERÇU FONCTIONNALITÉS (extrait court) -->
-    <section class="section" aria-labelledby="titre-fonct">
-      <h2 id="titre-fonct">Fonctionnalités</h2>
-      <p class="lead">Des scénarios concrets qui simplifient la vie.</p>
-
-      <div class="cards">
-        <article class="card">
-          <h3>Administratif intelligent</h3>
-          <p>Refaire une carte d’identité ? Recallia vérifie les prérequis, prépare les documents, propose les créneaux et préremplit le dossier.</p>
-        </article>
-        <article class="card">
-          <h3>Agenda proactif</h3>
-          <p>Rappels, réservations et coordination automatique avec vos contraintes.</p>
-        </article>
-        <article class="card">
-          <h3>Vie perso & famille</h3>
-          <p>Crèche, école, santé, transports… Recallia anticipe et propose les meilleures options.</p>
-        </article>
+      <div class="hero-visual">
+        <div class="hero-card" aria-label="Aperçu des actions Recallia">
+          <div class="glow" aria-hidden="true"></div>
+          <div class="chips">
+            <span class="chip"><span class="dot"></span> Carte d’identité — <span class="muted">Dossier prêt</span></span>
+            <span class="chip"><span class="dot"></span> RDV médical — <span class="muted">Documents ajoutés</span></span>
+            <span class="chip"><span class="dot"></span> Facture énergie — <span class="muted">Paiement planifié</span></span>
+            <span class="chip"><span class="dot"></span> Anniversaire — <span class="muted">Message & rappel</span></span>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
   </main>
 
-  <footer>
-    <div class="foot">
-      <span>© Recallia — Votre assistant IA</span>
-      <span>Confidentialité • Sécurité • Proactivité</span>
+  <!-- FONCTIONNALITÉS (D2) -->
+  <section id="fonctionnalites" aria-labelledby="tit-fonct">
+    <div class="container">
+      <h2 class="title" id="tit-fonct">Fonctionnalités</h2>
+      <p class="sub">Domaines clés — proactif, simple, sous contrôle utilisateur.</p>
+
+      <div class="grid features" role="list">
+        <article class="card" role="listitem">
+          <span class="badge"><span class="b"></span> Administratif</span>
+          <h3>Pièces & démarches</h3>
+          <p class="tiny">Prépare les pièces (CNI, passeport, attestation), remplit, vérifie, et suit. Preuve : accusé + hash.</p>
+        </article>
+
+        <article class="card" role="listitem">
+          <span class="badge"><span class="b"></span> Vie quotidienne</span>
+          <h3>Tâches & rappels</h3>
+          <p class="tiny">Anniversaires, rendez-vous, listes de courses, checklists maison. Priorisation intelligente.</p>
+        </article>
+
+        <article class="card" role="listitem">
+          <span class="badge"><span class="b"></span> Santé</span>
+          <h3>Rappels médicaux</h3>
+          <p class="tiny">Ordonnances, examens, résultats. Alertes utiles (pas envahissantes), documents organisés.</p>
+        </article>
+
+        <article class="card" role="listitem">
+          <span class="badge"><span class="b"></span> Finances</span>
+          <h3>Factures & abonnements</h3>
+          <p class="tiny">Suivi des échéances, optimisation d’abonnements, paiements assistés avec double confirmation.</p>
+        </article>
+
+        <article class="card" role="listitem">
+          <span class="badge"><span class="b"></span> Anticipation</span>
+          <h3>Un coup d’avance</h3>
+          <p class="tiny">Détecte les situations (rentrée, déménagement, naissance) et propose un plan clair.</p>
+        </article>
+
+        <article class="card" role="listitem">
+          <span class="badge"><span class="b"></span> Preuves</span>
+          <h3>Reçus vérifiables</h3>
+          <p class="tiny">Chaque action réussie génère un reçu haché + journal d’audit. Exportable et partageable.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPLICATION (D2) -->
+  <section id="application" aria-labelledby="tit-app">
+    <div class="container app-wrap">
+      <div>
+        <h2 class="title" id="tit-app">Application</h2>
+        <p class="sub">Interface simple, non intrusive, personnalisée selon vos habitudes.</p>
+
+        <div class="card" style="margin-top:10px">
+          <h3>Ce que vous voyez</h3>
+          <ul class="tiny" style="margin:8px 0 0 18px">
+            <li>3 priorités du jour (claires, actionnables).</li>
+            <li>Suggestions proactives (pertinentes, pas envahissantes).</li>
+            <li>Historique & preuves (export, partage sécurisé).</li>
+            <li>Réglages : niveau d’autonomie N0→N3, caps €/temps/risque.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Aperçu mobile (mock visuel) -->
+      <div class="phone" aria-label="Aperçu mobile">
+        <div class="statusbar" aria-hidden="true"></div>
+        <div class="screen">
+          <div class="tile">
+            <strong>Priorité #1</strong>
+            <span class="tiny">CNI — Dossier prêt · <span style="color:var(--brand)">Prouver</span></span>
+          </div>
+          <div class="tile">
+            <strong>Suggestion</strong>
+            <span class="tiny">Facture énergie — Paiement assisté à valider</span>
+          </div>
+          <div class="tile">
+            <strong>Preuves</strong>
+            <span class="tiny">2 reçus vérifiables · Export JSON/ZIP</span>
+          </div>
+          <div class="tile">
+            <strong>Contrôle</strong>
+            <span class="tiny">Niveau N1 · Caps € / min · Pause rapide</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCESSIBILITÉ (D2) -->
+  <section id="accessibilite" aria-labelledby="tit-a11y">
+    <div class="container">
+      <h2 class="title" id="tit-a11y">Accessibilité</h2>
+      <p class="sub">Pensé pour être confortable et inclusif.</p>
+      <div class="a11y-list">
+        <div class="card"><strong class="ok">Contrastes élevés</strong><div class="tiny">Palette sombre maîtrisée, lisibilité renforcée.</div></div>
+        <div class="card"><strong class="ok">Navigation clavier</strong><div class="tiny">Lien “Aller au contenu”, focus visibles.</div></div>
+        <div class="card"><strong class="ok">Réduction d’animations</strong><div class="tiny">Respect <code>prefers-reduced-motion</code>.</div></div>
+        <div class="card"><strong class="warn">Taille de police ajustable</strong><div class="tiny">Prévu (contrôle +/− à venir).</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" aria-labelledby="tit-contact">
+    <div class="container">
+      <h2 class="title" id="tit-contact">Contact</h2>
+      <p class="sub">Une question ? Parlons-en.</p>
+      <div class="card" style="max-width:680px;margin:0 auto">
+        <form class="tiny" aria-label="Formulaire de contact (maquette)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label>Prénom<br><input type="text" placeholder="Votre prénom" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)"></label>
+            <label>Nom<br><input type="text" placeholder="Votre nom" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)"></label>
+          </div>
+          <label style="display:block;margin-top:10px">Email<br>
+            <input type="email" placeholder="vous@exemple.com" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)">
+          </label>
+          <label style="display:block;margin-top:10px">Message<br>
+            <textarea rows="4" placeholder="Votre message…" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)"></textarea>
+          </label>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+            <button type="button" class="btn">Plus tard</button>
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer aria-label="Pied de page">
+    <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div>© <span id="year"></span> Recallia — Votre assistant IA</div>
+      <div class="tiny"><a href="#accessibilite">Accessibilité</a> · <a href="#contact">Support</a></div>
     </div>
   </footer>
 
+  <script>
+    // Année
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Logo fallback (utilise recallia-logo.svg s'il existe)
+    (function(){
+      const img = document.getElementById('brand-logo');
+      const fallback = document.getElementById('logo-fallback');
+      if(!img) return;
+      const test = new Image();
+      test.onload = () => { img.style.display='block'; fallback.style.display='none'; };
+      test.onerror = () => { /* on garde le fallback */ };
+      test.src = img.getAttribute('src');
+    })();
+  </script>
 </body>
 </html>
