@@ -1,373 +1,388 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Recallia — Votre assistant IA</title>
-  <meta name="description" content="Recallia, votre assistant IA du quotidien : anticipe, propose, exécute et prouve — simplement et en toute confidentialité." />
-  <meta name="theme-color" content="#00C2A8" />
+  <meta name="description" content="Recallia, votre assistant IA du quotidien : anticipe, propose, exécute et prouve. Simple, sécurisé, personnalisé." />
 
-  <!-- PWA manifest (optionnel pour l’instant, tu l’as déjà créé) -->
+  <!-- Palette & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- PWA (ok si le fichier existe déjà, sinon laisse sans) -->
   <link rel="manifest" href="site.webmanifest" />
-
-  <!-- Icônes (tu les ajouteras plus tard, pas bloquant)
-  <link rel="icon" href="favicon.ico">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  -->
-
-  <!-- Fonts (D1 validé) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      /* Palette D1 */
-      --brand:#00C2A8;
-      --brand-700:#00A18F;
-      --bg:#0B0F14;
-      --surface:#111827;
-      --card:#0F1621;
-      --text:#E6F7F4;
-      --muted:#94A3B8;
-      --ring: rgba(0,194,168,0.25);
-      --shadow: 0 24px 60px rgba(0,194,168,0.18);
-      --radius:16px;
-      --maxw:1152px;
+      --rc-bg:#0E1116;      /* nuit */
+      --rc-surface:#121922; /* carte sombre */
+      --rc-text:#E5E7EB;    /* gris clair */
+      --rc-muted:#9CA3AF;   /* gris moyen */
+      --rc-primary:#00C2A8; /* turquoise brand */
+      --rc-accent:#7C3AED;  /* accent violet (changeable) */
+      --rc-ring:rgba(0,194,168,0.45);
+      --rc-card:#0f1520aa;
+      --rc-border:#223042;
+      --rc-success:#10B981;
+      --rc-warning:#F59E0B;
+      --rc-danger:#EF4444;
     }
-
-    /* Reset + base */
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;
-      background:
-        radial-gradient(1300px 600px at 70% -10%, rgba(0,194,168,.12), transparent 60%),
-        linear-gradient(180deg, #0C1117 0%, var(--bg) 45%);
-      color:var(--text);
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif;
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      margin:0; background:
+        radial-gradient(1000px 600px at 85% -10%,rgba(124,58,237,.18),transparent 60%),
+        radial-gradient(900px 600px at -10% 10%,rgba(0,194,168,.15),transparent 60%),
+        var(--rc-bg);
+      color:var(--rc-text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+      line-height:1.55;
     }
-    a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
-    .container{max-width:var(--maxw);margin-inline:auto;padding:0 20px}
+    a{color:var(--rc-primary);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width:1100px;margin-inline:auto;padding:24px}
+    header{
+      position:sticky;top:0;backdrop-filter:saturate(140%) blur(10px);
+      background:linear-gradient(180deg,rgba(14,17,22,.9),rgba(14,17,22,.6));
+      border-bottom:1px solid var(--rc-border);z-index:30
+    }
+    .nav{display:flex;gap:18px;align-items:center;justify-content:space-between}
+    .brand{display:flex;gap:10px;align-items:center;font-family:Sora,Inter,sans-serif}
+    .brand .logo{
+      width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--rc-primary),#20ffd7);
+      box-shadow:0 0 0 3px rgba(32,255,215,.08), 0 10px 30px rgba(0,0,0,.35);
+    }
+    .brand span{font-weight:700;letter-spacing:.2px}
+    nav a{color:var(--rc-text);opacity:.86}
+    nav a[aria-current="page"]{color:#fff}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;border:1px solid var(--rc-border);
+      padding:10px 14px;border-radius:12px;background:linear-gradient(180deg,#15202b,#0f1720);
+      color:#fff;text-decoration:none;box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 10px 30px rgba(0,0,0,.3)
+    }
+    .btn.primary{
+      border-color:transparent;
+      background:linear-gradient(180deg,var(--rc-primary),#0fb79f);
+      color:#0b1217; font-weight:700; box-shadow:0 10px 30px rgba(0,194,168,.25);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:focus{outline:3px solid var(--rc-ring);outline-offset:2px}
 
-    /* Accessibilité */
-    .skip{position:absolute;left:-9999px;top:auto}
-    .skip:focus{left:16px;top:16px;background:#fff;color:#000;padding:10px 14px;border-radius:10px;z-index:1000}
-
-    /* Nav */
-    .nav{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:saturate(160%) blur(10px);
-      background:linear-gradient(180deg, rgba(17,24,39,0.8), rgba(17,24,39,0.45));
-      border-bottom:1px solid rgba(255,255,255,0.06);
+    /* Hero */
+    .hero{padding:56px 0 28px}
+    .hero-inner{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center
     }
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand-mark{
-      width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
-      background: radial-gradient(circle at 30% 30%, #4BFFF0, var(--brand) 55%, #0ABFA7 85%);
-      color:#032C27;font-weight:800;box-shadow:var(--shadow)
-    }
-    .brand img{width:36px;height:36px;object-fit:contain;display:none}
-    .brand-name{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;letter-spacing:.2px}
-    .brand-tag{color:var(--muted);margin-left:8px}
-    .nav-links{display:flex;gap:14px;flex-wrap:wrap}
-    .btn{padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.03);font-weight:600;letter-spacing:.2px;transition:.25s ease}
-    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,0.06)}
-    .btn-primary{border:0;background:linear-gradient(135deg, var(--brand), #42E9D6 80%);color:#052823;box-shadow:var(--shadow)}
-    .btn-ghost{background:transparent;border-color:rgba(255,255,255,0.14)}
-
-    /* Hero (D1) */
-    .hero{padding:56px 0 30px}
-    .kicker{
-      display:inline-flex;align-items:center;gap:10px;margin-inline:auto;
-      border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);
-      padding:8px 12px;border-radius:999px;color:var(--muted);font-weight:600
-    }
-    .kdot{width:8px;height:8px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px var(--ring)}
-    h1{
-      margin:12px 0 10px;text-align:center;
-      font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;letter-spacing:.2px;
-      font-size: clamp(2.2rem, 4vw, 3.1rem); line-height:1.05;
-    }
-    .subtitle{max-width:70ch;margin:0 auto 20px;text-align:center;color:var(--muted);font-size:1.05rem;line-height:1.6}
-    .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px}
-
-    /* Hero visual */
-    .hero-visual{margin-top:26px}
+    .kicker{color:var(--rc-primary);font-weight:600;letter-spacing:.2px}
+    h1{font-family:Sora,Inter,sans-serif;font-size:46px;line-height:1.08;margin:10px 0 10px}
+    .lead{color:var(--rc-muted);font-size:18px;margin:0 0 16px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 8px}
+    .trust{display:flex;gap:14px;flex-wrap:wrap;color:var(--rc-muted);font-size:14px;margin-top:12px}
     .hero-card{
-      border:1px solid rgba(255,255,255,0.08);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:var(--radius);padding:20px;overflow:hidden;position:relative;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+      border:1px solid var(--rc-border);border-radius:18px;background:linear-gradient(180deg,#0f1520,#0b1119);
+      box-shadow:0 20px 60px rgba(0,0,0,.25);padding:18px
     }
-    .glow{position:absolute;inset:-30%;background: radial-gradient(650px 300px at 75% 0%, rgba(0,194,168,0.18), transparent 65%);pointer-events:none}
-    .chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-    .chip{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;
-      border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);font-weight:600}
-    .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--brand)}
-    .muted{color:var(--muted);font-weight:500}
+    .receipt{
+      border:1px dashed #264055;border-radius:12px;padding:14px;background:#0c141e;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      color:#cfe7e3;font-size:13px
+    }
 
-    /* Sections (D2) */
-    section{padding:36px 0;border-top:1px solid rgba(255,255,255,0.06)}
-    .title{font-family:"Space Grotesk",Inter,sans-serif;font-size:1.8rem;text-align:center;margin:0 0 6px}
-    .sub{color:var(--muted);text-align:center;max-width:80ch;margin:0 auto 18px}
+    /* Sections titles */
+    .section{padding:42px 0;border-top:1px solid var(--rc-border)}
+    .section h2{font-family:Sora,Inter,sans-serif;font-size:28px;margin:0 0 8px}
+    .section p.sub{color:var(--rc-muted);margin:0 0 20px}
 
-    /* Grilles */
-    .grid{display:grid;gap:14px}
-    .grid.features{grid-template-columns:repeat(3,1fr)}
-    @media (max-width: 960px){ .grid.features{grid-template-columns:1fr 1fr} }
-    @media (max-width: 640px){ .grid.features{grid-template-columns:1fr} }
+    /* Features */
+    .features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .feature{
+      background:var(--rc-card);border:1px solid var(--rc-border);border-radius:14px;padding:16px;position:relative;overflow:hidden
+    }
+    .feature .icon{width:28px;height:28px;border-radius:8px;background:#12293a;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+    .feature h3{margin:0 0 6px;font-size:16px}
+    .feature p{margin:0;color:var(--rc-muted);font-size:14px}
 
+    /* Scénarios */
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:var(--radius); padding:16px;
+      background:linear-gradient(180deg,#101826,#0c131c);border:1px solid var(--rc-border);border-radius:16px;padding:16px
     }
-    .card h3{margin:0 0 6px;font-size:1.05rem}
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.04);
-      padding:6px 10px;border-radius:999px;color:var(--muted);font-weight:600;font-size:.9rem
+    .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#b8ffe9;background:#0b2a26;border:1px solid #164c43;border-radius:999px;padding:4px 8px}
+    .card h4{margin:10px 0 6px}
+    .card p{margin:0 0 10px;color:var(--rc-muted);font-size:14px}
+
+    /* App mock */
+    .mockwrap{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+    .mock{
+      border:1px solid var(--rc-border);border-radius:16px;background:linear-gradient(180deg,#0f1520,#0b1119);height:240px;
+      display:grid;place-items:center;color:#9fbcc6
     }
-    .badge .b{width:8px;height:8px;border-radius:50%;background:var(--brand)}
 
-    /* App Aperçu */
-    .app-wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:center}
-    @media (max-width: 960px){ .app-wrap{grid-template-columns:1fr;gap:16px} }
-    .phone{
-      width:min(380px, 90%);aspect-ratio:9/19;border-radius:28px;margin:0 auto;
-      background:linear-gradient(180deg, #0E1520, #0B1018);
-      border:1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      position:relative; overflow:hidden;
+    /* Contact */
+    form.contact{
+      display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--rc-card);
+      border:1px solid var(--rc-border);border-radius:16px;padding:16px
     }
-    .statusbar{height:18px;background:rgba(255,255,255,0.04)}
-    .screen{padding:14px}
-    .tile{
-      border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px;margin-bottom:10px;
-      background:rgba(255,255,255,0.02)
+    form.contact input, form.contact textarea{
+      width:100%;padding:12px;border-radius:10px;border:1px solid #1e2a39;background:#0b1219;color:#e9f7f4
     }
-    .tile strong{display:block;margin-bottom:4px}
-    .tiny{font-size:.95rem;color:var(--muted)}
+    form.contact textarea{grid-column:1/-1;min-height:120px}
+    .disclaimer{font-size:12px;color:var(--rc-muted)}
 
-    /* Accessibilité */
-    .a11y-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:900px;margin:0 auto}
-    @media (max-width: 720px){ .a11y-list{grid-template-columns:1fr} }
-    .ok{color:#22C55E}
-    .warn{color:#FBBF24}
+    footer{border-top:1px solid var(--rc-border);padding:28px 0;color:var(--rc-muted);font-size:14px}
 
-    /* Footer */
-    footer{padding:28px 0;color:var(--muted);font-size:.95rem}
-  </style>
+    /* Ask Recallia widget */
+    .ask-btn{
+      position:fixed;right:18px;bottom:18px;z-index:40;
+      background:linear-gradient(180deg,var(--rc-primary),#11d6bc);
+      border:none;border-radius:999px;color:#07211d;font-weight:800;
+      padding:12px 16px;box-shadow:0 10px 30px rgba(0,194,168,.35);cursor:pointer
+    }
+    .ask-panel{
+      position:fixed;right:18px;bottom:78px;width:360px;max-width:92vw;z-index:41;
+      background:#0f1520;border:1px solid var(--rc-border);border-radius:16px;display:none;
+      box-shadow:0 30px 70px rgba(0,0,0,.45)
+    }
+    .ask-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--rc-border)}
+    .ask-body{max-height:360px;overflow:auto;padding:12px}
+    .ask-row{display:flex;gap:8px;align-items:flex-start;margin:10px 0}
+    .ask-row.me{justify-content:flex-end}
+    .bubble{background:#11202a;border:1px solid #1d3341;border-radius:12px;padding:10px 12px;max-width:80%}
+    .bubble.me{background:#112a27;border-color:#1c4a41}
+    .ask-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--rc-border)}
+    .ask-input input{flex:1;padding:10px;border-radius:10px;border:1px solid #223042;background:#0b1219;color:#e9f7f4}
+    .ask-input button{padding:10px 12px;border-radius:10px;border:1px solid #0aa892;background:var(--rc-primary);color:#06231e;font-weight:700;cursor:pointer}
+    .suggest{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .suggest button{border:1px solid #1d3341;background:#0d1a23;color:#bfeee7;border-radius:999px;padding:6px 10px;font-size:12px;cursor:pointer}
 
-  <!-- Respect “réduire les animations” -->
-  <style>
-    @media (prefers-reduced-motion: reduce){
-      *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    /* Responsive */
+    @media (max-width:900px){
+      .hero-inner{grid-template-columns:1fr}
+      .features{grid-template-columns:repeat(2,1fr)}
+      .cards{grid-template-columns:1fr 1fr}
+      .mockwrap{grid-template-columns:1fr}
+      form.contact{grid-template-columns:1fr}
+      h1{font-size:36px}
     }
   </style>
 </head>
 <body>
-  <a class="skip" href="#contenu">Aller au contenu</a>
+  <a href="#main" style="position:absolute;left:-9999px;top:auto;overflow:hidden">Aller au contenu</a>
 
-  <!-- NAV -->
-  <header class="nav" aria-label="Barre de navigation">
-    <div class="container nav-inner">
-      <div class="brand" aria-label="Recallia">
-        <span class="brand-mark" id="logo-fallback" aria-hidden="true">R!</span>
-        <img id="brand-logo" src="recallia-logo.svg" alt="Recallia — logo">
-        <span class="brand-name">Recallia</span>
-        <span class="brand-tag">Votre assistant IA</span>
-      </div>
-      <nav class="nav-links" aria-label="Liens principaux">
-        <a class="btn btn-ghost" href="#fonctionnalites">Fonctionnalités</a>
-        <a class="btn btn-ghost" href="#application">Application</a>
-        <a class="btn btn-ghost" href="#accessibilite">Accessibilité</a>
-        <a class="btn btn-primary" href="#contact">Nous contacter</a>
+  <header>
+    <div class="container nav">
+      <div class="brand"><div class="logo" aria-hidden="true"></div><span>Recallia</span></div>
+      <nav>
+        <a href="#accueil" aria-current="page">Accueil</a>
+        <a href="#fonctionnalites">Fonctionnalités</a>
+        <a href="#application">Application</a>
+        <a href="#apropos">À propos</a>
+        <a href="#contact">Contact</a>
       </nav>
+      <div class="cta">
+        <a class="btn" href="?creator=on#creator">Espace créateur</a>
+        <a class="btn primary" href="#demo">Voir une démo</a>
+      </div>
     </div>
   </header>
 
-  <!-- HERO (D1) -->
-  <main id="contenu" class="hero">
-    <div class="container">
-      <div class="kicker"><span class="kdot"></span> Assistant du quotidien</div>
-      <h1>Votre assistant IA qui anticipe, propose, exécute<br>et <em>prouve</em>.</h1>
-      <p class="subtitle">
-        Recallia détecte ce qui compte, suggère la meilleure action, l’exécute sous votre contrôle (N0→N3, caps),
-        et fournit une preuve vérifiable (reçu haché + journal d’audit).
-      </p>
-      <div class="cta-row" role="group" aria-label="Appels à l’action">
-        <a class="btn btn-primary" href="#fonctionnalites">Découvrir</a>
-        <a class="btn" href="#application">Voir l’application</a>
-      </div>
-
-      <div class="hero-visual">
-        <div class="hero-card" aria-label="Aperçu des actions Recallia">
-          <div class="glow" aria-hidden="true"></div>
-          <div class="chips">
-            <span class="chip"><span class="dot"></span> Carte d’identité — <span class="muted">Dossier prêt</span></span>
-            <span class="chip"><span class="dot"></span> RDV médical — <span class="muted">Documents ajoutés</span></span>
-            <span class="chip"><span class="dot"></span> Facture énergie — <span class="muted">Paiement planifié</span></span>
-            <span class="chip"><span class="dot"></span> Anniversaire — <span class="muted">Message & rappel</span></span>
+  <main id="main">
+    <!-- HERO -->
+    <section id="accueil" class="container hero">
+      <div class="hero-inner">
+        <div>
+          <div class="kicker">Assistant du quotidien</div>
+          <h1>Recallia — <span style="color:var(--rc-primary)">Votre assistant IA</span></h1>
+          <p class="lead">Il anticipe, propose, exécute et prouve. Vous validez, Recallia s’occupe du reste.</p>
+          <div class="cta">
+            <a class="btn primary" href="#fonctionnalites">Découvrir</a>
+            <a class="btn" href="#contact">Parler à l’équipe</a>
+          </div>
+          <div class="trust">Confiance : RGPD • Local-first quand possible • Preuve-ou-rien</div>
+        </div>
+        <div class="hero-card">
+          <strong>Exemple de preuve</strong>
+          <div class="receipt" aria-label="Reçu de preuve simulé">
+{ 
+ "id": "p_173...", 
+ "action": "Renouveler carte d'identité",
+ "result": "success", 
+ "sha256": "e3b0c4...f98",
+ "timestamp": "2025-08-15T10:12:03Z"
+}
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="fonctionnalites" class="container section">
+      <h2>Fonctionnalités</h2>
+      <p class="sub">Les bases qui font gagner du temps — et la différence quand ça compte.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="icon">🧭</div>
+          <h3>Anticipation</h3>
+          <p>Rappels proactifs, fenêtres idéales, zéro oubli.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🧾</div>
+          <h3>Administratif</h3>
+          <p>Pièces prêtes, dépôts assistés, suivi et accusés.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">💳</div>
+          <h3>Finances</h3>
+          <p>Factures, abonnements, relances — avec preuve.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">❤️</div>
+          <h3>Santé & famille</h3>
+          <p>RDV, vaccins, crèche, devoirs — rien ne passe.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:18px">
+        <h3 style="font-family:Sora,Inter,sans-serif;margin:0 0 8px">Scénarios concrets</h3>
+        <div class="cards">
+          <div class="card" data-scenario="cni">
+            <span class="badge">✨ Rapide</span>
+            <h4>Refaire ma carte d’identité</h4>
+            <p>Recallia prépare le dossier (photos, justificatifs), réserve un créneau, et vous livre l’accusé.</p>
+            <a class="btn" href="#demo">Voir comment</a>
+          </div>
+          <div class="card" data-scenario="creche">
+            <span class="badge">👶 Famille</span>
+            <h4>Pré-inscrire à la crèche</h4>
+            <p>Formulaires préremplis, pièces jointes et suivi de réponses.</p>
+            <a class="btn" href="#demo">Voir comment</a>
+          </div>
+          <div class="card" data-scenario="facture">
+            <span class="badge">✅ Preuve</span>
+            <h4>Payer une facture</h4>
+            <p>Lecture, vérification, initiation de paiement assisté + reçu horodaté.</p>
+            <a class="btn" href="#demo">Voir comment</a>
+          </div>
+          <div class="card" data-scenario="anniv">
+            <span class="badge">🎁 Attention</span>
+            <h4>Anniversaire sans stress</h4>
+            <p>Rappel, idées cadeaux, message prêt à envoyer — preuve d’envoi.</p>
+            <a class="btn" href="#demo">Voir comment</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPLICATION -->
+    <section id="application" class="container section">
+      <h2>Application</h2>
+      <p class="sub">Interface simple, non intrusive, personnalisée selon vos habitudes.</p>
+      <div class="mockwrap">
+        <div class="mock">Aperçu — Tableau de bord</div>
+        <div class="mock">Aperçu — Assistant</div>
+      </div>
+      <div class="mock" style="margin-top:12px">Aperçu — Preuve</div>
+    </section>
+
+    <!-- À PROPOS -->
+    <section id="apropos" class="container section">
+      <h2>À propos</h2>
+      <p class="sub">ADN : super assistant qui anticipe, exécute et <strong>prouve</strong>. Local-first, gouvernable, éthique.</p>
+      <p>Différence : “preuve-ou-rien”, personnalisation profonde, évolutivité par Domain Kits.</p>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="container section">
+      <h2>Contact</h2>
+      <p class="sub">Une question ? Un besoin précis ? Écrivez-nous.</p>
+      <form class="contact" onsubmit="event.preventDefault();alert('Message envoyé ! (démo) — un ID local a été généré.');">
+        <input required placeholder="Votre nom" aria-label="Votre nom" />
+        <input required type="email" placeholder="Votre email" aria-label="Votre email" />
+        <textarea required placeholder="Votre message..." aria-label="Votre message"></textarea>
+        <div class="disclaimer">En envoyant, vous acceptez un traitement local démo. Version prod : RGPD & preuve d’accusé.</div>
+        <div style="text-align:right"><button class="btn primary" type="submit">Envoyer</button></div>
+      </form>
+    </section>
   </main>
 
-  <!-- FONCTIONNALITÉS (D2) -->
-  <section id="fonctionnalites" aria-labelledby="tit-fonct">
-    <div class="container">
-      <h2 class="title" id="tit-fonct">Fonctionnalités</h2>
-      <p class="sub">Domaines clés — proactif, simple, sous contrôle utilisateur.</p>
-
-      <div class="grid features" role="list">
-        <article class="card" role="listitem">
-          <span class="badge"><span class="b"></span> Administratif</span>
-          <h3>Pièces & démarches</h3>
-          <p class="tiny">Prépare les pièces (CNI, passeport, attestation), remplit, vérifie, et suit. Preuve : accusé + hash.</p>
-        </article>
-
-        <article class="card" role="listitem">
-          <span class="badge"><span class="b"></span> Vie quotidienne</span>
-          <h3>Tâches & rappels</h3>
-          <p class="tiny">Anniversaires, rendez-vous, listes de courses, checklists maison. Priorisation intelligente.</p>
-        </article>
-
-        <article class="card" role="listitem">
-          <span class="badge"><span class="b"></span> Santé</span>
-          <h3>Rappels médicaux</h3>
-          <p class="tiny">Ordonnances, examens, résultats. Alertes utiles (pas envahissantes), documents organisés.</p>
-        </article>
-
-        <article class="card" role="listitem">
-          <span class="badge"><span class="b"></span> Finances</span>
-          <h3>Factures & abonnements</h3>
-          <p class="tiny">Suivi des échéances, optimisation d’abonnements, paiements assistés avec double confirmation.</p>
-        </article>
-
-        <article class="card" role="listitem">
-          <span class="badge"><span class="b"></span> Anticipation</span>
-          <h3>Un coup d’avance</h3>
-          <p class="tiny">Détecte les situations (rentrée, déménagement, naissance) et propose un plan clair.</p>
-        </article>
-
-        <article class="card" role="listitem">
-          <span class="badge"><span class="b"></span> Preuves</span>
-          <h3>Reçus vérifiables</h3>
-          <p class="tiny">Chaque action réussie génère un reçu haché + journal d’audit. Exportable et partageable.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- APPLICATION (D2) -->
-  <section id="application" aria-labelledby="tit-app">
-    <div class="container app-wrap">
-      <div>
-        <h2 class="title" id="tit-app">Application</h2>
-        <p class="sub">Interface simple, non intrusive, personnalisée selon vos habitudes.</p>
-
-        <div class="card" style="margin-top:10px">
-          <h3>Ce que vous voyez</h3>
-          <ul class="tiny" style="margin:8px 0 0 18px">
-            <li>3 priorités du jour (claires, actionnables).</li>
-            <li>Suggestions proactives (pertinentes, pas envahissantes).</li>
-            <li>Historique & preuves (export, partage sécurisé).</li>
-            <li>Réglages : niveau d’autonomie N0→N3, caps €/temps/risque.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Aperçu mobile (mock visuel) -->
-      <div class="phone" aria-label="Aperçu mobile">
-        <div class="statusbar" aria-hidden="true"></div>
-        <div class="screen">
-          <div class="tile">
-            <strong>Priorité #1</strong>
-            <span class="tiny">CNI — Dossier prêt · <span style="color:var(--brand)">Prouver</span></span>
-          </div>
-          <div class="tile">
-            <strong>Suggestion</strong>
-            <span class="tiny">Facture énergie — Paiement assisté à valider</span>
-          </div>
-          <div class="tile">
-            <strong>Preuves</strong>
-            <span class="tiny">2 reçus vérifiables · Export JSON/ZIP</span>
-          </div>
-          <div class="tile">
-            <strong>Contrôle</strong>
-            <span class="tiny">Niveau N1 · Caps € / min · Pause rapide</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ACCESSIBILITÉ (D2) -->
-  <section id="accessibilite" aria-labelledby="tit-a11y">
-    <div class="container">
-      <h2 class="title" id="tit-a11y">Accessibilité</h2>
-      <p class="sub">Pensé pour être confortable et inclusif.</p>
-      <div class="a11y-list">
-        <div class="card"><strong class="ok">Contrastes élevés</strong><div class="tiny">Palette sombre maîtrisée, lisibilité renforcée.</div></div>
-        <div class="card"><strong class="ok">Navigation clavier</strong><div class="tiny">Lien “Aller au contenu”, focus visibles.</div></div>
-        <div class="card"><strong class="ok">Réduction d’animations</strong><div class="tiny">Respect <code>prefers-reduced-motion</code>.</div></div>
-        <div class="card"><strong class="warn">Taille de police ajustable</strong><div class="tiny">Prévu (contrôle +/− à venir).</div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" aria-labelledby="tit-contact">
-    <div class="container">
-      <h2 class="title" id="tit-contact">Contact</h2>
-      <p class="sub">Une question ? Parlons-en.</p>
-      <div class="card" style="max-width:680px;margin:0 auto">
-        <form class="tiny" aria-label="Formulaire de contact (maquette)">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <label>Prénom<br><input type="text" placeholder="Votre prénom" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)"></label>
-            <label>Nom<br><input type="text" placeholder="Votre nom" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)"></label>
-          </div>
-          <label style="display:block;margin-top:10px">Email<br>
-            <input type="email" placeholder="vous@exemple.com" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)">
-          </label>
-          <label style="display:block;margin-top:10px">Message<br>
-            <textarea rows="4" placeholder="Votre message…" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:var(--text)"></textarea>
-          </label>
-          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
-            <button type="button" class="btn">Plus tard</button>
-            <button type="submit" class="btn btn-primary">Envoyer</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer aria-label="Pied de page">
-    <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div>© <span id="year"></span> Recallia — Votre assistant IA</div>
-      <div class="tiny"><a href="#accessibilite">Accessibilité</a> · <a href="#contact">Support</a></div>
-    </div>
+  <footer>
+    <div class="container">© Recallia — Votre assistant IA • Preuve-ou-rien • RGPD • <a href="#contact">Nous contacter</a></div>
   </footer>
 
-  <script>
-    // Année
-    document.getElementById('year').textContent = new Date().getFullYear();
+  <!-- Ask Recallia (mini chat) -->
+  <button class="ask-btn" id="askOpen">Poser une question</button>
+  <div class="ask-panel" id="askPanel" role="dialog" aria-label="Demander à Recallia">
+    <div class="ask-head">
+      <strong>Demander à Recallia</strong>
+      <button class="btn" id="askClose" type="button">Fermer</button>
+    </div>
+    <div class="ask-body" id="askBody" aria-live="polite">
+      <div class="ask-row">
+        <div class="bubble">
+          Bonjour 👋 Que puis-je faire pour vous ?  
+          <div class="suggest">
+            <button data-q="Refaire ma carte d’identité">Carte d’identité</button>
+            <button data-q="Pré-inscrire mon enfant à la crèche">Crèche</button>
+            <button data-q="Payer ma facture d’électricité">Payer une facture</button>
+            <button data-q="Préparer un message d’anniversaire">Anniversaire</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ask-input">
+      <input id="askInput" placeholder="Écrivez votre demande…" />
+      <button id="askSend" type="button">Envoyer</button>
+    </div>
+  </div>
 
-    // Logo fallback (utilise recallia-logo.svg s'il existe)
+  <script>
+    // Menu current
+    const links=document.querySelectorAll('header nav a');
+    const onScroll=()=>{const y=scrollY+120;document.querySelectorAll('main section').forEach(s=>{
+      const a=document.querySelector('a[href="#'+s.id+'"]'); if(!a) return;
+      const top=s.offsetTop, bot=top+s.offsetHeight; a.removeAttribute('aria-current');
+      if(y>=top && y<bot) a.setAttribute('aria-current','page');
+    });};
+    addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+    // Ask Recallia (demo offline)
+    const panel = document.getElementById('askPanel');
+    document.getElementById('askOpen').onclick=()=>panel.style.display='block';
+    document.getElementById('askClose').onclick=()=>panel.style.display='none';
+    document.querySelectorAll('.suggest button').forEach(b=>b.onclick=()=>send(b.dataset.q));
+    document.getElementById('askSend').onclick=()=>send(document.getElementById('askInput').value.trim());
+
+    const bodyEl=document.getElementById('askBody');
+    function addBubble(text,me=false){
+      const row=document.createElement('div'); row.className='ask-row'+(me?' me':'');
+      const b=document.createElement('div'); b.className='bubble'+(me?' me':''); b.innerText=text;
+      row.appendChild(b); bodyEl.appendChild(row); bodyEl.scrollTop=bodyEl.scrollHeight;
+    }
+    function send(q){
+      if(!q) return; addBubble(q,true); document.getElementById('askInput').value='';
+      // Réponses guidées (démo locale)
+      const lower=q.toLowerCase();
+      let r = "Merci, je prépare une proposition. (Démo)";
+      if(lower.includes('carte')||lower.includes("cni")){
+        r = "Je peux : 1) Lister les pièces manquantes, 2) Pré-remplir le formulaire ANTS, 3) Proposer des créneaux RDV proches, 4) Générer un reçu (preuve) après envoi. Souhaitez-vous que je prépare le dossier ?";
+      } else if(lower.includes('crèche')||lower.includes('creche')){
+        r = "Je peux : 1) Vérifier l’éligibilité, 2) Pré-remplir la demande, 3) Joindre les justificatifs, 4) Suivre les réponses et créer un rappel. Voulez-vous lancer la pré-inscription ?";
+      } else if(lower.includes('facture')){
+        r = "Je peux : 1) Lire la facture (montant/échéance), 2) Vérifier IBAN/RIB, 3) Préparer un paiement assisté, 4) Émettre une preuve d’exécution. Démarrer ?";
+      } else if(lower.includes('anniv')||lower.includes('anniversaire')){
+        r = "Je peux : 1) Préparer un message, 2) Proposer un cadeau, 3) Planifier l’envoi, 4) Donner une preuve d’envoi. Je prépare ?";
+      } else if(lower.includes('rendez')||lower.includes('rdv')){
+        r = "Je peux : proposer 3 créneaux, préparer les documents, et ajouter l’événement avec rappel. Lancer ?";
+      }
+      addBubble(r);
+    }
+
+    // Créateur (placeholder : garde le lien mais accès réel plus tard)
     (function(){
-      const img = document.getElementById('brand-logo');
-      const fallback = document.getElementById('logo-fallback');
-      if(!img) return;
-      const test = new Image();
-      test.onload = () => { img.style.display='block'; fallback.style.display='none'; };
-      test.onerror = () => { /* on garde le fallback */ };
-      test.src = img.getAttribute('src');
+      const isCreator=new URLSearchParams(location.search).get('creator')==='on';
+      if(isCreator){ console.log('Espace créateur : PIN requis (prochain patch affichera le panneau après validation).'); }
     })();
   </script>
 </body>
