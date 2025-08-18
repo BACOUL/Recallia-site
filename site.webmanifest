@@ -1,14 +1,14 @@
 {
   "name": "Recallia",
   "short_name": "Recallia",
+  "description": "Votre assistant IA : anticipe, propose, exécute et prouve.",
   "start_url": "/Recallia-site/",
   "scope": "/Recallia-site/",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0b1220",
-  "description": "Votre assistant IA — anticipe, propose, exécute et prouve.",
+  "background_color": "#0E1116",
+  "theme_color": "#00C2A8",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
