@@ -4,24 +4,120 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Recallia — Votre assistant IA</title>
-  <meta name="description" content="Recallia anticipe, exécute et prouve vos tâches du quotidien. Votre assistant IA : simple, proactif et sécurisé." />
-
-  <!-- Couleurs marque -->
+  <meta name="description" content="Recallia anticipe, exécute et prouve vos tâches du quotidien. Moins de charge mentale, plus de résultats — sous votre contrôle total." />
   <meta name="theme-color" content="#0E1116" />
-
-  <!-- Manifeste PWA -->
   <link rel="manifest" href="site.webmanifest" />
-
-  <!-- Icônes (tu peux les mettre plus tard, pas bloquant) -->
   <link rel="icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
-  <!-- Police moderne (inter/space-grotesk) -->
+  <!-- Polices -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
 
-  <!-- Feuille de style -->
-  <link rel="stylesheet" href="assets/styles.css" />
+  <!-- CSS CRITIQUE INLINE (couleurs & mise en forme complètes) -->
+  <style>
+  :root{
+    --bg:#0E1116;
+    --fg:#E6F7F4;
+    --muted:#A7B8B5;
+    --brand:#00C2A8;      /* turquoise validé */
+    --brand-2:#10B981;    /* accent optionnel */
+    --card:#141A22;
+    --line:#1C2430;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
+    background: var(--bg); color: var(--fg); line-height:1.6;
+  }
+  h1,h2,h3,h4{font-family:"Space Grotesk",Inter,system-ui,sans-serif; letter-spacing:.2px}
+  h1{font-size:clamp(2rem,3.5vw,3rem); line-height:1.1; margin:0 0 .75rem}
+  h2{font-size:clamp(1.5rem,2.5vw,2rem); margin:0 0 .5rem}
+  h3{font-size:1.25rem; margin:.25rem 0}
+  .lead{font-size:1.125rem; color:var(--muted)}
+  .container{width:min(1100px,92%); margin-inline:auto}
+
+  /* Nav */
+  .nav{position:sticky; top:0; z-index:20; background:rgba(14,17,22,.8); backdrop-filter:saturate(140%) blur(10px); border-bottom:1px solid var(--line)}
+  .nav__inner{display:flex; align-items:center; gap:1rem; padding:.75rem 0}
+  .brand{font-weight:800; font-size:1.2rem; color:#fff; text-decoration:none}
+  .nav__links{margin-left:auto; display:flex; gap:1rem}
+  .nav__links a{color:var(--muted); text-decoration:none}
+  .nav__links a:hover{color:#fff}
+
+  /* Buttons */
+  .btn{display:inline-flex; align-items:center; justify-content:center; padding:.7rem 1rem; border-radius:10px; text-decoration:none; cursor:pointer; border:1px solid transparent; font-weight:600; transition:.2s}
+  .btn--primary{background:var(--brand); color:#001110}
+  .btn--primary:hover{filter:brightness(1.05)}
+  .btn--secondary{background:#1B232E; border-color:#243041; color:#EAFDFC}
+  .btn--secondary:hover{border-color:#344255}
+  .btn--ghost{background:transparent; color:#EAFDFC; border-color:#2a3647}
+  .btn--ghost:hover{border-color:#3a4a60}
+
+  /* Sections */
+  .hero{padding:clamp(2rem,5vw,4rem) 0}
+  .hero__inner{display:grid; grid-template-columns:1.1fr .9fr; gap:2rem; align-items:center}
+  .hero__cta{display:flex; gap:.8rem; margin:1rem 0 1.2rem}
+  .chips{display:flex; gap:.6rem; flex-wrap:wrap; padding:0; margin:0; list-style:none}
+  .chips li{padding:.35rem .6rem; background:#0f151c; border:1px solid var(--line); border-radius:999px; color:var(--muted)}
+
+  .card{background:linear-gradient(180deg,#121821,#0E131B); border:1px solid var(--line); border-radius:16px; padding:1rem 1.1rem; box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .card__title{font-weight:700; margin-bottom:.5rem}
+  .card__list{padding-left:1.1rem; margin:.3rem 0 .8rem}
+  .card__list li{margin:.2rem 0}
+  .card__foot{color:var(--muted); font-size:.95rem}
+
+  .steps{padding:3rem 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .steps__grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin-top:1rem}
+  .step{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1rem}
+  .step__num{display:inline-block; background:#102029; color:var(--brand); border:1px solid #183443; border-radius:8px; padding:.2rem .5rem; margin-bottom:.4rem}
+
+  .features{padding:3rem 0}
+  .features__grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:1rem}
+  .feature{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1rem}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:1.2rem}
+  .stat{background:#0f151c; border:1px solid var(--line); border-radius:14px; padding:1rem; text-align:center}
+  .stat__num{font-weight:800; font-size:1.6rem}
+  .stat__label{color:var(--muted); font-size:.95rem}
+
+  .social{padding:3rem 0; border-top:1px solid var(--line)}
+  .quotes{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:1rem}
+  blockquote{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1rem; margin:0}
+  blockquote span{display:block; color:var(--muted); margin-top:.4rem}
+
+  .ask{padding:3rem 0; border-top:1px solid var(--line)}
+  .ask__form{display:flex; gap:.6rem; margin-top:.6rem; flex-wrap:wrap}
+  .input{flex:1 1 420px; padding:.8rem 1rem; background:#0f151c; color:#EAFDFC; border:1px solid #223042; border-radius:10px; outline:none}
+  .input:focus{border-color:#35506a; box-shadow:0 0 0 3px rgba(0,194,168,.12)}
+  .ask__result{margin-top:1rem}
+  .proposals{display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem}
+  .proposal{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1rem}
+  .muted{color:var(--muted)}
+  .small{font-size:.95rem}
+
+  .faq{padding:3rem 0; border-top:1px solid var(--line)}
+  details{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:.8rem 1rem; margin-bottom:.6rem}
+  summary{cursor:pointer; font-weight:600}
+
+  .contact{padding:3rem 0; border-top:1px solid var(--line)}
+  .install-hint{color:var(--muted); margin-top:.8rem}
+
+  .footer{border-top:1px solid var(--line); padding:1.2rem 0; background:#0c1016}
+  .footer__inner{display:grid; gap:.5rem}
+  .footer__links{display:flex; flex-wrap:wrap; gap:.8rem}
+  .footer__links a{color:var(--muted); text-decoration:none}
+  .footer__links a:hover{color:#fff}
+  .footer__copy{color:var(--muted); font-size:.95rem}
+
+  @media (max-width: 980px){
+    .hero__inner{grid-template-columns:1fr}
+    .steps__grid{grid-template-columns:1fr}
+    .features__grid{grid-template-columns:1fr 1fr}
+    .quotes{grid-template-columns:1fr}
+    .proposals{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+  }
+  </style>
 </head>
 <body>
 <header class="nav">
@@ -39,7 +135,6 @@
 
 <main id="top">
 
-  <!-- HERO -->
   <section class="hero">
     <div class="container hero__inner">
       <div class="hero__copy">
@@ -73,7 +168,6 @@
     </div>
   </section>
 
-  <!-- COMMENT ÇA MARCHE -->
   <section id="comment" class="steps">
     <div class="container">
       <h2>Comment ça marche</h2>
@@ -97,7 +191,6 @@
     </div>
   </section>
 
-  <!-- FONCTIONNALITÉS -->
   <section id="fonctionnalites" class="features">
     <div class="container">
       <h2>Fonctionnalités principales</h2>
@@ -137,7 +230,6 @@
     </div>
   </section>
 
-  <!-- TEMOIGNAGES -->
   <section class="social">
     <div class="container">
       <h2>Ils en parlent</h2>
@@ -149,7 +241,6 @@
     </div>
   </section>
 
-  <!-- FORMULAIRE QUESTION -->
   <section id="ask" class="ask">
     <div class="container">
       <h2>Posez une question à Recallia</h2>
@@ -163,7 +254,6 @@
     </div>
   </section>
 
-  <!-- FAQ -->
   <section id="faq" class="faq">
     <div class="container">
       <h2>FAQ</h2>
@@ -194,7 +284,6 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
   <section id="contact" class="contact">
     <div class="container">
       <h2>Contact</h2>
@@ -222,19 +311,16 @@
 </footer>
 
 <script>
-  // Formulaire "Poser une question" : mock de proposition (client-side)
+  // Mock "Poser une question"
   const form = document.getElementById('askForm');
   const input = document.getElementById('askInput');
   const result = document.getElementById('askResult');
 
-  const suggestions = (q) => {
-    // 3 propositions génériques basées sur la requête
-    return [
-      { title: 'Plan rapide', desc: `Étapes essentielles pour « ${q} » (≤ 60s).` },
-      { title: 'Plan sécurisé', desc: `Vérifications + preuve renforcée pour « ${q} ».` },
-      { title: 'Plan assisté', desc: `Guidage pas-à-pas + rappels pour « ${q} ».` },
-    ];
-  };
+  const suggestions = (q) => ([
+    { title: 'Plan rapide',    desc: `Étapes essentielles pour « ${q} » (≤ 60s).` },
+    { title: 'Plan sécurisé',  desc: `Vérifications + preuve renforcée pour « ${q} ».` },
+    { title: 'Plan assisté',   desc: `Guidage pas-à-pas + rappels pour « ${q} ».` },
+  ]);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -247,7 +333,10 @@
           <div class="proposal">
             <h4>${o.title}</h4>
             <p>${o.desc}</p>
-            <button class="btn btn--ghost" type="button" onclick="alert('Demande enregistrée : ${q}\\n(${o.title}) — Exécution simulée (preuve à venir).')">Choisir</button>
+            <button class="btn btn--ghost" type="button"
+              onclick="alert('Demande enregistrée : ${q}\\n(${o.title}) — Exécution simulée (preuve à venir).')">
+              Choisir
+            </button>
           </div>
         `).join('')}
       </div>`;
@@ -256,4 +345,4 @@
   });
 </script>
 </body>
-</html>
+  </html>
