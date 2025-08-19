@@ -1,216 +1,263 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Recallia — Votre assistant IA</title>
+  <meta name="description" content="Recallia, votre assistant IA du quotidien : anticipe, exécute et prouve. Gagnez du temps, réduisez le stress, gardez le contrôle." />
 
-  <!-- Design system (D1) -->
-  <meta name="theme-color" content="#0C1116" />
-  <link rel="manifest" href="/site.webmanifest" />
+  <!-- Manifest PWA (fichier déjà créé) -->
+  <link rel="manifest" href="site.webmanifest">
 
-  <!-- Police conseillée (Inter) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Feuille de style principale (déjà dans ton repo) -->
-  <link rel="stylesheet" href="/assets/css/styles.css" />
-
-  <style>
-    /* Garde-fous si certaines classes manquent dans styles.css */
-    :root{
-      --bg:#0C1116; --fg:#FFFFFF; --muted:#9BA4AF;
-      --card:#0F172A; --border:#1F2937; --accent:#00C2C7; --accent-2:#1F2937;
-      --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.35);
-      --font:'Inter',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-    }
-    html,body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0}
-    a{color:var(--accent);text-decoration:none}
-    .container{max-width:1120px;margin-inline:auto;padding:24px}
-    header.nav{position:sticky;top:0;backdrop-filter:blur(8px);
-      background:color-mix(in oklab, var(--bg) 80%, #000 20%); border-bottom:1px solid var(--border); z-index:50}
-    .nav-inner{display:flex;align-items:center;gap:24px;justify-content:space-between}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.06em}
-    .brand-mark{width:36px;aspect-ratio:1;border-radius:50%;
-      background:radial-gradient(100% 100% at 50% 30%, #22E0EB 0%, #00C2C7 45%, #0095A0 100%);
-      box-shadow:0 0 25px #0095a080}
-    nav ul{list-style:none;display:flex;gap:18px;margin:0;padding:0;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:12px 18px;border-radius:999px;background:linear-gradient(180deg,#1FD4E0,#0CA4B0);
-      color:#002126;font-weight:700;box-shadow:var(--shadow);border:none;cursor:pointer}
-    .btn.secondary{background:transparent;border:1px solid var(--border);color:var(--fg);box-shadow:none}
-    /* Hero */
-    .hero{padding:64px 0 24px;background:
-      radial-gradient(800px 400px at 50% -10%, #08222a 0%, transparent 60%)}
-    .hero h1{font-size:clamp(32px,5vw,48px);line-height:1.1;margin:0 0 12px}
-    .hero p{font-size:clamp(16px,2.5vw,20px);color:var(--muted);margin:0 0 24px}
-    .cta-row{display:flex;gap:12px;flex-wrap:wrap}
-    /* Sections */
-    section{padding:56px 0;border-top:1px solid var(--border)}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-    .card h3{margin:0 0 8px}
-    .muted{color:var(--muted)}
-    /* Démo */
-    .demo{display:grid;gap:12px}
-    .demo input{width:100%;padding:14px;border-radius:10px;border:1px solid var(--border);
-      background:#0b1420;color:var(--fg)}
-    .demo .answer{min-height:72px;border-radius:12px;border:1px dashed var(--border);
-      padding:14px;background:#0b1420}
-    /* Footer */
-    footer{border-top:1px solid var(--border);padding:32px 0;color:var(--muted)}
-    /* Accessibilité liens saut */
-    .skip{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
-    .skip:focus{position:static;width:auto;height:auto;padding:8px;background:#12202a;border-radius:8px}
-  </style>
+  <!-- Icônes (placeholders — tu mettras les bons fichiers plus tard) -->
+  <link rel="icon" href="icon-192.png" sizes="192x192">
+  <link rel="icon" href="icon-512.png" sizes="512x512">
+  <meta name="theme-color" content="#0E1116" />
 </head>
-<body>
-  <a class="skip" href="#contenu">Aller au contenu</a>
 
-  <!-- NAV -->
-  <header class="nav" role="banner" aria-label="Navigation principale">
-    <div class="container nav-inner">
-      <a class="brand" href="/">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>RECALLIA</span>
+<body class="layout">
+  <!-- Header -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="#top" class="brand">
+        <!-- Logo minimal (remplace l’emoji par ton SVG quand prêt) -->
+        <span class="brand__mark" aria-hidden="true">▣</span>
+        <span class="brand__name">Recallia</span>
       </a>
-      <nav aria-label="Navigation">
-        <ul>
-          <li><a href="#accueil">Accueil</a></li>
-          <li><a href="#fonctionnalites">Fonctionnalités</a></li>
-          <li><a href="#demo">Démo</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li id="link-creator" style="display:none"><a href="/createur.html">Espace créateur</a></li>
-        </ul>
+
+      <nav class="nav">
+        <a href="#fonctionnalites">Fonctionnalités</a>
+        <a href="#comment-ca-marche">Comment ça marche</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+        <!-- Bouton principal -->
+        <a href="#try" class="btn btn--primary">Essayer</a>
       </nav>
     </div>
   </header>
 
-  <main id="contenu">
-    <!-- HERO -->
-    <section id="accueil" class="hero">
-      <div class="container">
-        <h1>Votre assistant IA</h1>
-        <p>Recallia anticipe, propose et exécute pour vous — au quotidien. Simple. Sécurisé. Personnel.</p>
-        <div class="cta-row">
-          <a class="btn" href="#demo">Essayer la démo</a>
-          <a class="btn secondary" href="#fonctionnalites">Découvrir</a>
-        </div>
-        <p class="muted" style="margin-top:8px">• Sécurisé • Privé • Personnalisé • Multi-domaines</p>
-      </div>
-    </section>
-
-    <!-- FONCTIONNALITÉS (D2) -->
-    <section id="fonctionnalites" aria-labelledby="titrefonc">
-      <div class="container">
-        <h2 id="titrefonc">Fonctionnalités</h2>
-        <p class="muted">Des scénarios concrets qui simplifient la vie.</p>
-
-        <div class="cards" style="margin-top:14px">
-          <article class="card">
-            <h3>Administratif intelligent</h3>
-            <p>“Je dois refaire ma carte d’identité.” Recallia vérifie les prérequis, prépare les documents, propose les créneaux et préremplit le dossier.</p>
-          </article>
-          <article class="card">
-            <h3>Agenda proactif</h3>
-            <p>Rappels utiles, réservations, et coordination automatique avec vos contraintes — sans être intrusif.</p>
-          </article>
-          <article class="card">
-            <h3>Vie perso & famille</h3>
-            <p>Crèche, école, santé, transports… Recallia anticipe et propose les meilleures options.</p>
-          </article>
-          <article class="card">
-            <h3>Finances & abonnements</h3>
-            <p>Suivi des dépenses, alertes de renouvellement, optimisation des abonnements.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- DÉMO INTERACTIVE (maquette locale) -->
-    <section id="demo" aria-labelledby="titledemo">
-      <div class="container">
-        <h2 id="titledemo">Démo (maquette)</h2>
-        <p class="muted">Pose une question à Recallia pour voir le type d’aide proposé.</p>
-        <div class="demo" role="region" aria-live="polite">
-          <label for="q" class="muted">Votre question</label>
-          <input id="q" type="text" placeholder="Ex. : Je dois refaire ma carte d’identité" />
-          <button class="btn" id="ask">Envoyer</button>
-          <div class="answer" id="answer">Réponse affichée ici.</div>
-          <p class="muted" style="margin:0">Note : cette démo est locale (sans serveur) et montre le comportement attendu.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faq" aria-labelledby="titlefaq">
-      <div class="container">
-        <h2 id="titlefaq">FAQ</h2>
-        <div class="cards">
-          <article class="card">
-            <h3>Mes données sont-elles privées ?</h3>
-            <p>Oui. Données chiffrées, non revendues, contrôle total utilisateur (RGPD).</p>
-          </article>
-          <article class="card">
-            <h3>Recallia est-il intrusif ?</h3>
-            <p>Non. Il propose avec tact, n’interrompt pas, et vous choisissez le niveau d’autonomie.</p>
-          </article>
-          <article class="card">
-            <h3>Y a-t-il une application mobile ?</h3>
-            <p>Oui. Android & iOS, notifications intelligentes, mode sombre, synchronisé au web.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" aria-labelledby="titlecontact">
-      <div class="container">
-        <h2 id="titlecontact">Contact</h2>
-        <p class="muted">Une question ? Un partenariat ?</p>
-        <div class="cards">
-          <div class="card">
-            <h3>Nous écrire</h3>
-            <p><a href="mailto:hello@recallia.app">hello@recallia.app</a></p>
+  <!-- Héros -->
+  <main id="top">
+    <section class="hero section section--hero">
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <h1 class="hero__title">Votre assistant IA</h1>
+          <p class="hero__subtitle">
+            Recallia anticipe, exécute et <strong>prouve</strong> vos tâches du quotidien.
+            Moins de charge mentale, plus de résultats — sous votre contrôle total.
+          </p>
+          <div class="hero__cta">
+            <a href="#try" class="btn btn--primary">Poser une question</a>
+            <a href="#comment-ca-marche" class="btn btn--ghost">Voir comment ça marche</a>
           </div>
-          <div class="card">
-            <h3>Support</h3>
-            <p>Assistance directe avec Recallia (à venir).</p>
+
+          <!-- Micro trust -->
+          <ul class="pills">
+            <li class="pill">Preuve-ou-rien</li>
+            <li class="pill">Local-first</li>
+            <li class="pill">Niveaux N0→N3 + caps</li>
+          </ul>
+        </div>
+
+        <!-- Visuel placeholder -->
+        <div class="hero__visual card">
+          <div class="mock-screen">
+            <div class="mock-header">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+            <div class="mock-body">
+              <p><strong>Demande :</strong> “Refaire ma carte d’identité.”</p>
+              <ul class="checklist">
+                <li>Formulaire ANTS pré-rempli</li>
+                <li>Photos d’identité : ok</li>
+                <li>Justifs domicile/naissance : trouvés</li>
+                <li>Rendez-vous recommandé : demain 9h30</li>
+              </ul>
+              <p class="note">→ Prêt à exécuter. Preuve livrée à la fin.</p>
+            </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Comment ça marche -->
+    <section id="comment-ca-marche" class="section">
+      <div class="container">
+        <h2 class="section__title">Comment ça marche ?</h2>
+        <div class="grid grid--3">
+          <article class="card step">
+            <div class="step__icon" aria-hidden="true">①</div>
+            <h3>Vous demandez</h3>
+            <p>Dites “Payer cette facture”, “Préparer la rentrée”, “Réserver un créneau”…</p>
+          </article>
+          <article class="card step">
+            <div class="step__icon" aria-hidden="true">②</div>
+            <h3>Recallia prépare & exécute</h3>
+            <p>Il rassemble les infos, propose le plan le plus rapide et exécute sous vos règles (N0→N3).</p>
+          </article>
+          <article class="card step">
+            <div class="step__icon" aria-hidden="true">③</div>
+            <h3>Preuve livrée</h3>
+            <p>Reçu haché + journal d’audit. Vous gardez le contrôle, toujours.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fonctionnalités principales -->
+    <section id="fonctionnalites" class="section section--alt">
+      <div class="container">
+        <h2 class="section__title">Fonctionnalités principales</h2>
+        <div class="grid grid--4">
+          <article class="card feat">
+            <h3>Administratif</h3>
+            <p>Cartes d’identité, certificats, rendez-vous officiels, relances…</p>
+          </article>
+          <article class="card feat">
+            <h3>Quotidien</h3>
+            <p>Listes, courses, annivs, ménage, contrats énergie/télécoms…</p>
+          </article>
+          <article class="card feat">
+            <h3>Santé</h3>
+            <p>Rappels médicaux, ordonnances, suivi de documents santé.</p>
+          </article>
+          <article class="card feat">
+            <h3>Finances</h3>
+            <p>Budget, abonnements, paiements sécurisés, reçus & preuves.</p>
+          </article>
+        </div>
+
+        <!-- Compteurs de valeur -->
+        <div class="counters">
+          <div class="counter"><strong>+3 h</strong><span>économisées / semaine</span></div>
+          <div class="counter"><strong>98%</strong><span>d’actions réussies</span></div>
+          <div class="counter"><strong>100%</strong><span>actions prouvées</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Témoignages -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section__title">Ils en parlent</h2>
+        <div class="grid grid--3">
+          <blockquote class="card quote">
+            <p>“J’ai gagné 3 h par semaine, sans stress.”</p>
+            <footer>— Sofia, 34 ans</footer>
+          </blockquote>
+          <blockquote class="card quote">
+            <p>“Mes papiers sont enfin à jour.”</p>
+            <footer>— Nicolas, 41 ans</footer>
+          </blockquote>
+          <blockquote class="card quote">
+            <p>“Pro et humain. Les preuves, c’est rassurant.”</p>
+            <footer>— Aïcha, 29 ans</footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zone “Essayer / Poser une question” -->
+    <section id="try" class="section section--alt">
+      <div class="container">
+        <h2 class="section__title">Posez une question à Recallia</h2>
+        <p class="section__lead">Exemples : “Refaire ma carte d’identité”, “Préparer la rentrée”, “Payer cette facture”.</p>
+        <form class="card ask" action="#contact" method="get">
+          <label for="q" class="sr-only">Votre demande</label>
+          <input id="q" name="q" type="text" class="input" placeholder="Décrivez ce que vous voulez que Recallia fasse…" required>
+          <button class="btn btn--primary" type="submit">Proposer un plan</button>
+        </form>
+        <p class="hint">Recallia suggère 1–3 options, exécute sous vos caps (N0→N3) et livre une preuve.</p>
+      </div>
+    </section>
+
+    <!-- FAQ (accessibilité native via <details>) -->
+    <section id="faq" class="section">
+      <div class="container">
+        <h2 class="section__title">FAQ</h2>
+        <div class="faq">
+          <details class="card">
+            <summary>Que fait exactement Recallia ?</summary>
+            <p>Un assistant qui anticipe, exécute et prouve (administratif, santé, quotidien, finances…).</p>
+          </details>
+          <details class="card">
+            <summary>Et mes données ?</summary>
+            <p>Local-first quand possible, chiffrées, jamais revendues. Export/effacement à tout moment.</p>
+          </details>
+          <details class="card">
+            <summary>Que signifie “preuve-ou-rien” ?</summary>
+            <p>Chaque action réussie livre un reçu (PDF/EML/ICS/JSON) + SHA-256 + journal d’audit.</p>
+          </details>
+          <details class="card">
+            <summary>Les niveaux N0→N3 ?</summary>
+            <p>De la simple suggestion (N0) à l’exécution pro-active (N3) sous caps et double confirmation.</p>
+          </details>
+          <details class="card">
+            <summary>Prix ?</summary>
+            <p>Gratuit (limité), Pro (à préciser). Objectif : utile et abordable.</p>
+          </details>
+          <details class="card">
+            <summary>Notifications ?</summary>
+            <p>Push/SMS/email, configurables par domaine et par importance.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bandeau PWA (statique, en attendant les icônes et le SW) -->
+    <section id="install" class="section section--callout">
+      <div class="container callout">
+        <div>
+          <h3>Installer l’app sur votre téléphone</h3>
+          <p>Sur Android : Menu ⋮ → “Ajouter à l’écran d’accueil”. Sur iPhone :  partage → “Sur l’écran d’accueil”.</p>
+        </div>
+        <a href="#faq" class="btn btn--ghost">Besoin d’aide ?</a>
       </div>
     </section>
   </main>
 
-  <footer role="contentinfo">
-    <div class="container">
-      <p>© <span id="year"></span> Recallia — « Votre assistant IA »</p>
+  <!-- Footer -->
+  <footer id="contact" class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <div class="brand">
+          <span class="brand__mark" aria-hidden="true">▣</span>
+          <span class="brand__name">Recallia</span>
+        </div>
+        <p class="muted">Assistant IA proactif. Anticipe, exécute, prouve.</p>
+      </div>
+
+      <nav class="footer__nav">
+        <strong>Produit</strong>
+        <a href="#fonctionnalites">Fonctionnalités</a>
+        <a href="#comment-ca-marche">Comment ça marche</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <nav class="footer__nav">
+        <strong>Légal</strong>
+        <a href="#" aria-disabled="true">Mentions légales</a>
+        <a href="#" aria-disabled="true">Confidentialité</a>
+        <a href="#" aria-disabled="true">Cookies</a>
+      </nav>
+
+      <div class="footer__cta">
+        <strong>Nous écrire</strong>
+        <a class="btn btn--primary" href="mailto:contact@recallia.app">contact@recallia.app</a>
+      </div>
+    </div>
+    <div class="container footer__base">
+      <small>© <span id="y">2025</span> Recallia. Tous droits réservés.</small>
+      <a class="toplink" href="#top">Remonter ↑</a>
     </div>
   </footer>
 
+  <!-- CTA sticky (mobile) -->
+  <a class="sticky-cta btn btn--primary" href="#try" aria-label="Poser une question à Recallia">Poser une question</a>
+
+  <!-- (Optionnel) JS léger pour l’année et petits conforts -->
   <script>
-    // Afficher le lien "Espace créateur" si ?creator=on
-    (function(){
-      const p = new URLSearchParams(location.search);
-      if(p.get('creator') === 'on'){ document.getElementById('link-creator').style.display = 'list-item'; }
-      document.getElementById('year').textContent = new Date().getFullYear();
-    })();
-
-    // Démo locale (maquette) : réponses conditionnelles simples
-    document.getElementById('ask').addEventListener('click', () => {
-      const q = (document.getElementById('q').value || '').toLowerCase();
-      const box = document.getElementById('answer');
-
-      let r = "Bientôt, Recallia proposera ici une action concrète adaptée à votre besoin.";
-      if(q.includes('carte') && (q.includes('identite') || q.includes("identité"))){
-        r = "✅ Démarche ‘Carte d’identité’ :\n• Vérif prérequis (photo, justificatifs, timbre fiscal)\n• Pré-remplissage + création du dossier ANTS\n• Propositions de créneaux mairie\n• Checklist finale et suivi";
-      } else if(q.includes('medecin') || q.includes('médecin') || q.includes('rdv')){
-        r = "✅ RDV santé :\n• Recherche de créneaux selon vos contraintes\n• Ajout agenda + rappel intelligent\n• Télé-consultation si plus rapide";
-      } else if(q.includes('abonnement') || q.includes('finances')){
-        r = "✅ Finances & abonnements :\n• Détection renouvellements\n• Négociation/optimisation proposée\n• Alertes avant prélèvement";
-      }
-      box.textContent = r;
-    });
+    document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 </body>
-</html>
+          </html>
