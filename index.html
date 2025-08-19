@@ -1,263 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Recallia — Votre assistant IA</title>
-  <meta name="description" content="Recallia, votre assistant IA du quotidien : anticipe, exécute et prouve. Gagnez du temps, réduisez le stress, gardez le contrôle." />
-
-  <!-- Manifest PWA (fichier déjà créé) -->
-  <link rel="manifest" href="site.webmanifest">
-
-  <!-- Icônes (placeholders — tu mettras les bons fichiers plus tard) -->
-  <link rel="icon" href="icon-192.png" sizes="192x192">
-  <link rel="icon" href="icon-512.png" sizes="512x512">
+  <meta name="description" content="Recallia anticipe, propose et exécute pour vous — au quotidien. Simple. Sécurisé. Personnel. Votre assistant IA qui prouve." />
   <meta name="theme-color" content="#0E1116" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="icon" href="favicon.ico" />
+  <!-- (optionnel si dispo) -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Recallia — Votre assistant IA" />
+  <meta property="og:description" content="Assistant IA qui anticipe, propose et exécute. Preuve-ou-rien. RGPD. App Web & Mobile." />
+  <meta property="og:image" content="og-cover.png" />
+  <meta property="og:url" content="https://bacoul.github.io/Recallia-site/" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Accessibilité : lien skip -->
+  <style>
+    .sr-only{position:absolute;left:-9999px}
+    .skip-link{position:absolute;top:-40px;left:8px;background:#00C2A8;color:#0E1116;padding:8px 12px;border-radius:8px;transition:top .2s;font-weight:600}
+    .skip-link:focus{top:8px;outline:2px solid #00C2A8}
+  </style>
 </head>
+<body>
 
-<body class="layout">
-  <!-- Header -->
-  <header class="header">
-    <div class="container header__inner">
-      <a href="#top" class="brand">
-        <!-- Logo minimal (remplace l’emoji par ton SVG quand prêt) -->
-        <span class="brand__mark" aria-hidden="true">▣</span>
-        <span class="brand__name">Recallia</span>
-      </a>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
 
-      <nav class="nav">
-        <a href="#fonctionnalites">Fonctionnalités</a>
-        <a href="#comment-ca-marche">Comment ça marche</a>
-        <a href="#faq">FAQ</a>
-        <a href="#contact">Contact</a>
-        <!-- Bouton principal -->
-        <a href="#try" class="btn btn--primary">Essayer</a>
-      </nav>
+<header class="site-header" role="banner" aria-label="En-tête du site">
+  <nav class="nav container" aria-label="Navigation principale">
+    <a class="brand" href="#hero" aria-label="Retour à l’accueil">
+      <!-- Remplace par ton logo si dispo -->
+      <span class="brand-mark" aria-hidden="true">●</span>
+      <span class="brand-text">RECALLIA</span>
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+    <ul id="nav-menu" class="nav-list">
+      <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+      <li><a href="#demo">Démo</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="?creator=on" rel="nofollow">Espace créateur</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="contenu">
+
+  <!-- HERO -->
+  <section id="hero" class="hero container" aria-label="Présentation">
+    <div class="hero-copy">
+      <h1>Votre assistant IA</h1>
+      <p class="lead">Recallia anticipe, propose et exécute pour vous — au quotidien. <strong>Simple. Sécurisé. Personnel.</strong></p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#demo">Essayer la démo</a>
+        <a class="btn btn-ghost" href="#fonctionnalites">Découvrir</a>
+      </div>
+      <p class="trustline">• Sécurisé • Privé • Personnalisé • Multi-domaines</p>
     </div>
-  </header>
+    <div class="hero-visual" aria-hidden="true">
+      <!-- Espace pour une capture / mockup app -->
+      <div class="mockup-phone"></div>
+    </div>
+  </section>
 
-  <!-- Héros -->
-  <main id="top">
-    <section class="hero section section--hero">
-      <div class="container hero__inner">
-        <div class="hero__content">
-          <h1 class="hero__title">Votre assistant IA</h1>
-          <p class="hero__subtitle">
-            Recallia anticipe, exécute et <strong>prouve</strong> vos tâches du quotidien.
-            Moins de charge mentale, plus de résultats — sous votre contrôle total.
-          </p>
-          <div class="hero__cta">
-            <a href="#try" class="btn btn--primary">Poser une question</a>
-            <a href="#comment-ca-marche" class="btn btn--ghost">Voir comment ça marche</a>
-          </div>
+  <!-- PREUVE-OU-RIEN -->
+  <section class="proof container" aria-label="Preuves et confiance">
+    <h2>Preuve-ou-rien</h2>
+    <p>Chaque action réussie génère un reçu (horodaté, haché), archivé et exportable. Vos données restent à vous (RGPD, aucune revente).</p>
+    <div class="cards">
+      <article class="card">
+        <h3>Reçus vérifiables</h3>
+        <p>PDF/EML/ICS + hash, audit chaîné, export ZIP.</p>
+      </article>
+      <article class="card">
+        <h3>Contrôle total</h3>
+        <p>Niveaux d’autonomie N0→N3, caps temps/€ et double confirmation.</p>
+      </article>
+      <article class="card">
+        <h3>Confidentialité</h3>
+        <p>Chiffrement, minimisation des données, résidence UE.</p>
+      </article>
+    </div>
+  </section>
 
-          <!-- Micro trust -->
-          <ul class="pills">
-            <li class="pill">Preuve-ou-rien</li>
-            <li class="pill">Local-first</li>
-            <li class="pill">Niveaux N0→N3 + caps</li>
-          </ul>
-        </div>
+  <!-- FONCTIONNALITÉS -->
+  <section id="fonctionnalites" class="features container" aria-label="Fonctionnalités">
+    <h2>Fonctionnalités</h2>
+    <p class="section-intro">Des scénarios concrets qui simplifient la vie. Posez une question, Recallia propose et exécute.</p>
 
-        <!-- Visuel placeholder -->
-        <div class="hero__visual card">
-          <div class="mock-screen">
-            <div class="mock-header">
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-            <div class="mock-body">
-              <p><strong>Demande :</strong> “Refaire ma carte d’identité.”</p>
-              <ul class="checklist">
-                <li>Formulaire ANTS pré-rempli</li>
-                <li>Photos d’identité : ok</li>
-                <li>Justifs domicile/naissance : trouvés</li>
-                <li>Rendez-vous recommandé : demain 9h30</li>
-              </ul>
-              <p class="note">→ Prêt à exécuter. Preuve livrée à la fin.</p>
-            </div>
-          </div>
-        </div>
+    <div class="grid-2">
+      <article class="feature">
+        <h3>Administratif intelligent</h3>
+        <p>“Je dois refaire ma carte d’identité.” Recallia vérifie les prérequis, prépare vos pièces, propose des créneaux, préremplit le dossier.</p>
+      </article>
+      <article class="feature">
+        <h3>Agenda proactif</h3>
+        <p>Rappels utiles, réservations, coordination avec vos contraintes — sans interruption inutile.</p>
+      </article>
+      <article class="feature">
+        <h3>Vie perso & famille</h3>
+        <p>Crèche, école, santé, transports… recommandations contextuelles et actions en 1 clic.</p>
+      </article>
+      <article class="feature">
+        <h3>Finances & abonnements</h3>
+        <p>Suivi des dépenses, alertes de renouvellement, optimisation automatique.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section id="demo" class="demo container" aria-label="Démo">
+    <h2>Démo (maquette locale)</h2>
+    <p>Essayez : posez une question, voyez le type de réponse proposée.</p>
+
+    <form id="demo-form" class="demo-form" autocomplete="off" novalidate>
+      <label for="q" class="sr-only">Votre question</label>
+      <input id="q" name="q" type="text" placeholder="Ex. « Refaire ma carte d’identité »" aria-label="Votre question" />
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+
+    <div id="demo-answer" class="demo-answer" role="status" aria-live="polite">Réponse affichée ici.</div>
+
+    <details class="demo-note">
+      <summary>À propos de la démo</summary>
+      <p>Cette démo est **locale** (sans serveur) et illustre le comportement attendu de Recallia (propositions + étapes + preuve).</p>
+    </details>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="faq container" aria-label="FAQ">
+    <h2>FAQ</h2>
+    <details>
+      <summary>Mes données sont-elles privées ?</summary>
+      <p>Oui. Données chiffrées, non revendues, contrôle total (RGPD), export à tout moment.</p>
+    </details>
+    <details>
+      <summary>Recallia est-il intrusif ?</summary>
+      <p>Non. Propositions tactiques, vous choisissez le niveau d’autonomie et les horaires.</p>
+    </details>
+    <details>
+      <summary>Y a-t-il une application mobile ?</summary>
+      <p>Oui (Android & iOS). Notifications intelligentes, synchronisation web/app, mode sombre.</p>
+    </details>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact container" aria-label="Contact">
+    <h2>Contact</h2>
+    <p>Une question ? Un partenariat ?</p>
+    <div class="grid-2">
+      <div>
+        <h3>Nous écrire</h3>
+        <p><a href="mailto:hello@recallia.app">hello@recallia.app</a></p>
       </div>
-    </section>
-
-    <!-- Comment ça marche -->
-    <section id="comment-ca-marche" class="section">
-      <div class="container">
-        <h2 class="section__title">Comment ça marche ?</h2>
-        <div class="grid grid--3">
-          <article class="card step">
-            <div class="step__icon" aria-hidden="true">①</div>
-            <h3>Vous demandez</h3>
-            <p>Dites “Payer cette facture”, “Préparer la rentrée”, “Réserver un créneau”…</p>
-          </article>
-          <article class="card step">
-            <div class="step__icon" aria-hidden="true">②</div>
-            <h3>Recallia prépare & exécute</h3>
-            <p>Il rassemble les infos, propose le plan le plus rapide et exécute sous vos règles (N0→N3).</p>
-          </article>
-          <article class="card step">
-            <div class="step__icon" aria-hidden="true">③</div>
-            <h3>Preuve livrée</h3>
-            <p>Reçu haché + journal d’audit. Vous gardez le contrôle, toujours.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Fonctionnalités principales -->
-    <section id="fonctionnalites" class="section section--alt">
-      <div class="container">
-        <h2 class="section__title">Fonctionnalités principales</h2>
-        <div class="grid grid--4">
-          <article class="card feat">
-            <h3>Administratif</h3>
-            <p>Cartes d’identité, certificats, rendez-vous officiels, relances…</p>
-          </article>
-          <article class="card feat">
-            <h3>Quotidien</h3>
-            <p>Listes, courses, annivs, ménage, contrats énergie/télécoms…</p>
-          </article>
-          <article class="card feat">
-            <h3>Santé</h3>
-            <p>Rappels médicaux, ordonnances, suivi de documents santé.</p>
-          </article>
-          <article class="card feat">
-            <h3>Finances</h3>
-            <p>Budget, abonnements, paiements sécurisés, reçus & preuves.</p>
-          </article>
-        </div>
-
-        <!-- Compteurs de valeur -->
-        <div class="counters">
-          <div class="counter"><strong>+3 h</strong><span>économisées / semaine</span></div>
-          <div class="counter"><strong>98%</strong><span>d’actions réussies</span></div>
-          <div class="counter"><strong>100%</strong><span>actions prouvées</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Témoignages -->
-    <section class="section">
-      <div class="container">
-        <h2 class="section__title">Ils en parlent</h2>
-        <div class="grid grid--3">
-          <blockquote class="card quote">
-            <p>“J’ai gagné 3 h par semaine, sans stress.”</p>
-            <footer>— Sofia, 34 ans</footer>
-          </blockquote>
-          <blockquote class="card quote">
-            <p>“Mes papiers sont enfin à jour.”</p>
-            <footer>— Nicolas, 41 ans</footer>
-          </blockquote>
-          <blockquote class="card quote">
-            <p>“Pro et humain. Les preuves, c’est rassurant.”</p>
-            <footer>— Aïcha, 29 ans</footer>
-          </blockquote>
-        </div>
-      </div>
-    </section>
-
-    <!-- Zone “Essayer / Poser une question” -->
-    <section id="try" class="section section--alt">
-      <div class="container">
-        <h2 class="section__title">Posez une question à Recallia</h2>
-        <p class="section__lead">Exemples : “Refaire ma carte d’identité”, “Préparer la rentrée”, “Payer cette facture”.</p>
-        <form class="card ask" action="#contact" method="get">
-          <label for="q" class="sr-only">Votre demande</label>
-          <input id="q" name="q" type="text" class="input" placeholder="Décrivez ce que vous voulez que Recallia fasse…" required>
-          <button class="btn btn--primary" type="submit">Proposer un plan</button>
-        </form>
-        <p class="hint">Recallia suggère 1–3 options, exécute sous vos caps (N0→N3) et livre une preuve.</p>
-      </div>
-    </section>
-
-    <!-- FAQ (accessibilité native via <details>) -->
-    <section id="faq" class="section">
-      <div class="container">
-        <h2 class="section__title">FAQ</h2>
-        <div class="faq">
-          <details class="card">
-            <summary>Que fait exactement Recallia ?</summary>
-            <p>Un assistant qui anticipe, exécute et prouve (administratif, santé, quotidien, finances…).</p>
-          </details>
-          <details class="card">
-            <summary>Et mes données ?</summary>
-            <p>Local-first quand possible, chiffrées, jamais revendues. Export/effacement à tout moment.</p>
-          </details>
-          <details class="card">
-            <summary>Que signifie “preuve-ou-rien” ?</summary>
-            <p>Chaque action réussie livre un reçu (PDF/EML/ICS/JSON) + SHA-256 + journal d’audit.</p>
-          </details>
-          <details class="card">
-            <summary>Les niveaux N0→N3 ?</summary>
-            <p>De la simple suggestion (N0) à l’exécution pro-active (N3) sous caps et double confirmation.</p>
-          </details>
-          <details class="card">
-            <summary>Prix ?</summary>
-            <p>Gratuit (limité), Pro (à préciser). Objectif : utile et abordable.</p>
-          </details>
-          <details class="card">
-            <summary>Notifications ?</summary>
-            <p>Push/SMS/email, configurables par domaine et par importance.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bandeau PWA (statique, en attendant les icônes et le SW) -->
-    <section id="install" class="section section--callout">
-      <div class="container callout">
-        <div>
-          <h3>Installer l’app sur votre téléphone</h3>
-          <p>Sur Android : Menu ⋮ → “Ajouter à l’écran d’accueil”. Sur iPhone :  partage → “Sur l’écran d’accueil”.</p>
-        </div>
-        <a href="#faq" class="btn btn--ghost">Besoin d’aide ?</a>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer id="contact" class="footer">
-    <div class="container footer__grid">
-      <div class="footer__brand">
-        <div class="brand">
-          <span class="brand__mark" aria-hidden="true">▣</span>
-          <span class="brand__name">Recallia</span>
-        </div>
-        <p class="muted">Assistant IA proactif. Anticipe, exécute, prouve.</p>
-      </div>
-
-      <nav class="footer__nav">
-        <strong>Produit</strong>
-        <a href="#fonctionnalites">Fonctionnalités</a>
-        <a href="#comment-ca-marche">Comment ça marche</a>
-        <a href="#faq">FAQ</a>
-      </nav>
-
-      <nav class="footer__nav">
-        <strong>Légal</strong>
-        <a href="#" aria-disabled="true">Mentions légales</a>
-        <a href="#" aria-disabled="true">Confidentialité</a>
-        <a href="#" aria-disabled="true">Cookies</a>
-      </nav>
-
-      <div class="footer__cta">
-        <strong>Nous écrire</strong>
-        <a class="btn btn--primary" href="mailto:contact@recallia.app">contact@recallia.app</a>
+      <div>
+        <h3>Support</h3>
+        <p>Assistance directe avec Recallia (à venir).</p>
       </div>
     </div>
-    <div class="container footer__base">
-      <small>© <span id="y">2025</span> Recallia. Tous droits réservés.</small>
-      <a class="toplink" href="#top">Remonter ↑</a>
-    </div>
-  </footer>
+  </section>
 
-  <!-- CTA sticky (mobile) -->
-  <a class="sticky-cta btn btn--primary" href="#try" aria-label="Poser une question à Recallia">Poser une question</a>
+</main>
 
-  <!-- (Optionnel) JS léger pour l’année et petits conforts -->
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-grid">
+    <p>© Recallia — « Votre assistant IA »</p>
+    <nav aria-label="Liens légaux">
+      <a href="mentions.html">Mentions légales</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="conditions.html">Conditions</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- JS minimal : menu mobile + démo locale -->
+<script>
+  // Menu mobile
+  const toggle = document.querySelector('.nav-toggle');
+  const menu = document.getElementById('nav-menu');
+  if (toggle && menu) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('open');
+    });
+  }
+
+  // Démo locale (maquette)
+  const form = document.getElementById('demo-form');
+  const input = document.getElementById('q');
+  const out = document.getElementById('demo-answer');
+
+  const canned = (q) => {
+    const t = q.toLowerCase();
+    if (t.includes('carte') || t.includes('identit')) {
+      return `
+      <strong>Plan proposé :</strong><br>
+      1) Vérifier vos pièces (photo, justificatif de domicile, ancien titre).<br>
+      2) Préparer le dossier ANTS + créneaux mairie proches.<br>
+      3) Générer un reçu (preuve) après dépôt.<br>
+      <em>Souhaitez-vous que je prépare les documents maintenant ?</em>`;
+    }
+    if (t.includes('rdv') || t.includes('médecin') || t.includes('medecin')) {
+      return `
+      <strong>Plan proposé :</strong><br>
+      1) Chercher un créneau selon vos dispos.<br>
+      2) Préremplir les infos patient + ajouter au calendrier.<br>
+      3) Envoyer les rappels + reçu (preuve).<br>
+      <em>Je lance la recherche ?</em>`;
+    }
+    if (t.includes('facture') || t.includes('payer') || t.includes('paiement')) {
+      return `
+      <strong>Plan proposé :</strong><br>
+      1) Vérifier l’échéance/montant.<br>
+      2) Préparer un paiement sécurisé (caps/confirmations).<br>
+      3) Archiver le reçu (preuve).<br>
+      <em>Souhaitez-vous programmer le paiement ?</em>`;
+    }
+    return `
+    <strong>Idée :</strong> je peux proposer un plan en 3 étapes (préparer → exécuter → prouver)
+    selon votre demande. Donnez-moi un cas concret.`;
+  };
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = (input?.value || '').trim();
+    if (!q) {
+      out.innerHTML = 'Tapez une question (ex. « Refaire ma carte d’identité »).';
+      return;
+    }
+    out.innerHTML = canned(q);
+  });
+</script>
 </body>
-          </html>
+</html>
